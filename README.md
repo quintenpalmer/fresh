@@ -3,7 +3,8 @@ fresh
 
 Fresh Programming Language
 
-Features:
+Features
+========
 
 Supports Booleans
 -----------------
@@ -25,7 +26,8 @@ Supports Conditional Branching
 ------------------------------
 - if branch based on condition
 
-Todo:
+Todo
+====
 
 - Support definition of variables
 - Support definition of functions
