@@ -5,11 +5,14 @@ Fresh Programming Language
 
 Features:
 
-- Supports Booleans
+Supports Booleans
+-----------------
 - true and false
 - not Get Not of given boolean
 
-- Supports Integers
+
+Supports Integers
+-----------------
 - + Addition
 - - Subtraction
 - * Multiplication
@@ -17,7 +20,9 @@ Features:
 - > Greater than
 - < Less than
 
-- Supports Conditional Branching
+
+Supports Conditional Branching
+------------------------------
 - if branch based on condition
 
 Todo:
