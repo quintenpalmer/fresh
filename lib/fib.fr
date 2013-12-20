@@ -1,0 +1,9 @@
+(define _fib
+    (lambda [count current old]
+        (if (< count 0)
+            current
+            (_fib (- count 1) (+ current old) current))))
+(define fib
+    (lambda [index]
+        (_fib index 1 0)))
+(fib 7)
