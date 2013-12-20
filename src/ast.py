@@ -1,4 +1,4 @@
-import runtime_types
+import runtime
 import types
 
 def get_name(a):
@@ -70,7 +70,7 @@ class LambdaNode(Node):
         self.body = body
 
     def evaluate(self, env):
-        return runtime_types.ClosureType(env, self.body, self.variables)#self.body.evaluate(lambda_env)
+        return runtime.ClosureType(env, self.body, self.variables)#self.body.evaluate(lambda_env)
 
 
 class FunctionNode(Node):
@@ -81,7 +81,7 @@ class FunctionNode(Node):
     def evaluate(self, env):
         if self.name in env.dictionary:
             value = env.dictionary[self.name]
-            if isinstance(value, runtime_types.ClosureType):
+            if isinstance(value, runtime.ClosureType):
                 lambda_env = env.copy_with(value.env.dictionary)
                 for operand, variable in zip(self.operands, value.arguments):
                     lambda_env = lambda_env.copy_with({variable: operand.evaluate(env)})
@@ -135,8 +135,8 @@ class NegateNode(Node):
     def evaluate(self, env):
         evaluated_expr = self.expr.evaluate(env)
         if evaluated_expr.val is True:
-            return runtime_types.BoolType(False)
+            return runtime.BoolType(False)
         elif evaluated_expr.val is False:
-            return runtime_types.BoolType(True)
+            return runtime.BoolType(True)
         else:
             raise Exception('expected boolean, got %s' % evaluated_expr)

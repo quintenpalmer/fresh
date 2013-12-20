@@ -1,4 +1,4 @@
-from src import parser
+from src import parse
 from src import environment
 
 
@@ -21,4 +21,4 @@ def _loop(none=None):
 if __name__ == '__main__':
     #_loop()
     while True:
-        print(parser.Parser(raw_input(' > ')).parse_expression().evaluate(environment.Environment()))
+        print(parse.Parser(raw_input(' > ')).parse_expression().evaluate(environment.Environment()))

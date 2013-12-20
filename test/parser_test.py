@@ -1,11 +1,11 @@
 import test_examples
 
 from src import environment
-from src import parser
+from src import parse
 
 
 for example in test_examples.examples:
-    example_parser = parser.Parser(example.expr)
+    example_parser = parse.Parser(example.expr)
     parsed = example_parser.parse_expression().evaluate(environment.Environment())
     print(test_examples.format_message(parsed.val, example.evaluation, example.expr))
     if parsed.val != example.evaluation:

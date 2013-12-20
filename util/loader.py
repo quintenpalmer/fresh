@@ -1,7 +1,7 @@
 import sys
 import re
 
-from src import parser
+from src import parse
 from src import environment
 
 def load_and_run(filename):
@@ -10,7 +10,7 @@ def load_and_run(filename):
         contents = ''.join(f.readlines())
         print(contents)
         print('building ast...')
-        ast = parser.Parser(contents).parse_expression()
+        ast = parse.Parser(contents).parse_expression()
         print(ast)
         print('running...')
         print(ast.evaluate(environment.Environment()))

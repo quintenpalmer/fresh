@@ -1,22 +1,22 @@
-import tokenizer
+import tokenize
 import ast
-import runtime_types
+import runtime
 
 bools = ['true', 'false']
 
 
 def bool_from_string(bool_string):
     if bool_string == 'true':
-        return runtime_types.BoolType(True)
+        return runtime.BoolType(True)
     elif bool_string == 'false':
-        return runtime_types.BoolType(False)
+        return runtime.BoolType(False)
     else:
         raise Exception("not a bool string_literal %s" % bool_string)
 
 
 class Parser:
     def __init__(self, source_string):
-        self.tokenizer = tokenizer.Tokenizer(source_string)
+        self.tokenizer = tokenize.Tokenizer(source_string)
         self.function_map = {
             'if': self.conditional,
             'not': self.negate,
@@ -29,7 +29,7 @@ class Parser:
         if current == '(':
             return self.func_call()
         elif current.isdigit() or (current[1:].isdigit() and current[0] == '-'):
-            return ast.LeafNode(current, runtime_types.IntType)
+            return ast.LeafNode(current, runtime.IntType)
         elif current in bools:
             return ast.LeafNode(current, bool_from_string)
         else:

@@ -1,10 +1,10 @@
 import test_examples
 
-from src import parser
+from src import parse
 
 for example in test_examples.examples:
 
-    example_parser = parser.Parser(example.expr)
+    example_parser = parse.Parser(example.expr)
     ast = example_parser.parse_expression()
 
     printed = ast.__repr__()
