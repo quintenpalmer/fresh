@@ -51,7 +51,7 @@ class Parser:
                 to_add = self.parse_expression()
                 operands.append(to_add)
             close = self.tokenizer.chomp()
-            return ast.FunctionNode(func_name, operands)
+            return ast.FunctionCallNode(func_name, operands)
 
     def define(self):
         name = self.tokenizer.chomp()
@@ -81,4 +81,4 @@ class Parser:
         close_bracket = self.tokenizer.chomp()
         body = self.parse_expression()
 
-        return ast.LambdaNode(args, body)
+        return ast.LambdaNode(body, args)

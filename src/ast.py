@@ -64,16 +64,16 @@ class BindingNode(Node):
 
 
 class LambdaNode(Node):
-    def __init__(self, variables, body):
+    def __init__(self, body, arguments):
         Node.__init__(self, 'lambda')
-        self.variables = variables
         self.body = body
+        self.arguments = arguments
 
     def evaluate(self, env):
-        return runtime.ClosureType(env, self.body, self.variables)#self.body.evaluate(lambda_env)
+        return runtime.ClosureType(env, self.body, self.arguments)
 
 
-class FunctionNode(Node):
+class FunctionCallNode(Node):
     def __init__(self, name, operands):
         Node.__init__(self, name)
         self.operands = operands
@@ -83,7 +83,7 @@ class FunctionNode(Node):
             value = env.dictionary[self.name]
             if isinstance(value, runtime.ClosureType):
                 lambda_env = env.copy_with(value.env.dictionary)
-                for operand, variable in zip(self.operands, value.arguments):
+                for variable, operand in zip(value.arguments, self.operands):
                     lambda_env = lambda_env.copy_with({variable: operand.evaluate(env)})
                 return value.body.evaluate(lambda_env)
             else:
@@ -92,7 +92,7 @@ class FunctionNode(Node):
             raise Exception("Variable not found \"%s\"" % self.name)
 
 
-class BuiltinNode(Node):
+class BuiltinCallNode(Node):
     def __init__(self, name, accumulative, operation):
         Node.__init__(self, name)
         self.accumulative = accumulative
