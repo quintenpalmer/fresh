@@ -89,7 +89,7 @@ class FunctionCallNode(Node):
             else:
                 return value.evaluate(env, self.operands)
         else:
-            raise Exception("Variable not found \"%s\"" % self.name)
+            raise Exception("Function declaration not found \"%s\"" % self.name)
 
 
 class BuiltinCallNode(Node):

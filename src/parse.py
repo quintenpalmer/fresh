@@ -45,8 +45,7 @@ class Parser:
         else:
             operands = []
             while True:
-                current = self.tokenizer.peek()
-                if current == ')':
+                if self.tokenizer.peek() == ')':
                     break
                 to_add = self.parse_expression()
                 operands.append(to_add)
@@ -57,7 +56,8 @@ class Parser:
         name = self.tokenizer.chomp()
         expression = self.parse_expression()
         close = self.tokenizer.chomp()
-        return ast.BindingNode(name, expression, self.parse_expression())
+        body = self.parse_expression()
+        return ast.BindingNode(name, expression, body)
 
     def conditional(self):
         cond_expr = self.parse_expression()
@@ -73,8 +73,7 @@ class Parser:
         open_bracket = self.tokenizer.chomp()
         args = []
         while True:
-            current = self.tokenizer.peek()
-            if current == ']':
+            if self.tokenizer.peek() == ']':
                 break
             arg = self.tokenizer.chomp()
             args.append(arg)
