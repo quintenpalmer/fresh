@@ -1,6 +1,6 @@
 (define _fib
     (lambda [count current old]
-        (if (< count 0)
+        (if (< count 1)
             current
             (_fib (- count 1) (+ current old) current)
         )
@@ -11,4 +11,4 @@
         (_fib index 1 0)
     )
 )
-(fib 7)
+(fib 4)
