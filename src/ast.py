@@ -21,10 +21,14 @@ class Node(object):
         return ret
 
 
-class LeafNode(Node):
-    def __init__(self, name, type_):
+class IntNode(Node):
+    def __init__(self, name):
         Node.__init__(self, name)
-        self.type_ = type_
+
+
+class BoolNode(Node):
+    def __init__(self, name):
+        Node.__init__(self, name)
 
 
 class VariableNode(Node):

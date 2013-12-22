@@ -1,6 +1,5 @@
 import tokenize
 import ast
-import runtime
 
 
 class Parser:
@@ -20,9 +19,9 @@ class Parser:
         if current == '(':
             return self.func_call()
         elif current.isdigit() or (current[1:].isdigit() and current[0] == '-'):
-            return ast.LeafNode(current, runtime.IntType)
+            return ast.IntNode(current)
         elif current in bools:
-            return ast.LeafNode(current, bool_from_string)
+            return ast.BoolNode(current)
         else:
             return ast.VariableNode(current)
 

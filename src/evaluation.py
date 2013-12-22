@@ -4,8 +4,18 @@ import runtime
 
 
 def evaluate(self, env=environment.DefaultEnvironment()):
-    if isinstance(self, ast.LeafNode):
-        return self.type_(self.name)
+    if isinstance(self, ast.IntNode):
+        return runtime.IntType(self.name)
+
+    elif isinstance(self, ast.BoolNode):
+        def bool_from_string(bool_string):
+            if bool_string == 'true':
+                return runtime.BoolType(True)
+            elif bool_string == 'false':
+                return runtime.BoolType(False)
+            else:
+                raise Exception("not a bool string_literal %s" % bool_string)
+        return bool_from_string(self.name)
 
     elif isinstance(self, ast.VariableNode):
         if self.name in env.dictionary:
