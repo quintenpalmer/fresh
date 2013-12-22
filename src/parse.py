@@ -2,17 +2,6 @@ import tokenize
 import ast
 import runtime
 
-bools = ['true', 'false']
-
-
-def bool_from_string(bool_string):
-    if bool_string == 'true':
-        return runtime.BoolType(True)
-    elif bool_string == 'false':
-        return runtime.BoolType(False)
-    else:
-        raise Exception("not a bool string_literal %s" % bool_string)
-
 
 class Parser:
     def __init__(self, source_string):
@@ -49,8 +38,7 @@ class Parser:
             while True:
                 if self.tokenizer.peek() == ')':
                     break
-                to_add = self.parse_expression()
-                operands.append(to_add)
+                operands.append(self.parse_expression())
             close = self.tokenizer.chomp()
             return ast.FunctionCallNode(func_name, operands)
 
@@ -82,8 +70,7 @@ class Parser:
                 elipsis = self.tokenizer.chomp()
                 remaining_args = self.tokenizer.chomp()
                 break
-            arg = self.tokenizer.chomp()
-            args.append(arg)
+            args.append(self.tokenizer.chomp())
         close_bracket = self.tokenizer.chomp()
         body = self.parse_expression()
         return ast.LambdaNode(body, args, remaining_args)
@@ -93,11 +80,22 @@ class Parser:
         while True:
             if self.tokenizer.peek() == ')':
                 break
-            member = self.tokenizer.chomp()
-            members.append(member)
+            members.append(self.tokenizer.chomp())
         return ast.StructDeclaration(members)
 
     def member(self):
         struct_name = self.tokenizer.chomp()
         member_name = self.tokenizer.chomp()
         return ast.MemberAccessNode(struct_name, member_name)
+
+
+bools = ['true', 'false']
+
+
+def bool_from_string(bool_string):
+    if bool_string == 'true':
+        return runtime.BoolType(True)
+    elif bool_string == 'false':
+        return runtime.BoolType(False)
+    else:
+        raise Exception("not a bool string_literal %s" % bool_string)
