@@ -1,10 +1,3 @@
-def get_name(a):
-    if isinstance(a, str):
-        return a
-    else:
-        return repr(a)
-
-
 class Node(object):
     def __init__(self, name):
         self.name = name
@@ -86,3 +79,10 @@ class NegateNode(Node):
     def __init__(self, expr):
         Node.__init__(self, 'not')
         self.expr = expr
+
+
+def get_name(a):
+    if isinstance(a, str):
+        return a
+    else:
+        return repr(a)
