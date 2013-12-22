@@ -7,17 +7,17 @@ a lisp intepreter written in python
   
   
 (define fibr  
-    (lambda [count current old]  
-        (if (< count 2)  
-            current  
-            (fibr (- count 1) (+ current old) current)  
-        )  
-    )  
+	(lambda [count current old]  
+		(if (< count 2)  
+			current  
+			(fibr (- count 1) (+ current old) current)  
+		)  
+	)  
 )  
 (define fib  
-    (lambda [index]  
-        (fibr index 1 0)  
-    )  
+	(lambda [index]  
+		(fibr index 1 0)  
+	)  
 )  
 (fib 4)  
 5  
@@ -63,10 +63,8 @@ Supports lambdas
 Supports structs and member access
 ----------------------------------
 - (struct x y) - returns a struct node that has members "x" and "y"
-- (define person (struct height weight))(define quinten (person 178 77))quinten - returns a struct instantiation
-    of a "person" with members "height" and "weight"
-- (define person (struct height weight))(define quinten (person 178 77))(member quinten height)- returns the
-    "person" "quinten"s "height" which is 178
+- (define person (struct height weight))(define quinten (person 178 77))quinten - returns a struct instantiation of a "person" with members "height" and "weight"
+- (define person (struct height weight))(define quinten (person 178 77))(member quinten height)- returns the "person" "quinten"s "height" which is 178
 
 
 Todo
