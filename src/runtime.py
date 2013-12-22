@@ -21,3 +21,20 @@ class ClosureType(RunTimeType):
         self.env = env
         self.body = body
         self.arguments = arguments
+
+
+class StructDeclarationType(RunTimeType):
+    def __init__(self, members):
+        self.members = members
+
+    def __repr__(self):
+        return 'strdecl' + str(self.members)
+
+
+class StructInstantiationType(RunTimeType):
+    def __init__(self, struct_type, arguments):
+        self.values = {val: key for val, key in zip(
+            struct_type.members, arguments)}
+
+    def __repr__(self):
+        return 'strinst' + str(self.values)

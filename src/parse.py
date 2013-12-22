@@ -22,6 +22,8 @@ class Parser:
             'not': self.negate,
             'define': self.define,
             'lambda': self.lambda_,
+            'struct': self.struct,
+            'member': self.member,
         }
 
     def parse_expression(self):
@@ -81,3 +83,17 @@ class Parser:
         body = self.parse_expression()
 
         return ast.LambdaNode(body, args)
+
+    def struct(self):
+        members = []
+        while True:
+            if self.tokenizer.peek() == ')':
+                break
+            member = self.tokenizer.chomp()
+            members.append(member)
+        return ast.StructDeclaration(members)
+
+    def member(self):
+        struct_name = self.tokenizer.chomp()
+        member_name = self.tokenizer.chomp()
+        return ast.MemberAccessNode(struct_name, member_name)

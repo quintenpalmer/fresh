@@ -95,6 +95,33 @@ class FunctionCallNode(Node):
             raise Exception("Function declaration not found \"%s\"" % self.name)
 
 
+class StructDeclaration(Node):
+    def __init__(self, members):
+        Node.__init__(self, 'struct')
+        self.members = members
+
+    def evaluate(self, env):
+        return runtime.StructDeclarationType(self.members)
+
+
+class MemberAccessNode(Node):
+    def __init__(self, struct_name, member_name):
+        Node.__init__(self, 'member')
+        self.struct_name = struct_name
+        self.member_name = member_name
+
+    def evaluate(self, env):
+        if self.struct_name in env.dictionary:
+            struct = env.dictionary[self.struct_name]
+            if self.member_name in struct.values:
+                return struct.values[self.member_name]
+            else:
+                raise Exception("Struct %s does not have member %s" % (
+                    self.struct_name, self.member_name))
+        else:
+            raise Exception("Struct %s not found" % self.member_name)
+
+
 class BuiltinCallNode(Node):
     def __init__(self, name, accumulative, operation):
         Node.__init__(self, name)

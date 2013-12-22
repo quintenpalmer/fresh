@@ -154,4 +154,10 @@ examples = [
     TestExpression(
         '(define _fib (lambda [count current old] (if (< count 0) current (_fib (- count 1) (+ current old) current))))(define fib (lambda [index] (_fib index 1 0)))(fib 5)', 13,
 ['(', 'define', '_fib', '(', 'lambda', '[', 'count', 'current', 'old', ']', '(', 'if', '(', '<', 'count', '0', ')', 'current', '(', '_fib', '(', '-', 'count', '1', ')', '(', '+', 'current', 'old', ')', 'current', ')', ')', ')', ')', '(', 'define', 'fib', '(', 'lambda', '[', 'index', ']', '(', '_fib', 'index', '1', '0', ')', ')', ')', '(', 'fib', '5', ')']),
+    TestExpression(
+        '(define person (struct height))(define quinten (person 10))(member quinten height)', 10,
+        ['(', 'define', 'person', '(', 'struct', 'height', ')', ')', '(', 'define', 'quinten', '(', 'person', '10', ')', ')', '(', 'member', 'quinten', 'height', ')']),
+    TestExpression(
+        '(define list (struct element tail_list))(define my_list (list 10 (list 5 0)))(member my_list element)', 10,
+        ['(', 'define', 'list', '(', 'struct', 'element', 'tail_list', ')', ')', '(', 'define', 'my_list', '(', 'list', '10', '(', 'list', '5', '0', ')', ')', ')', '(', 'member', 'my_list', 'element', ')']),
 ]
