@@ -6,21 +6,21 @@ Fresh Programming Language
 a lisp intepreter written in python  
   
   
-(define fibr  
-	(lambda [count current old]  
-		(if (< count 2)  
-			current  
-			(fibr (- count 1) (+ current old) current)  
-		)  
-	)  
-)  
-(define fib  
-	(lambda [index]  
-		(fibr index 1 0)  
-	)  
-)  
-(fib 4)  
-5  
+    (define fibr  
+        (lambda [count current old]  
+            (if (< count 2)  
+                current  
+                (fibr (- count 1) (+ current old) current)  
+            )  
+        )  
+    )  
+    (define fib  
+        (lambda [index]  
+            (fibr index 1 0)  
+        )  
+    )  
+    (fib 4)  
+    5  
 
 Features
 ========
