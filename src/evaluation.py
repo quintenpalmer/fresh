@@ -1,7 +1,8 @@
+import environment
 import ast
 import runtime
 
-def evaluate(self, env):
+def evaluate(self, env=environment.DefaultEnvironment()):
     if isinstance(self, ast.LeafNode):
         return self.type_(self.name)
 

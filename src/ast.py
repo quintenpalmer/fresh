@@ -1,6 +1,3 @@
-import runtime
-import types
-
 def get_name(a):
     if isinstance(a, str):
         return a
@@ -19,11 +16,10 @@ class Node(object):
         if variables:
             ret += '(' + self.name + ' '
             for arg in variables.values():
-                if not isinstance(arg, types.FunctionType):
-                    if isinstance(arg, list):
-                        ret += ' '.join(map(get_name, arg)) + ' '
-                    else:
-                        ret += get_name(arg) + ' '
+                if isinstance(arg, list):
+                    ret += ' '.join(map(get_name, arg)) + ' '
+                else:
+                    ret += get_name(arg) + ' '
             ret = ret[:-1]
             ret += ')'
         else:
