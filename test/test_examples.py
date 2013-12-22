@@ -29,8 +29,20 @@ examples = [
         '4', 4,
         ['4']),
     TestExpression(
+        '-1', -1,
+        ['-1']),
+    TestExpression(
+        '100', 100,
+        ['100']),
+    TestExpression(
+        '-10', -10,
+        ['-10']),
+    TestExpression(
         'true', True,
         ['true']),
+    TestExpression(
+        'false', False,
+        ['false']),
     TestExpression(
         '(+ 3 4)', 7,
         ['(', '+', '3', '4', ')']),
