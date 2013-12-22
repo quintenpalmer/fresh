@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from src import parse
 from src import evaluation
 
