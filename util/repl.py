@@ -1,5 +1,6 @@
 from src import parse
 from src import environment
+from src import evaluation
 
 
 def _read():
@@ -7,7 +8,7 @@ def _read():
 
 
 def _eval(string):
-    return parser.Parser(string).parse_expression().evaluate(environment.DefaultEnvironment())
+    return evaluate(parser.Parser(string).parse_expression(), environment.DefaultEnvironment())
 
 
 def _print(string):
@@ -21,4 +22,4 @@ def _loop(none=None):
 if __name__ == '__main__':
     #_loop()
     while True:
-        print(parse.Parser(raw_input(' > ')).parse_expression().evaluate(environment.DefaultEnvironment()))
+        print(evaluation.evaluate(parse.Parser(raw_input(' > ')).parse_expression(), environment.DefaultEnvironment()))
