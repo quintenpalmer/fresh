@@ -7,7 +7,7 @@ def _read():
 
 
 def _eval(string):
-    return parser.Parser(string).parse_expression().evaluate(environment.Environment())
+    return parser.Parser(string).parse_expression().evaluate(environment.DefaultEnvironment())
 
 
 def _print(string):
@@ -21,4 +21,4 @@ def _loop(none=None):
 if __name__ == '__main__':
     #_loop()
     while True:
-        print(parse.Parser(raw_input(' > ')).parse_expression().evaluate(environment.Environment()))
+        print(parse.Parser(raw_input(' > ')).parse_expression().evaluate(environment.DefaultEnvironment()))

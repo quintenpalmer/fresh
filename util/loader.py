@@ -13,7 +13,7 @@ def load_and_run(filename):
         ast = parse.Parser(contents).parse_expression()
         print(ast)
         print('running...')
-        print(ast.evaluate(environment.Environment()))
+        print(ast.evaluate(environment.DefaultEnvironment()))
 
 if __name__ == '__main__':
     load_and_run(sys.argv[1])

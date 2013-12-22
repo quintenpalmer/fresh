@@ -72,17 +72,20 @@ class Parser:
         return ast.NegateNode(to_negate_expr)
 
     def lambda_(self):
+        remaining_args = None
         open_bracket = self.tokenizer.chomp()
         args = []
         while True:
             if self.tokenizer.peek() == ']':
                 break
+            if self.tokenizer.peek() == '...':
+                remaining_args = self.tokenizer.chomp()
+                break
             arg = self.tokenizer.chomp()
             args.append(arg)
         close_bracket = self.tokenizer.chomp()
         body = self.parse_expression()
-
-        return ast.LambdaNode(body, args)
+        return ast.LambdaNode(body, args, remaining_args)
 
     def struct(self):
         members = []

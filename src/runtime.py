@@ -16,11 +16,19 @@ class BoolType(RunTimeType):
         RunTimeType.__init__(self, val, bool)
 
 
+class BuiltinClosureType(RunTimeType):
+    def __init__(self, operation, arguments, remaining_args):
+        self.operation = operation
+        self.arguments = arguments
+        self.remaining_args = remaining_args
+
+
 class ClosureType(RunTimeType):
-    def __init__(self, env, body, arguments):
+    def __init__(self, env, body, arguments, remaining_args):
         self.env = env
         self.body = body
         self.arguments = arguments
+        self.remaining_args = remaining_args
 
 
 class StructDeclarationType(RunTimeType):

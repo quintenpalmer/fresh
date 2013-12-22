@@ -65,13 +65,14 @@ class BindingNode(Node):
 
 
 class LambdaNode(Node):
-    def __init__(self, body, arguments):
+    def __init__(self, body, arguments, remaining_args):
         Node.__init__(self, 'lambda')
         self.body = body
         self.arguments = arguments
+        self.remaining_args = remaining_args
 
     def evaluate(self, env):
-        return runtime.ClosureType(env, self.body, self.arguments)
+        return runtime.ClosureType(env, self.body, self.arguments, self.remaining_args)
 
 
 class FunctionCallNode(Node):
@@ -84,13 +85,28 @@ class FunctionCallNode(Node):
             value = env.dictionary[self.name]
             if isinstance(value, runtime.ClosureType):
                 lambda_env = env.copy_with(value.env.dictionary)
-                for variable, operand in zip(value.arguments, self.operands):
+                num_arguments = len(value.arguments)
+                num_operands = len(self.operands)
+                operands, remaining_operands = self.operands[:num_arguments], self.operands[(num_operands - num_arguments):]
+                for variable, operand in zip(value.arguments, operands):
                     lambda_env = lambda_env.copy_with({variable: operand.evaluate(env)})
+                lambda_env = lambda_env.copy_with({value.remaining_args: map(lambda op: op.evaluate(env), remaining_operands)})
                 return value.body.evaluate(lambda_env)
+            elif isinstance(value, runtime.BuiltinClosureType):
+                def evaluate_single(op):
+                    return op.evaluate(env)
+
+                num_arguments = len(value.arguments)
+                num_operands = len(self.operands)
+                operands, remaining_operands = self.operands[:num_arguments], self.operands[(num_arguments- num_operands ):]
+
+                evaluated_operands = map(evaluate_single, operands)
+                evaluated_remaining_operands = map(evaluate_single, remaining_operands)
+                return value.operation(evaluated_operands, evaluated_remaining_operands)
             elif isinstance(value, runtime.StructDeclarationType):
                 return runtime.StructInstantiationType(value, map(lambda operand: operand.evaluate(env), self.operands))
             else:
-                return value.evaluate(env, self.operands)
+                raise Exception("Wrong runtime %s %s" % (value, type(value)))
         else:
             raise Exception("Function declaration not found \"%s\"" % self.name)
 
@@ -120,27 +136,6 @@ class MemberAccessNode(Node):
                     self.struct_name, self.member_name))
         else:
             raise Exception("Struct %s not found" % self.member_name)
-
-
-class BuiltinCallNode(Node):
-    def __init__(self, name, accumulative, operation):
-        Node.__init__(self, name)
-        self.accumulative = accumulative
-        self.operation = operation
-
-    def evaluate(self, env, operands):
-        result = operands[0].evaluate(env)
-        previous = result
-        for arg in operands[1:]:
-            evaluation = arg.evaluate(env)
-            result = self.operation(previous, evaluation)
-            if result.val is False:
-                return result
-            if self.accumulative:
-                previous = result
-            else:
-                previous = evaluation
-        return result
 
 
 class ConditionalNode(Node):
