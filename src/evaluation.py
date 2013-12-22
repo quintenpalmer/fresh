@@ -2,6 +2,7 @@ import environment
 import ast
 import runtime
 
+
 def evaluate(self, env=environment.DefaultEnvironment()):
     if isinstance(self, ast.LeafNode):
         return self.type_(self.name)
@@ -23,13 +24,16 @@ def evaluate(self, env=environment.DefaultEnvironment()):
     elif isinstance(self, ast.FunctionCallNode):
         if self.name in env.dictionary:
             value = env.dictionary[self.name]
+
             def _evaluate_single(operand):
                 return evaluate(operand, env)
 
-            if isinstance(value, runtime.ClosureType) or isinstance(value, runtime.BuiltinClosureType):
+            if (isinstance(value, runtime.ClosureType) or
+                    isinstance(value, runtime.BuiltinClosureType)):
                 num_arguments = len(value.arguments)
                 num_operands = len(self.operands)
-                operands, remaining_operands = self.operands[:num_arguments], self.operands[(num_arguments- num_operands ):]
+                operands = self.operands[:num_arguments]
+                remaining_operands = self.operands[(num_arguments - num_operands):]
                 evaluated_operands = map(_evaluate_single, operands)
                 evaluated_remaining_operands = map(_evaluate_single, remaining_operands)
                 if isinstance(value, runtime.ClosureType):

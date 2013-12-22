@@ -4,6 +4,7 @@ def get_name(a):
     else:
         return repr(a)
 
+
 class Node(object):
     def __init__(self, name):
         self.name = name

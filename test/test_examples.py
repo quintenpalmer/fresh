@@ -16,6 +16,7 @@ def format_message(result, expected, original):
         get_correctness_message(result == expected),
         original)
 
+
 class TestExpression:
     def __init__(self, expr, evaluation, tokenized):
         self.expr = expr
@@ -153,7 +154,7 @@ examples = [
         ['(', 'define', 'square', '(', 'lambda', '[', 'i', ']', '(', '*', 'i', 'i', ')', ')', ')', '(', 'square', '5', ')']),
     TestExpression(
         '(define _fib (lambda [count current old] (if (< count 0) current (_fib (- count 1) (+ current old) current))))(define fib (lambda [index] (_fib index 1 0)))(fib 5)', 13,
-['(', 'define', '_fib', '(', 'lambda', '[', 'count', 'current', 'old', ']', '(', 'if', '(', '<', 'count', '0', ')', 'current', '(', '_fib', '(', '-', 'count', '1', ')', '(', '+', 'current', 'old', ')', 'current', ')', ')', ')', ')', '(', 'define', 'fib', '(', 'lambda', '[', 'index', ']', '(', '_fib', 'index', '1', '0', ')', ')', ')', '(', 'fib', '5', ')']),
+        ['(', 'define', '_fib', '(', 'lambda', '[', 'count', 'current', 'old', ']', '(', 'if', '(', '<', 'count', '0', ')', 'current', '(', '_fib', '(', '-', 'count', '1', ')', '(', '+', 'current', 'old', ')', 'current', ')', ')', ')', ')', '(', 'define', 'fib', '(', 'lambda', '[', 'index', ']', '(', '_fib', 'index', '1', '0', ')', ')', ')', '(', 'fib', '5', ')']),
     TestExpression(
         '(define person (struct height))(define quinten (person 10))(member quinten height)', 10,
         ['(', 'define', 'person', '(', 'struct', 'height', ')', ')', '(', 'define', 'quinten', '(', 'person', '10', ')', ')', '(', 'member', 'quinten', 'height', ')']),

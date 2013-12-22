@@ -4,6 +4,7 @@ import sys
 from src import parse
 from src import evaluation
 
+
 def load_and_run(filename):
     with open(filename, 'r') as f:
         print('loading file...')

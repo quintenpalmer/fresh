@@ -45,6 +45,7 @@ def or_():
 
     return runtime.BuiltinClosureType(multi_operand_helper('or', True, or_two), [], 'args')
 
+
 def and_():
     def and_two(first, second):
         return runtime.BoolType(first.val and second.val)

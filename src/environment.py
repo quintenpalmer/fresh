@@ -11,8 +11,6 @@ class Environment:
         return env
 
 
-
-
 default_binding = {
     '+': builtin.add(),
     '-': builtin.subtract(),
@@ -23,6 +21,7 @@ default_binding = {
     'and': builtin.and_(),
     'or': builtin.or_(),
 }
+
 
 def DefaultEnvironment():
     return Environment(dictionary=default_binding)
