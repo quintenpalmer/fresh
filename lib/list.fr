@@ -1,0 +1,29 @@
+(define list
+    (struct element tail_list)
+)
+
+(define cons
+    (lambda [new_element in_list]
+        (list new_element in_list)
+    )
+)
+
+(define empty
+    (lambda []
+        (list 0 0)
+    )
+)
+
+(define head
+    (lambda [in_list]
+        (member in_list element)
+    )
+)
+
+(define tail
+    (lambda [in_list]
+        (member in_list tail_list)
+    )
+)
+
+(head (tail (cons 3 (cons 2 (cons 1 (empty))))))
