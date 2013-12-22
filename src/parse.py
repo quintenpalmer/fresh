@@ -79,6 +79,7 @@ class Parser:
             if self.tokenizer.peek() == ']':
                 break
             if self.tokenizer.peek() == '...':
+                elipsis = self.tokenizer.chomp()
                 remaining_args = self.tokenizer.chomp()
                 break
             arg = self.tokenizer.chomp()

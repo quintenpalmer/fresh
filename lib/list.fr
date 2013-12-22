@@ -1,16 +1,16 @@
-(define list
+(define linked_list
     (struct element tail_list)
 )
 
 (define cons
     (lambda [new_element in_list]
-        (list new_element in_list)
+        (linked_list new_element in_list)
     )
 )
 
 (define empty
     (lambda []
-        (list 0 0)
+        (linked_list 0 0)
     )
 )
 
