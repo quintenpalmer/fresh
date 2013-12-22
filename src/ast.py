@@ -59,7 +59,8 @@ class BindingNode(Node):
         self.body_expr = body_expr
 
     def evaluate(self, env):
-        env = env.copy_with({self.variable_name: self.binding_expr.evaluate(env)})
+        env = env.copy_with(
+            {self.variable_name: self.binding_expr.evaluate(env)})
         return self.body_expr.evaluate(env)
 
 
@@ -86,6 +87,8 @@ class FunctionCallNode(Node):
                 for variable, operand in zip(value.arguments, self.operands):
                     lambda_env = lambda_env.copy_with({variable: operand.evaluate(env)})
                 return value.body.evaluate(lambda_env)
+            elif isinstance(value, runtime.StructDeclarationType):
+                return runtime.StructInstantiationType(value, map(lambda operand: operand.evaluate(env), self.operands))
             else:
                 return value.evaluate(env, self.operands)
         else:
