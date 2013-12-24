@@ -1,6 +1,6 @@
 class RunTimeType(object):
-    def __init__(self, val, conv):
-        self.val = conv(val)
+    def __init__(self, val):
+        self.val = val
 
     def __repr__(self):
         return str(self.val)
@@ -8,12 +8,12 @@ class RunTimeType(object):
 
 class IntType(RunTimeType):
     def __init__(self, val):
-        RunTimeType.__init__(self, val, int)
+        RunTimeType.__init__(self, int(val))
 
 
 class BoolType(RunTimeType):
     def __init__(self, val):
-        RunTimeType.__init__(self, val, bool)
+        RunTimeType.__init__(self, bool(val))
 
 
 class BuiltinClosureType(RunTimeType):
@@ -22,6 +22,9 @@ class BuiltinClosureType(RunTimeType):
         self.arguments = arguments
         self.remaining_args = remaining_args
 
+    def __repr__(self):
+        return 'builtindef'
+
 
 class ClosureType(RunTimeType):
     def __init__(self, env, body, arguments, remaining_args):
@@ -29,6 +32,9 @@ class ClosureType(RunTimeType):
         self.body = body
         self.arguments = arguments
         self.remaining_args = remaining_args
+
+    def __repr__(self):
+        return 'closure'
 
 
 class StructDeclarationType(RunTimeType):
