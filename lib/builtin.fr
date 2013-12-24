@@ -1,0 +1,9 @@
+(define not
+    (lambda [to_negate]
+        (if to_negate
+            false
+            true
+        )
+    )
+
+)

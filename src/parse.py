@@ -9,7 +9,6 @@ class Parser:
         self.tokenizer = tokenize.Tokenizer(source_string)
         self.function_map = {
             'if': self.if_,
-            'not': self.negate,
             'define': self.define,
             'lambda': self.lambda_,
             'struct': self.struct,
@@ -62,10 +61,6 @@ class Parser:
         then_expr = self.parse_expression()
         else_expr = self.parse_expression()
         return ast.ConditionalNode(cond_expr, then_expr, else_expr)
-
-    def negate(self):
-        to_negate_expr = self.parse_expression()
-        return ast.NegateNode(to_negate_expr)
 
     def lambda_(self):
         remaining_args = None

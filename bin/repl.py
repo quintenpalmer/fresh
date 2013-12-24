@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from src import parse
 from src import evaluation
+from src import main
 
 
 def _read():
@@ -22,4 +23,4 @@ def _loop(none=None):
 if __name__ == '__main__':
     #_loop()
     while True:
-        print(evaluation.evaluate(parse.Parser(raw_input(' > ')).parse_expression()))
+        print(evaluation.evaluate(parse.Parser(raw_input(' > ')).parse_expression(), main.DefaultEnvironment()))

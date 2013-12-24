@@ -61,10 +61,6 @@ class MemberAccessNode(Node):
         self.member_name = member_name
 
 
-class NegateNode(Node):
-    def __init__(self, expr):
-        Node.__init__(self, 'not')
-        self.expr = expr
 class GetEnvironmentBindingNode(Node):
     def __init__(self):
         Node.__init__(self, 'getenv')

@@ -1,9 +1,9 @@
-import environment
+import parse
 import ast
 import runtime
 
 
-def evaluate(self, env=environment.DefaultEnvironment()):
+def evaluate(self, env):
     if isinstance(self, ast.IntNode):
         return runtime.IntType(self.name)
 
@@ -81,14 +81,6 @@ def evaluate(self, env=environment.DefaultEnvironment()):
         else:
             return evaluate(self.else_expr, env)
 
-    elif isinstance(self, ast.NegateNode):
-        evaluated_expr = evaluate(self.expr, env)
-        if evaluated_expr.val is True:
-            return runtime.BoolType(False)
-        elif evaluated_expr.val is False:
-            return runtime.BoolType(True)
-        else:
-            raise Exception('expected boolean, got %s' % evaluated_expr)
     elif isinstance(self, ast.GetEnvironmentBindingNode):
         return runtime.BindingType(env)
 
