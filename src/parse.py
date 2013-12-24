@@ -80,7 +80,7 @@ class Parser:
             if self.tokenizer.peek() == ')':
                 break
             members.append(self.tokenizer.chomp())
-        return ast.StructDeclaration(members)
+        return ast.StructDeclarationNode(members)
 
     def member(self):
         struct_name = self.tokenizer.chomp()

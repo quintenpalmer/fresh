@@ -48,7 +48,7 @@ class FunctionCallNode(Node):
         self.operands = operands
 
 
-class StructDeclaration(Node):
+class StructDeclarationNode(Node):
     def __init__(self, members):
         Node.__init__(self, 'struct')
         self.members = members

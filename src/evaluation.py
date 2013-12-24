@@ -61,7 +61,7 @@ def evaluate(self, env=environment.DefaultEnvironment()):
         else:
             raise Exception("Function declaration not found \"%s\"" % self.name)
 
-    elif isinstance(self, ast.StructDeclaration):
+    elif isinstance(self, ast.StructDeclarationNode):
         return runtime.StructDeclarationType(self.members)
 
     elif isinstance(self, ast.MemberAccessNode):
