@@ -1,5 +1,5 @@
-whitespace = [' ', '\n', '\r', '\t', '']
-delimiters = ['(', ')', '[', ']'] + whitespace
+whitespace = [' ', '\n', '\r', '\t']
+delimiters = ['(', ')', '[', ']', ''] + whitespace
 
 
 class Tokenizer:
