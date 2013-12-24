@@ -2,6 +2,7 @@
 import sys
 
 from src import parse
+from src import ast
 from src import evaluation
 
 
@@ -11,10 +12,10 @@ def load_and_run(filename):
         contents = ''.join(f.readlines())
         print(contents)
         print('building ast...')
-        ast = parse.Parser(contents).parse_expression()
-        print(ast)
+        loaded_ast = parse.Parser(contents).parse_expression()
+        print(ast.draw_node(loaded_ast))
         print('running...')
-        print(evaluation.evaluate(ast))
+        print(evaluation.evaluate(loaded_ast))
 
 if __name__ == '__main__':
     load_and_run(sys.argv[1])
