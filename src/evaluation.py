@@ -89,3 +89,6 @@ def evaluate(self, env=environment.DefaultEnvironment()):
             return runtime.BoolType(True)
         else:
             raise Exception('expected boolean, got %s' % evaluated_expr)
+
+    else:
+        raise Exception("Invalid AST Node Type %s (%s)" % (type(self), self))
