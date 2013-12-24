@@ -1,12 +1,14 @@
 import tokenize
 import ast
 
+bools = ['true', 'false']
+
 
 class Parser:
     def __init__(self, source_string):
         self.tokenizer = tokenize.Tokenizer(source_string)
         self.function_map = {
-            'if': self.conditional,
+            'if': self.if_,
             'not': self.negate,
             'define': self.define,
             'lambda': self.lambda_,
@@ -48,7 +50,7 @@ class Parser:
         body = self.parse_expression()
         return ast.BindingNode(name, expression, body)
 
-    def conditional(self):
+    def if_(self):
         cond_expr = self.parse_expression()
         then_expr = self.parse_expression()
         else_expr = self.parse_expression()
@@ -87,14 +89,3 @@ class Parser:
         member_name = self.tokenizer.chomp()
         return ast.MemberAccessNode(struct_name, member_name)
 
-
-bools = ['true', 'false']
-
-
-def bool_from_string(bool_string):
-    if bool_string == 'true':
-        return runtime.BoolType(True)
-    elif bool_string == 'false':
-        return runtime.BoolType(False)
-    else:
-        raise Exception("not a bool string_literal %s" % bool_string)
