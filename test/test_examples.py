@@ -173,4 +173,7 @@ examples = [
     TestExpression(
         '(define list (struct element tail_list))(define my_list (list 10 (list 5 0)))(member my_list element)', 10,
         ['(', 'define', 'list', '(', 'struct', 'element', 'tail_list', ')', ')', '(', 'define', 'my_list', '(', 'list', '10', '(', 'list', '5', '0', ')', ')', ')', '(', 'member', 'my_list', 'element', ')']),
+    TestExpression(
+        '(with fib)(fib 4)', 5,
+        ['(', 'with', 'fib', ')', '(', 'fib', '4', ')']),
 ]
