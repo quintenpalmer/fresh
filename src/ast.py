@@ -65,6 +65,16 @@ class NegateNode(Node):
     def __init__(self, expr):
         Node.__init__(self, 'not')
         self.expr = expr
+class GetEnvironmentBindingNode(Node):
+    def __init__(self):
+        Node.__init__(self, 'getenv')
+
+
+class LoadingNode(Node):
+    def __init__(self, binding_name, body):
+        Node.__init__(self, 'loader')
+        self.binding_name = binding_name
+        self.body = body
 
 
 def draw_node(astNode):

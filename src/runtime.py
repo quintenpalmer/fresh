@@ -37,6 +37,15 @@ class ClosureType(RunTimeType):
         return 'closure'
 
 
+class BindingType(RunTimeType):
+    def __init__(self, env):
+        RunTimeType.__init__(self, 'binding')
+        self.env = env
+
+    def __repr__(self):
+        return 'binding'
+
+
 class StructDeclarationType(RunTimeType):
     def __init__(self, members):
         self.members = members

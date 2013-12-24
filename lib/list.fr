@@ -25,5 +25,3 @@
         (member in_list tail_list)
     )
 )
-
-(head (tail (cons 3 (cons 2 (cons 1 (empty))))))

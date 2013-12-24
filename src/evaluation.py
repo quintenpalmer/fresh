@@ -89,6 +89,17 @@ def evaluate(self, env=environment.DefaultEnvironment()):
             return runtime.BoolType(True)
         else:
             raise Exception('expected boolean, got %s' % evaluated_expr)
+    elif isinstance(self, ast.GetEnvironmentBindingNode):
+        return runtime.BindingType(env)
+
+    elif isinstance(self, ast.LoadingNode):
+        raw_string = ''
+        with open('lib/%s.fr' % self.binding_name) as f:
+            raw_string = ''.join(f.readlines())
+        imported_ast = parse.Parser(raw_string).parse_expression()
+        imported_val = evaluate(imported_ast, env)
+        imported_env = env.copy_with(imported_val.env.dictionary)
+        return evaluate(self.body, imported_env)
 
     else:
         raise Exception("Invalid AST Node Type %s (%s)" % (type(self), self))

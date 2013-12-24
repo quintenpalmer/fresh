@@ -14,6 +14,7 @@ class Parser:
             'lambda': self.lambda_,
             'struct': self.struct,
             'member': self.member,
+            'with': self.with_,
         }
 
     def parse_expression(self):
@@ -26,6 +27,12 @@ class Parser:
             return ast.BoolNode(current)
         else:
             return ast.VariableNode(current)
+
+    def maybe_parse_expression(self):
+        if self.tokenizer.peek() == '':
+            return ast.GetEnvironmentBindingNode()
+        else:
+            return self.parse_expression()
 
     def func_call(self):
         func_name = self.tokenizer.chomp()
@@ -47,7 +54,7 @@ class Parser:
         name = self.tokenizer.chomp()
         expression = self.parse_expression()
         close = self.tokenizer.chomp()
-        body = self.parse_expression()
+        body = self.maybe_parse_expression()
         return ast.BindingNode(name, expression, body)
 
     def if_(self):
@@ -89,3 +96,8 @@ class Parser:
         member_name = self.tokenizer.chomp()
         return ast.MemberAccessNode(struct_name, member_name)
 
+    def with_(self):
+        module_name = self.tokenizer.chomp()
+        close = self.tokenizer.chomp()
+        body = self.parse_expression()
+        return ast.LoadingNode(module_name, body)
