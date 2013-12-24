@@ -2,5 +2,11 @@
     (lambda [number]
         (if (> 2 number)
             number
-            (* number (factorial (- number 1))))))
+            (*
+                number
+                (factorial (- number 1))
+            )
+        )
+    )
+)
 (factorial 5)
