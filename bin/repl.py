@@ -2,25 +2,28 @@
 from src import parse
 from src import evaluation
 from src import main
+from src import runtime
 
 
 def _read():
     return raw_input(' > ')
 
 
-def _eval(string):
-    return evaluate(parser.Parser(string).parse_expression())
+def _eval(string, env):
+    return evaluation.evaluate(parse.Parser(string).parse_expression(), env)
 
 
 def _print(string):
-    print(str(string) + '\n')
+    print(str(string))
 
 
-def _loop(none=None):
-    _loop(_print(_eval(_read())))
+def _loop(env=main.DefaultEnvironment()):
+    while True:
+        evaluation = _eval(_read(), env)
+        if isinstance(evaluation, runtime.BindingType):
+            env = evaluation.env
+        _print(evaluation)
 
 
 if __name__ == '__main__':
-    #_loop()
-    while True:
-        print(evaluation.evaluate(parse.Parser(raw_input(' > ')).parse_expression(), main.DefaultEnvironment()))
+    _loop()
