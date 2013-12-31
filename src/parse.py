@@ -94,5 +94,5 @@ class Parser:
     def with_(self):
         module_name = self.tokenizer.chomp()
         close = self.tokenizer.chomp()
-        body = self.parse_expression()
+        body = self.maybe_parse_expression()
         return ast.LoadingNode(module_name, body)
