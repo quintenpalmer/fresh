@@ -4,7 +4,7 @@ import runtime
 def multi_operand_helper(name, accumulative, operation):
     def _multi_operand_helper(operands, remaining_operands):
         if len(operands) != 0:
-            raise RuntimeException("multi_operand_helper %s takes no arguments" % name)
+            raise Exception("multi_operand_helper %s takes no arguments" % name)
         result = remaining_operands[0]
         previous = result
         for arg in remaining_operands[1:]:
