@@ -20,6 +20,8 @@ class Parser:
         current = self.tokenizer.chomp()
         if current == '(':
             return self.func_call()
+        elif current == tokenize.EOF:
+            raise ParsingError("Expecting an expression expecting %s" % tokenize.EOF)
         elif current.isdigit() or (current[1:].isdigit() and current[0] == '-'):
             return ast.IntNode(current)
         elif current in bools:
@@ -28,7 +30,7 @@ class Parser:
             return ast.VariableNode(current)
 
     def maybe_parse_expression(self):
-        if self.tokenizer.peek() == '':
+        if self.tokenizer.peek() == tokenize.EOF:
             return ast.GetEnvironmentBindingNode()
         else:
             return self.parse_expression()

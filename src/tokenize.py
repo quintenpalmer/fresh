@@ -1,5 +1,13 @@
+class _EOF:
+    def __repr__(self):
+        return "#EOF#"
+
+    def __len__(self):
+        return 0
+
+EOF = _EOF()
 whitespace = [' ', '\n', '\r', '\t']
-delimiters = ['(', ')', '[', ']', ''] + whitespace
+delimiters = ['(', ')', '[', ']', EOF] + whitespace
 
 
 class Tokenizer:
@@ -22,7 +30,7 @@ class Tokenizer:
 
     def to_pieces(self):
         def _get_piece(remaining, pieces):
-            if remaining == '':
+            if remaining == EOF:
                 return pieces
             else:
                 self.chomp()
@@ -35,9 +43,9 @@ def _get_token(remaining):
         if len(remaining) > 1:
             return remaining[0], remaining[1:]
         elif len(remaining) > 0:
-            return remaining[0], ''
+            return remaining[0], EOF
         else:
-            return '', ''
+            return EOF, EOF
 
     def _get_next_non_whitespace(remaining):
         current, remaining = _get_next_character(remaining)
@@ -49,9 +57,9 @@ def _get_token(remaining):
     token = current
     if not current in delimiters:
         while True:
-            current, remaining = _get_next_character(remaining)
+            current, will_be_remaining = _get_next_character(remaining)
             if current in delimiters:
-                remaining = current + remaining
                 break
+            remaining = will_be_remaining
             token += current
     return token, remaining
