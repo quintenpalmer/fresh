@@ -37,8 +37,8 @@ class Parser:
         func_name = self.tokenizer.chomp()
         if func_name in self.function_map:
             func = self.function_map[func_name]()
-            if func_name != 'define':
-                close = self.tokenizer.chomp()
+            if func_name not in ('define', 'with'):
+                assert_close_expression(self.tokenizer.chomp())
             return func
         else:
             operands = []
@@ -46,13 +46,13 @@ class Parser:
                 if self.tokenizer.peek() == ')':
                     break
                 operands.append(self.parse_expression())
-            close = self.tokenizer.chomp()
+            assert_close_expression(self.tokenizer.chomp())
             return ast.FunctionCallNode(func_name, operands)
 
     def define(self):
         name = self.tokenizer.chomp()
         expression = self.parse_expression()
-        close = self.tokenizer.chomp()
+        assert_close_expression(self.tokenizer.chomp())
         body = self.maybe_parse_expression()
         return ast.BindingNode(name, expression, body)
 
@@ -70,11 +70,11 @@ class Parser:
             if self.tokenizer.peek() == ']':
                 break
             if self.tokenizer.peek() == '...':
-                elipsis = self.tokenizer.chomp()
+                assert_elipsis(self.tokenizer.chomp())
                 remaining_args = self.tokenizer.chomp()
                 break
             args.append(self.tokenizer.chomp())
-        close_bracket = self.tokenizer.chomp()
+        assert_close_params(self.tokenizer.chomp())
         body = self.parse_expression()
         return ast.LambdaNode(body, args, remaining_args)
 
@@ -93,6 +93,27 @@ class Parser:
 
     def with_(self):
         module_name = self.tokenizer.chomp()
-        close = self.tokenizer.chomp()
+        assert_close_expression(self.tokenizer.chomp())
         body = self.maybe_parse_expression()
         return ast.LoadingNode(module_name, body)
+
+
+class ParsingError(Exception):
+    pass
+
+
+def assert_close_expression(token):
+    _assert_is_token(token, ')')
+
+
+def assert_close_params(token):
+    _assert_is_token(token, ']')
+
+
+def assert_elipsis(token):
+    _assert_is_token(token, '...')
+
+
+def _assert_is_token(to_check, expected):
+    if to_check != expected:
+        raise ParsingError("Expecting %s found %s" % (expected, to_check))
