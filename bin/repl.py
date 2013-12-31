@@ -6,7 +6,7 @@ from src import runtime
 
 
 def _read():
-    return raw_input(' > ')
+    return raw_input(' $ ')
 
 
 def _eval(string, env):
