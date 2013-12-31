@@ -2,9 +2,9 @@
 import sys
 
 from src import parse
-from src import ast
 from src import evaluation
 from src import main
+from src import debug
 
 
 def load_and_run(filename):
@@ -14,7 +14,7 @@ def load_and_run(filename):
         print(contents)
         print('building ast...')
         loaded_ast = parse.Parser(contents).parse_expression()
-        print(ast.draw_node(loaded_ast))
+        print(debug.draw_node(loaded_ast))
         print('running...')
         print(evaluation.evaluate(loaded_ast, main.DefaultEnvironment()))
 
