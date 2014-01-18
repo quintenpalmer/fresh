@@ -38,37 +38,81 @@
           <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
         </div>
 
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+        <h1>
+<a name="fresh" class="anchor" href="#fresh"><span class="octicon octicon-link"></span></a>fresh</h1>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<p>Fresh Programming Language</p>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
+<p>a lisp intepreter written in python  </p>
+
+<pre><code>(define fibr  
+    (lambda [count current old]  
+        (if (&lt; count 2)  
+            current  
+            (fibr (- count 1) (+ current old) current)  
+        )  
+    )  
+)  
+(define fib  
+    (lambda [index]  
+        (fibr index 1 0)  
+    )  
+)  
+(fib 4)  
+5  
 </code></pre>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<h1>
+<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h1>
 
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+<h2>
+<a name="supports-booleans" class="anchor" href="#supports-booleans"><span class="octicon octicon-link"></span></a>Supports Booleans</h2>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<ul>
+<li>true and false</li>
+<li>(not true) false - negate given boolean</li>
+<li>(and false true true) false - "and" any number of booleans together</li>
+<li>(or false true true) true - "or" any number of booleans together</li>
+</ul><h2>
+<a name="supports-integers" class="anchor" href="#supports-integers"><span class="octicon octicon-link"></span></a>Supports Integers</h2>
 
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+<ul>
+<li>(+ 4 3 3) 10 - add any number of ints</li>
+<li>(- 5 1 1) 3 - subtract any number of ints from the first int</li>
+<li>(* 2 2 2) 8 - multiply any number of ints</li>
+<li>(= 2 2 3) false - return true if any number of ints are equal</li>
+<li>(&gt; 5 4 3) true - return true if any number of ints are in descending order</li>
+<li>(&lt; 4 3 4) false - return true if any number of ints are in ascending order</li>
+</ul><h2>
+<a name="supports-conditional-branching" class="anchor" href="#supports-conditional-branching"><span class="octicon octicon-link"></span></a>Supports Conditional Branching</h2>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<ul>
+<li>(if true 4 0) 4 - branch based on condition</li>
+</ul><h2>
+<a name="supports-variable-assignment" class="anchor" href="#supports-variable-assignment"><span class="octicon octicon-link"></span></a>Supports variable assignment</h2>
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+<ul>
+<li>(define a 4)(+ a 1) 5 - define a mapping in the environment for later reference</li>
+</ul><h2>
+<a name="supports-lambdas" class="anchor" href="#supports-lambdas"><span class="octicon octicon-link"></span></a>Supports lambdas</h2>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<ul>
+<li>(lambda [num] (+ num 1)) - returns a lambda that will add one to it's single argument when called</li>
+<li>(define square (lambda [i] (* i i)))(square 5) 25 - assign a lambda to a variable to reference later</li>
+</ul><h2>
+<a name="supports-structs-and-member-access" class="anchor" href="#supports-structs-and-member-access"><span class="octicon octicon-link"></span></a>Supports structs and member access</h2>
 
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+<ul>
+<li>(struct x y) - returns a struct node that has members "x" and "y"</li>
+<li>(define person (struct height weight))(define quinten (person 178 77))quinten - returns a struct instantiation of a "person" with members "height" and "weight"</li>
+<li>(define person (struct height weight))(define quinten (person 178 77))(member quinten height)- returns the "person" "quinten"s "height" which is 178</li>
+</ul><h1>
+<a name="todo" class="anchor" href="#todo"><span class="octicon octicon-link"></span></a>Todo</h1>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<ul>
+<li>Implement type checker</li>
+<li>Add methods to structs to support classes</li>
+</ul>
       </section>
 
     </div>
