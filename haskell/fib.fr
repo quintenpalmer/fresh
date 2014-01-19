@@ -1,0 +1,43 @@
+(define sq
+    (lambda [x]
+        (* x x)
+    )
+)
+
+(define add
+    (lambda [x y]
+        (+ x y)
+    )
+)
+
+(define cube
+    (lambda [x]
+        (* x x x)
+    )
+)
+
+(define factorial
+    (lambda [x]
+        (if (< 2 x)
+            x
+            (* x (factorial (- 1 x)))
+        )
+    )
+)
+
+(define _fib
+    (lambda [count current old]
+        (if (< 1 count)
+            current
+            (_fib (- 1 count) (+ current old) current)
+        )
+    )
+)
+
+(define fib
+    (lambda [index]
+        (_fib index 1 0)
+    )
+)
+
+(fib 4)

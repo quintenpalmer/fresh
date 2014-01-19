@@ -1,5 +1,6 @@
 module Runtime (
     Environment,
+    value,
     RuntimeType(..)
 ) where
 
@@ -14,3 +15,6 @@ data RuntimeType
     | BoolType {bool :: Bool}
     | ClosureType {body :: AST.Node, arguments :: [String], env :: Environment}
     | BuiltinClosureType {builtin_lambda :: ([RuntimeType] -> RuntimeType)}
+
+value (IntType i) = show i
+value (BoolType b) = show b
