@@ -4,4 +4,6 @@ module AST (
 
 data Node
     = IntNode Int
-    | BoolNode Bool deriving (Show)
+    | BoolNode Bool
+    | VariableNode String
+    | BindingNode String Node Node deriving (Show)
