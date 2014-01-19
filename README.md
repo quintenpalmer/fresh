@@ -3,7 +3,9 @@ fresh
 
 Fresh Programming Language
 
-a lisp intepreter written in python  
+A custom lisp dialect intepreter  
+First written in Python, and being rewritten in Haskell  
+Example Fibonacci indexer:  
   
   
     (define fibr  
@@ -21,6 +23,14 @@ a lisp intepreter written in python
     )  
     (fib 4)  
     5  
+
+
+To Run
+======
+
+    cd python  
+    ./bin/repl.py  
+
 
 Features
 ========
