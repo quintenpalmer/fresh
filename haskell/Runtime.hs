@@ -13,3 +13,4 @@ data RuntimeType
     = IntType {int :: Int}
     | BoolType {bool :: Bool}
     | ClosureType {body :: AST.Node, arguments :: [String], env :: Environment}
+    | BuiltinClosureType {builtin_lambda :: ([RuntimeType] -> RuntimeType)}

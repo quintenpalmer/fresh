@@ -7,6 +7,7 @@ import qualified Data.Maybe as Maybe
 
 import qualified AST
 import qualified Runtime as RT
+import qualified Builtin
 import qualified Util
 
 evaluate :: AST.Node -> RT.Environment -> RT.RuntimeType
@@ -40,6 +41,10 @@ evaluate_with_env (AST.FunctionCallNode name values) env =
         else
             error $ "Function '" ++ name ++ "' not in scope"
 
+
+evaluate_function_call :: RT.RuntimeType -> [AST.Node] -> RT.Environment -> RT.RuntimeType
+evaluate_function_call (RT.BuiltinClosureType function) values env =
+    function $ Util.map_many_on_one (map evaluate_with_env values) env
 
 evaluate_function_call (RT.ClosureType function arguments closure_env) values env =
     evaluate_with_env function $ build_new_env
