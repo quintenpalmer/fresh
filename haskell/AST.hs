@@ -8,5 +8,5 @@ data Node
     | VariableNode String
     | BindingNode String Node Node
     | IfNode Node Node Node
-    | FunctionCallNode Node [String]
+    | FunctionCallNode String [Node]
     | LambdaNode {body :: Node, arguments :: [String]} deriving (Show)
