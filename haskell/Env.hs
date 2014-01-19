@@ -11,9 +11,9 @@ defaultEnvironment :: Runtime.Environment
 defaultEnvironment = Map.fromList [
     ("+", Runtime.BuiltinClosureType(Builtin.add)),
     ("-", Runtime.BuiltinClosureType(Builtin.minus)),
-	("*", Runtime.BuiltinClosureType(Builtin.multiply)),
-	("and", Runtime.BuiltinClosureType(Builtin.and_all)),
-	("or", Runtime.BuiltinClosureType(Builtin.or_all)),
-	(">", Runtime.BuiltinClosureType(Builtin.greater)),
-	("<", Runtime.BuiltinClosureType(Builtin.less)),
-	("=", Runtime.BuiltinClosureType(Builtin.equal))]
+    ("*", Runtime.BuiltinClosureType(Builtin.multiply)),
+    ("and", Runtime.BuiltinClosureType(Builtin.and_all)),
+    ("or", Runtime.BuiltinClosureType(Builtin.or_all)),
+    (">", Runtime.BuiltinClosureType(Builtin.greater)),
+    ("<", Runtime.BuiltinClosureType(Builtin.less)),
+    ("=", Runtime.BuiltinClosureType(Builtin.equal))]
