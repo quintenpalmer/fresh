@@ -1,3 +1,7 @@
 *.swp
 *.pyc
 *.pyo
+*.hi
+*.o
+Repl
+Loader
