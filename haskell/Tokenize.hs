@@ -4,7 +4,7 @@ module Tokenize (
 
 eof = '\0'
 whitespace = [' ', '\n', '\r', '\t']
-delimiters = ['(', ')', eof] ++ whitespace
+delimiters = ['(', ')', '[', ']', eof] ++ whitespace
 
 to_tokens :: String -> [String]
 to_tokens input_string =

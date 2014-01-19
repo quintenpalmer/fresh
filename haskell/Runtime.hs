@@ -12,3 +12,4 @@ type Environment = Map.Map String RuntimeType
 data RuntimeType
     = IntType {int :: Int}
     | BoolType {bool :: Bool}
+    | ClosureType {body :: AST.Node, arguments :: [String], env :: Environment}

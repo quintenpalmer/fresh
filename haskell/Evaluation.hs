@@ -7,6 +7,7 @@ import qualified Data.Maybe as Maybe
 
 import qualified AST
 import qualified Runtime as RT
+import qualified Util
 
 evaluate :: AST.Node -> RT.Environment -> RT.RuntimeType
 evaluate node env =
@@ -29,3 +30,25 @@ evaluate_with_env (AST.VariableNode name) env =
             Maybe.fromJust maybe_variable
         else
             error $ "Variable '" ++ name ++ "' not found"
+evaluate_with_env (AST.LambdaNode body arguments) env =
+    RT.ClosureType body arguments env
+evaluate_with_env (AST.FunctionCallNode name values) env =
+    let maybe_function = Map.lookup name env
+    in
+        if Maybe.isJust maybe_function then
+            evaluate_function_call (Maybe.fromJust maybe_function) values env
+        else
+            error $ "Function '" ++ name ++ "' not in scope"
+
+
+evaluate_function_call (RT.ClosureType function arguments closure_env) values env =
+    evaluate_with_env function $ build_new_env
+        arguments
+        (Util.map_many_on_one (map evaluate_with_env values) env)
+        env
+
+build_new_env :: [String] -> [RT.RuntimeType] -> RT.Environment -> RT.Environment
+build_new_env [] [] env = env
+build_new_env (argument:arguments) (value:values) env =
+    build_new_env arguments values
+        $ Map.insert argument value env

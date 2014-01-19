@@ -30,7 +30,10 @@ parse_func_call (current:tokens) =
         if Maybe.isJust maybe_function then
             (Maybe.fromJust maybe_function) tokens
         else
-            error $ "Invalid Function Call: " ++ current
+            let (operands, pre_close_tokens) = parse_operands [] tokens
+                post_close_tokens = chomp_close_expression pre_close_tokens
+            in
+                (AST.FunctionCallNode current operands, post_close_tokens)
 
 parse_if :: [String] -> (AST.Node, [String])
 parse_if tokens =
@@ -49,9 +52,44 @@ parse_define (name: tokens) =
     in
         (AST.BindingNode name expression body, tokens3)
 
+parse_lambda :: [String] -> (AST.Node, [String])
+parse_lambda tokens =
+    let tokens1 = chomp_open_lambda_params tokens
+        (params, tokens2) = parse_params [] tokens1
+        tokens3 = chomp_close_lambda_params tokens2
+        (body, tokens4) = parse_expression tokens3
+        tokens5 = chomp_close_expression tokens4
+    in
+        (AST.LambdaNode body params, tokens5)
+
+
+parse_params :: [String] -> [String] -> ([String], [String])
+parse_params existing_params input_tokens@("]":_) =
+    (existing_params, input_tokens)
+parse_params existing_params (token:tokens) =
+    parse_params (token: existing_params) tokens
+
+
+parse_operands :: [AST.Node] -> [String] -> ([AST.Node], [String])
+parse_operands existing_operands input_tokens@(")":_) =
+    (existing_operands, input_tokens)
+parse_operands existing_operands input_tokens =
+    let (current, remaining_tokens) = parse_expression input_tokens
+    in
+        parse_operands (current: existing_operands) remaining_tokens
+
+
 chomp_close_expression :: [String] -> [String]
 chomp_close_expression tokens =
     assert_chomping tokens ")"
+
+chomp_open_lambda_params :: [String] -> [String]
+chomp_open_lambda_params tokens =
+    assert_chomping tokens "["
+
+chomp_close_lambda_params :: [String] -> [String]
+chomp_close_lambda_params tokens =
+    assert_chomping tokens "]"
 
 assert_chomping :: [String] -> String -> [String]
 assert_chomping (token:tokens) expected =
@@ -63,4 +101,5 @@ assert_chomping (token:tokens) expected =
 function_map :: Map.Map String ([String] -> (AST.Node, [String]))
 function_map = Map.fromList [
     ("if", parse_if),
-    ("define", parse_define)]
+    ("define", parse_define),
+    ("lambda", parse_lambda)]
