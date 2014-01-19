@@ -32,6 +32,15 @@ parse_func_call (current:tokens) =
         else
             error $ "Invalid Function Call: " ++ current
 
+parse_if :: [String] -> (AST.Node, [String])
+parse_if tokens =
+    let (cond_expr, tokens1) = parse_expression tokens
+        (then_expr, tokens2) = parse_expression tokens1
+        (else_expr, tokens3) = parse_expression tokens2
+        tokens4 = chomp_close_expression tokens3
+    in
+        (AST.IfNode cond_expr then_expr else_expr, tokens4)
+
 parse_define :: [String] -> (AST.Node, [String])
 parse_define (name: tokens) =
     let (expression, tokens1) = parse_expression tokens
@@ -53,4 +62,5 @@ assert_chomping (token:tokens) expected =
 
 function_map :: Map.Map String ([String] -> (AST.Node, [String]))
 function_map = Map.fromList [
+    ("if", parse_if),
     ("define", parse_define)]
