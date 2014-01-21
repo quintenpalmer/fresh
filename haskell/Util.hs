@@ -8,12 +8,12 @@ import qualified Data.Char as Char
 
 bools = ["true", "false"]
 
+is_int_literal ('-':string) =
+    are_digits string
 is_int_literal string =
-    if head string == '-' then
-        are_digits $ tail string
-    else
-        are_digits string
+    are_digits string
 
+are_digits [] = False
 are_digits string =
     all Char.isDigit string
 
