@@ -1,0 +1,251 @@
+[
+    {
+        "expr": "4",
+        "evaluation":  4,
+        "tokenized": ["4"]
+    },
+    {
+        "expr": "-1",
+        "evaluation":  -1,
+        "tokenized": ["-1"]
+    },
+    {
+        "expr": "100",
+        "evaluation":  100,
+        "tokenized": ["100"]
+    },
+    {
+        "expr": "-10",
+        "evaluation":  -10,
+        "tokenized": ["-10"]
+    },
+    {
+        "expr": "true",
+        "evaluation":  true,
+        "tokenized": ["true"]
+    },
+    {
+        "expr": "false",
+        "evaluation":  false,
+        "tokenized": ["false"]
+    },
+    {
+        "expr": "(+ 3 4)",
+        "evaluation":  7,
+        "tokenized": ["(", "+", "3", "4", ")"]
+    },
+    {
+        "expr": "(- 2 1)",
+        "evaluation":  1,
+        "tokenized": ["(", "-", "2", "1", ")"]
+    },
+    {
+        "expr": "(+ 21 1)",
+        "evaluation":  22,
+        "tokenized": ["(", "+", "21", "1", ")"]
+    },
+    {
+        "expr": "(* 2 8)",
+        "evaluation":  16,
+        "tokenized": ["(", "*", "2", "8", ")"]
+    },
+    {
+        "expr": "(- 0 8)",
+        "evaluation":  -8,
+        "tokenized": ["(", "-", "0", "8", ")"]
+    },
+    {
+        "expr": "(+ (+ 2 8) 5)",
+        "evaluation":  15,
+        "tokenized": ["(", "+", "(", "+", "2", "8", ")", "5", ")"]
+    },
+    {
+        "expr": "(+ (- 8 2) 5)",
+        "evaluation":  11,
+        "tokenized": ["(", "+", "(", "-", "8", "2", ")", "5", ")"]
+    },
+    {
+        "expr": "(+ (- 8 2) 5 (* 2 2))",
+        "evaluation":  15,
+        "tokenized": ["(", "+", "(", "-", "8", "2", ")", "5", "(", "*", "2", "2", ")", ")"]
+    },
+    {
+        "expr": "(+ (- 8 (+ 1 1)) 5 (* 2 2))",
+        "evaluation":  15,
+        "tokenized": ["(", "+", "(", "-", "8", "(", "+", "1", "1", ")", ")", "5", "(", "*", "2", "2", ")",
+         ")"]
+    },
+    {
+        "expr": "(+ 3 3 3 (+ 3 (- 3 4 4) 3 (- 3 2)) (* 3 2) (- 1 7))",
+        "evaluation":  11,
+        "tokenized": ["(", "+", "3", "3", "3", "(", "+", "3", "(", "-", "3", "4", "4", ")", "3", "(", "-", "3",
+         "2", ")", ")", "(", "*", "3", "2", ")", "(", "-", "1", "7", ")", ")"]
+    },
+    {
+        "expr": "(if true (+ 4 2) (+ 3 2))",
+        "evaluation":  6,
+        "tokenized": ["(", "if", "true", "(", "+", "4", "2", ")", "(", "+", "3", "2", ")", ")"]
+    },
+    {
+        "expr": "(if (> 4 3) (+ 4 2) (+ 3 2))",
+        "evaluation":  6,
+        "tokenized": ["(", "if", "(", ">", "4", "3", ")", "(", "+", "4", "2", ")", "(", "+", "3", "2", ")",
+         ")"]
+    },
+    {
+        "expr": "(+ 3 (if (> 4 3) (+ 4 2) (+ 3 2)))",
+        "evaluation":  9,
+        "tokenized": ["(", "+", "3", "(", "if", "(", ">", "4", "3", ")", "(", "+", "4", "2", ")", "(", "+", "3",
+         "2", ")", ")", ")"]
+    },
+    {
+        "expr": "(> 5 4)",
+        "evaluation":  true,
+        "tokenized": ["(", ">", "5", "4", ")"]
+    },
+    {
+        "expr": "(> 5 4 3)",
+        "evaluation":  true,
+        "tokenized": ["(", ">", "5", "4", "3", ")"]
+    },
+    {
+        "expr": "(> 5 (+ 3 4))",
+        "evaluation":  false,
+        "tokenized": ["(", ">", "5", "(", "+", "3", "4", ")", ")"]
+    },
+    {
+        "expr": "(< 5 4)",
+        "evaluation":  false,
+        "tokenized": ["(", "<", "5", "4", ")"]
+    },
+    {
+        "expr": "(< 5 4 3)",
+        "evaluation":  false,
+        "tokenized": ["(", "<", "5", "4", "3", ")"]
+    },
+    {
+        "expr": "(> 5 4 5)",
+        "evaluation":  false,
+        "tokenized": ["(", ">", "5", "4", "5", ")"]
+    },
+    {
+        "expr": "(= 5 5 5)",
+        "evaluation":  true,
+        "tokenized": ["(", "=", "5", "5", "5", ")"]
+    },
+    {
+        "expr": "(= 5 5 6)",
+        "evaluation":  false,
+        "tokenized": ["(", "=", "5", "5", "6", ")"]
+    },
+    {
+        "expr": "(= 5 4 4)",
+        "evaluation":  false,
+        "tokenized": ["(", "=", "5", "4", "4", ")"]
+    },
+    {
+        "expr": "(< 5 (+ 3 4))",
+        "evaluation":  true,
+        "tokenized": ["(", "<", "5", "(", "+", "3", "4", ")", ")"]
+    },
+    {
+        "expr": "(= 5 5)",
+        "evaluation":  true,
+        "tokenized": ["(", "=", "5", "5", ")"]
+    },
+    {
+        "expr": "(= 5 (+ 3 4))",
+        "evaluation":  false,
+        "tokenized": ["(", "=", "5", "(", "+", "3", "4", ")", ")"]
+    },
+    {
+        "expr": "(not true)",
+        "evaluation":  false,
+        "tokenized": ["(", "not", "true", ")"]
+    },
+    {
+        "expr": "(not false)",
+        "evaluation":  true,
+        "tokenized": ["(", "not", "false", ")"]
+    },
+    {
+        "expr": "(not (> 4 5))",
+        "evaluation":  true,
+        "tokenized": ["(", "not", "(", ">", "4", "5", ")", ")"]
+    },
+    {
+        "expr": "(if (not (> 4 5)) 5 6)",
+        "evaluation":  5,
+        "tokenized": ["(", "if", "(", "not", "(", ">", "4", "5", ")", ")", "5", "6", ")"]
+    },
+    {
+        "expr": "(or true true)",
+        "evaluation":  true,
+        "tokenized": ["(", "or", "true", "true", ")"]
+    },
+    {
+        "expr": "(or false true)",
+        "evaluation":  true,
+        "tokenized": ["(", "or", "false", "true", ")"]
+    },
+    {
+        "expr": "(or false false)",
+        "evaluation":  false,
+        "tokenized": ["(", "or", "false", "false", ")"]
+    },
+    {
+        "expr": "(and true true)",
+        "evaluation":  true,
+        "tokenized": ["(", "and", "true", "true", ")"]
+    },
+    {
+        "expr": "(and false true)",
+        "evaluation":  false,
+        "tokenized": ["(", "and", "false", "true", ")"]
+    },
+    {
+        "expr": "(and false false)",
+        "evaluation":  false,
+        "tokenized": ["(", "and", "false", "false", ")"]
+    },
+    {
+        "expr": "(define a 4)(+ 3 a)",
+        "evaluation":  7,
+        "tokenized": ["(", "define", "a", "4", ")", "(", "+", "3", "a", ")"]
+    },
+    {
+        "expr": "(define a (+ 3 4))(+ 3 a)",
+        "evaluation":  10,
+        "tokenized": ["(", "define", "a", "(", "+", "3", "4", ")", ")", "(", "+", "3", "a", ")"]
+    },
+    {
+        "expr": "(define a 4)(define b 5)(+ b a)",
+        "evaluation":  9,
+        "tokenized": ["(", "define", "a", "4", ")", "(", "define", "b", "5", ")", "(", "+", "b", "a", ")"]
+    },
+    {
+        "expr": "(define square (lambda [i] (* i i)))(square 5)",
+        "evaluation":  25,
+        "tokenized": ["(", "define", "square", "(", "lambda", "[", "i", "]", "(", "*", "i", "i", ")", ")", ")", "(", "square", "5", ")"]
+    },
+    {
+        "expr": "(define _fib (lambda [count current old] (if (< count 0) current (_fib (- count 1) (+ current old) current))))(define fib (lambda [index] (_fib index 1 0)))(fib 5)",
+        "evaluation":  13,
+        "tokenized": ["(", "define", "_fib", "(", "lambda", "[", "count", "current", "old", "]", "(", "if", "(", "<", "count", "0", ")", "current", "(", "_fib", "(", "-", "count", "1", ")", "(", "+", "current", "old", ")", "current", ")", ")", ")", ")", "(", "define", "fib", "(", "lambda", "[", "index", "]", "(", "_fib", "index", "1", "0", ")", ")", ")", "(", "fib", "5", ")"]
+    },
+    {
+        "expr": "(define person (struct height))(define quinten (person 10))(member quinten height)",
+        "evaluation":  10,
+        "tokenized": ["(", "define", "person", "(", "struct", "height", ")", ")", "(", "define", "quinten", "(", "person", "10", ")", ")", "(", "member", "quinten", "height", ")"]
+    },
+    {
+        "expr": "(define list (struct element tail_list))(define my_list (list 10 (list 5 0)))(member my_list element)",
+        "evaluation":  10,
+        "tokenized": ["(", "define", "list", "(", "struct", "element", "tail_list", ")", ")", "(", "define", "my_list", "(", "list", "10", "(", "list", "5", "0", ")", ")", ")", "(", "member", "my_list", "element", ")"]
+    },
+    {
+        "expr": "(with fib)(fib 4)",
+        "evaluation":  5,
+        "tokenized": ["(", "with", "fib", ")", "(", "fib", "4", ")"]
+    }
+]
