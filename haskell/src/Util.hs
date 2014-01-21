@@ -6,17 +6,21 @@ module Util (
 
 import qualified Data.Char as Char
 
+bools :: [String]
 bools = ["true", "false"]
 
+is_int_literal :: String -> Bool
 is_int_literal ('-':string) =
     are_digits string
 is_int_literal string =
     are_digits string
 
+are_digits :: String -> Bool
 are_digits [] = False
 are_digits string =
     all Char.isDigit string
 
+is_bool_literal :: String -> Bool
 is_bool_literal string =
     string `elem` bools
 

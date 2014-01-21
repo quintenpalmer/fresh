@@ -15,8 +15,13 @@ data Token
     | LBracket
     | RBracket deriving (Show, Eq)
 
+eof :: Char
 eof = '\0'
+
+whitespace :: [Char]
 whitespace = [' ', '\n', '\r', '\t']
+
+delimiters :: [Char]
 delimiters = ['(', ')', '[', ']', eof] ++ whitespace
 
 to_tokens :: String -> [Token]
@@ -37,6 +42,7 @@ get_token remaining =
         else
             build_next_token [current] post_remaining
 
+convert_token :: String -> Token
 convert_token current
     | current == "(" = LParen
     | current == ")" = RParen

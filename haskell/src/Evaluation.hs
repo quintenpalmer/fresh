@@ -7,7 +7,6 @@ import qualified Data.Maybe as Maybe
 
 import qualified AST
 import qualified Runtime as RT
-import qualified Builtin
 import qualified Util
 
 evaluate :: AST.Node -> RT.Environment -> RT.RuntimeType
@@ -15,8 +14,8 @@ evaluate node env =
     evaluate_with_env node env
 
 evaluate_with_env :: AST.Node -> RT.Environment -> RT.RuntimeType
-evaluate_with_env (AST.IntNode value) env = RT.IntType value
-evaluate_with_env (AST.BoolNode value) env = RT.BoolType value
+evaluate_with_env (AST.IntNode value) _ = RT.IntType value
+evaluate_with_env (AST.BoolNode value) _ = RT.BoolType value
 evaluate_with_env (AST.IfNode cond_expr then_expr else_expr) env =
     if RT.bool $ evaluate_with_env cond_expr env then
         evaluate_with_env then_expr env
@@ -50,10 +49,16 @@ evaluate_function_call (RT.ClosureType function arguments closure_env) values en
     evaluate_with_env function $ build_new_env
         arguments
         (Util.map_many_on_one (map evaluate_with_env values) env)
-        env
+        $ Map.union closure_env env
+
+evaluate_function_call _ _ _ =
+    error "Invalid runtime type, expected function call closure"
 
 build_new_env :: [String] -> [RT.RuntimeType] -> RT.Environment -> RT.Environment
 build_new_env [] [] env = env
+build_new_env [argument] [value] env = Map.insert argument value env
 build_new_env (argument:arguments) (value:values) env =
     build_new_env arguments values
         $ Map.insert argument value env
+build_new_env _ _ _ =
+    error "Mismatched number of arguments"

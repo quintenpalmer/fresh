@@ -16,17 +16,23 @@ type InfiniteOperator = [RT.RuntimeType] -> RT.RuntimeType
 
 comparison :: (Int -> Int -> Bool) -> BinaryOperator
 comparison operator (RT.IntType x) (RT.IntType y) = RT.BoolType $ operator x y
+comparison _ _ _ =
+    error "Invalid runtime time, two ints"
 
 arithmetic :: (Int -> Int -> Int) -> BinaryOperator
 arithmetic operator (RT.IntType x) (RT.IntType y) = RT.IntType $ operator x y
+arithmetic _ _ _ =
+    error "Invalid runtime time, two ints"
 
 boolean :: (Bool -> Bool -> Bool) -> BinaryOperator
 boolean operator (RT.BoolType x) (RT.BoolType y) = RT.BoolType $ operator x y
+boolean _ _ _ =
+    error "Invalid runtime time, two bools"
 
 apply_for_all :: [RT.RuntimeType] -> BinaryOperator -> Bool -> RT.RuntimeType
 apply_for_all [] _ _ =
     error "uhhhhh, nice try! can't apply to no arguments"
-apply_for_all [argument] _ _ =
+apply_for_all [_] _ _ =
     error "uhhhhh, nice try! can't apply to one argument"
 apply_for_all [arg1, arg2] operator _ =
     operator arg1 arg2
