@@ -1,12 +1,25 @@
 module Tokenize (
+    Token(..),
     to_tokens
 ) where
+
+import qualified Util
+
+data Token
+    = IntLiteral Int
+    | BoolLiteral Bool
+    | String_ String
+    | Eof
+    | LParen
+    | RParen
+    | LBracket
+    | RBracket deriving (Show, Eq)
 
 eof = '\0'
 whitespace = [' ', '\n', '\r', '\t']
 delimiters = ['(', ')', '[', ']', eof] ++ whitespace
 
-to_tokens :: String -> [String]
+to_tokens :: String -> [Token]
 to_tokens input_string =
     if (head input_string) == eof then
         []
@@ -15,23 +28,34 @@ to_tokens input_string =
         in
             token: to_tokens remaining
 
-get_token :: String -> (String, String)
+get_token :: String -> (Token, String)
 get_token remaining =
     let (current, post_remaining) = get_next_non_whitespace remaining
     in
         if current `elem` delimiters then
-            ([current], post_remaining)
+            (convert_token [current], post_remaining)
         else
             build_next_token [current] post_remaining
 
-build_next_token :: String -> String -> (String, String)
+convert_token current
+    | current == "(" = LParen
+    | current == ")" = RParen
+    | current == "[" = LBracket
+    | current == "]" = RBracket
+    | current == [eof] = Eof
+    | Util.is_int_literal current = IntLiteral $ read current
+    | Util.is_bool_literal current   = BoolLiteral $ current == "true"
+    | otherwise = String_ current
+
+
+build_next_token :: String -> String -> (Token, String)
 build_next_token input_token remaining =
     let (current, post_remaining) = get_next_character remaining
     in
-        if not $ current `elem` delimiters then
-            build_next_token (input_token ++ [current]) post_remaining
+        if current `elem` delimiters then
+            (convert_token input_token, remaining)
         else
-            (input_token, remaining)
+            build_next_token (input_token ++ [current]) post_remaining
 
 get_next_non_whitespace :: String -> (Char, String)
 get_next_non_whitespace remaining =

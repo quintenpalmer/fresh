@@ -7,7 +7,8 @@ import qualified Data.Maybe as Maybe
 
 import qualified Tokenize
 import qualified AST
-import qualified Util
+
+type Token = Tokenize.Token
 
 parse :: String -> AST.Node
 parse raw_string =
@@ -15,16 +16,15 @@ parse raw_string =
     in
         node
 
-parse_expression :: [String] -> (AST.Node, [String])
+parse_expression :: [Token] -> (AST.Node, [Token])
 parse_expression [] = error "Hi Eric and Quinten"
-parse_expression (current:tokens)
-    | current == "(" = parse_func_call tokens
-    | Util.is_int_literal current = (AST.IntNode (read current), tokens)
-    | Util.is_bool_literal current   = (AST.BoolNode (current == "true"), tokens)
-    | otherwise = (AST.VariableNode current, tokens)
+parse_expression ((Tokenize.LParen):tokens) = parse_func_call tokens
+parse_expression ((Tokenize.IntLiteral int):tokens) = (AST.IntNode int, tokens)
+parse_expression ((Tokenize.BoolLiteral bool):tokens) = (AST.BoolNode bool, tokens)
+parse_expression ((Tokenize.String_ name):tokens) = (AST.VariableNode name, tokens)
 
-parse_func_call :: [String] -> (AST.Node, [String])
-parse_func_call (current:tokens) =
+parse_func_call :: [Token] -> (AST.Node, [Token])
+parse_func_call ((Tokenize.String_ current):tokens) =
     let maybe_function = Map.lookup current function_map
     in
         if Maybe.isJust maybe_function then
@@ -34,8 +34,10 @@ parse_func_call (current:tokens) =
                 post_close_tokens = chomp_close_expression pre_close_tokens
             in
                 (AST.FunctionCallNode current operands, post_close_tokens)
+parse_func_call (token:tokens) =
+    error $ show token
 
-parse_if :: [String] -> (AST.Node, [String])
+parse_if :: [Token] -> (AST.Node, [Token])
 parse_if tokens =
     let (cond_expr, tokens1) = parse_expression tokens
         (then_expr, tokens2) = parse_expression tokens1
@@ -44,15 +46,17 @@ parse_if tokens =
     in
         (AST.IfNode cond_expr then_expr else_expr, tokens4)
 
-parse_define :: [String] -> (AST.Node, [String])
-parse_define (name: tokens) =
+parse_define :: [Token] -> (AST.Node, [Token])
+parse_define ((Tokenize.String_ name): tokens) =
     let (expression, tokens1) = parse_expression tokens
         tokens2 = chomp_close_expression tokens1
         (body, tokens3) = parse_expression tokens2
     in
         (AST.BindingNode name expression body, tokens3)
+parse_define (token:tokens) =
+    error $ show token
 
-parse_lambda :: [String] -> (AST.Node, [String])
+parse_lambda :: [Token] -> (AST.Node, [Token])
 parse_lambda tokens =
     let tokens1 = chomp_open_lambda_params tokens
         (params, tokens2) = parse_params [] tokens1
@@ -63,15 +67,15 @@ parse_lambda tokens =
         (AST.LambdaNode body params, tokens5)
 
 
-parse_params :: [String] -> [String] -> ([String], [String])
-parse_params existing_params input_tokens@("]":_) =
+parse_params :: [String] -> [Token] -> ([String], [Token])
+parse_params existing_params input_tokens@((Tokenize.RBracket):_) =
     (existing_params, input_tokens)
-parse_params existing_params (token:tokens) =
-    parse_params (token: existing_params) tokens
+parse_params existing_params ((Tokenize.String_ name):tokens) =
+    parse_params (name: existing_params) tokens
 
 
-parse_operands :: [AST.Node] -> [String] -> ([AST.Node], [String])
-parse_operands existing_operands input_tokens@(")":_) =
+parse_operands :: [AST.Node] -> [Token] -> ([AST.Node], [Token])
+parse_operands existing_operands input_tokens@((Tokenize.RParen):_) =
     (existing_operands, input_tokens)
 parse_operands existing_operands input_tokens =
     let (current, remaining_tokens) = parse_expression input_tokens
@@ -79,26 +83,26 @@ parse_operands existing_operands input_tokens =
         parse_operands (current: existing_operands) remaining_tokens
 
 
-chomp_close_expression :: [String] -> [String]
+chomp_close_expression :: [Token] -> [Token]
 chomp_close_expression tokens =
-    assert_chomping tokens ")"
+    assert_chomping Tokenize.RParen tokens
 
-chomp_open_lambda_params :: [String] -> [String]
+chomp_open_lambda_params :: [Token] -> [Token]
 chomp_open_lambda_params tokens =
-    assert_chomping tokens "["
+    assert_chomping Tokenize.LBracket tokens
 
-chomp_close_lambda_params :: [String] -> [String]
+chomp_close_lambda_params :: [Token] -> [Token]
 chomp_close_lambda_params tokens =
-    assert_chomping tokens "]"
+    assert_chomping Tokenize.RBracket tokens
 
-assert_chomping :: [String] -> String -> [String]
-assert_chomping (token:tokens) expected =
+assert_chomping :: Token -> [Token] -> [Token]
+assert_chomping expected (token:tokens) =
     if token == expected then
         tokens
     else
-        error $ "expecting '" ++ expected ++ "', found '" ++ token ++ "'"
+        error $ "wrong token'" ++ (show expected) ++ "', found '" ++ (show token) ++ "'"
 
-function_map :: Map.Map String ([String] -> (AST.Node, [String]))
+function_map :: Map.Map String ([Token] -> (AST.Node, [Token]))
 function_map = Map.fromList [
     ("if", parse_if),
     ("define", parse_define),
