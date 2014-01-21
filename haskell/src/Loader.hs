@@ -4,7 +4,7 @@ import qualified Runtime
 import qualified Env
 
 load env = do
-    command <- readFile "fib.fr"
+    command <- readFile "lib/fib.fr"
     print_ $ eval command env
 
 eval :: String -> Runtime.Environment -> String

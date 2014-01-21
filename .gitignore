@@ -3,5 +3,4 @@
 *.pyo
 *.hi
 *.o
-Repl
-Loader
+bin
