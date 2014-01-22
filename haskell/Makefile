@@ -1,4 +1,5 @@
 HC=ghc
+HCF=-Werror -Wall -isrc -outputdir bin -o
 
 all: repl loader
 
@@ -12,12 +13,12 @@ mkbin:
 repl:
 	$(MAKE) rmobj
 	$(MAKE) mkbin
-	$(HC) -Werror -Wall -isrc -outputdir bin -o bin/repl src/Repl
+	$(HC) $(HCF) bin/repl src/Repl.hs
 
 loader:
 	$(MAKE) rmobj
 	$(MAKE) mkbin
-	$(HC) -Werror -Wall -isrc -outputdir bin -o bin/loader src/Loader
+	$(HC) $(HCF) bin/loader src/Loader.hs
 
 clean:
 	rm -rf bin
