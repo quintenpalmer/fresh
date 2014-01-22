@@ -1,6 +1,3 @@
 *.swp
 *.pyc
 *.pyo
-*.hi
-*.o
-bin
