@@ -4,8 +4,8 @@ HCF=-Werror -Wall -isrc -outputdir bin -o
 all: repl loader
 
 rmobj:
-	rm -f bin/*.o
-	rm -f bin/*.hi
+	find -name "*.o" | xargs rm
+	find -name "*.hi" | xargs rm
 
 mkbin:
 	mkdir -p bin
