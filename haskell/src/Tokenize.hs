@@ -1,19 +1,23 @@
 module Tokenize (
     Token(..),
+    TokenType(..),
     to_tokens
 ) where
 
 import qualified Util
 
-data Token
-    = IntLiteral Int
-    | BoolLiteral Bool
-    | String_ String
+data Token = Token TokenType String deriving (Show)
+
+data TokenType
+    = IntLiteral
+    | BoolLiteral
+    | String_
     | Eof
     | LParen
     | RParen
     | LBracket
     | RBracket deriving (Show, Eq)
+
 
 eof :: Char
 eof = '\0'
@@ -43,15 +47,19 @@ get_token remaining =
             build_next_token [current] post_remaining
 
 convert_token :: String -> Token
-convert_token current
+convert_token current =
+    Token (get_token_type current) current
+
+get_token_type :: String -> TokenType
+get_token_type current
     | current == "(" = LParen
     | current == ")" = RParen
     | current == "[" = LBracket
     | current == "]" = RBracket
     | current == [eof] = Eof
-    | Util.is_int_literal current = IntLiteral $ read current
-    | Util.is_bool_literal current   = BoolLiteral $ current == "true"
-    | otherwise = String_ current
+    | Util.is_int_literal current = IntLiteral
+    | Util.is_bool_literal current   = BoolLiteral
+    | otherwise = String_
 
 
 build_next_token :: String -> String -> (Token, String)

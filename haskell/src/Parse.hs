@@ -5,39 +5,42 @@ module Parse (
 import qualified Data.Map as Map
 import qualified Data.Maybe as Maybe
 
-import qualified Tokenize
+import qualified Tokenize as Tok
 import qualified AST
 
-type Token = Tokenize.Token
+type Token = Tok.Token
 
 parse :: String -> AST.Node
 parse raw_string =
-    let (node, _) = parse_expression (Tokenize.to_tokens raw_string)
+    let (node, _) = parse_expression (Tok.to_tokens raw_string)
     in
         node
 
 parse_expression :: [Token] -> (AST.Node, [Token])
 parse_expression [] = error "Hi Eric and Quinten"
-parse_expression ((Tokenize.LParen):tokens) = parse_func_call tokens
-parse_expression ((Tokenize.IntLiteral int):tokens) = (AST.IntNode int, tokens)
-parse_expression ((Tokenize.BoolLiteral bool):tokens) = (AST.BoolNode bool, tokens)
-parse_expression ((Tokenize.String_ name):tokens) = (AST.VariableNode name, tokens)
-parse_expression (token:_) = error $ "Invalid Token " ++ show token
+parse_expression ((Tok.Token token_type string):tokens) =
+    case token_type of
+        Tok.LParen -> parse_func_call tokens
+        Tok.IntLiteral -> (AST.IntNode $ read string, tokens)
+        Tok.BoolLiteral -> (AST.BoolNode $ string == "true", tokens)
+        Tok.String_ -> (AST.VariableNode string, tokens)
+        token -> error $ "Invalid Token " ++ show token
 
 parse_func_call :: [Token] -> (AST.Node, [Token])
 parse_func_call [] = error "Unexpected end of tokens in parse function call"
-parse_func_call ((Tokenize.String_ current):tokens) =
-    let maybe_function = Map.lookup current function_map
-    in
-        if Maybe.isJust maybe_function then
-            (Maybe.fromJust maybe_function) tokens
-        else
-            let (operands, pre_close_tokens) = parse_operands [] tokens
-                post_close_tokens = chomp_close_expression pre_close_tokens
+parse_func_call ((Tok.Token token_type current):tokens) =
+    case token_type of
+        Tok.String_ ->
+            let maybe_function = Map.lookup current function_map
             in
-                (AST.FunctionCallNode current operands, post_close_tokens)
-parse_func_call (token:_) =
-    error $ show token
+                if Maybe.isJust maybe_function then
+                    (Maybe.fromJust maybe_function) tokens
+                else
+                    let (operands, pre_close_tokens) = parse_operands [] tokens
+                        post_close_tokens = chomp_close_expression pre_close_tokens
+                    in
+                        (AST.FunctionCallNode current operands, post_close_tokens)
+        token -> error $ show token
 
 parse_if :: [Token] -> (AST.Node, [Token])
 parse_if tokens =
@@ -50,14 +53,15 @@ parse_if tokens =
 
 parse_define :: [Token] -> (AST.Node, [Token])
 parse_define [] = error "Unexpected end of tokens in parse define"
-parse_define ((Tokenize.String_ name): tokens) =
-    let (expression, tokens1) = parse_expression tokens
-        tokens2 = chomp_close_expression tokens1
-        (body, tokens3) = parse_expression tokens2
-    in
-        (AST.BindingNode name expression body, tokens3)
-parse_define (token:_) =
-    error $ show token
+parse_define ((Tok.Token token_type name):tokens) =
+    case token_type of
+        Tok.String_ ->
+            let (expression, tokens1) = parse_expression tokens
+                tokens2 = chomp_close_expression tokens1
+                (body, tokens3) = parse_expression tokens2
+            in
+                (AST.BindingNode name expression body, tokens3)
+        token -> error $ show token
 
 parse_lambda :: [Token] -> (AST.Node, [Token])
 parse_lambda tokens =
@@ -71,43 +75,43 @@ parse_lambda tokens =
 
 
 parse_params :: [String] -> [Token] -> ([String], [Token])
-parse_params [] [] = error "No parameters to parse in parse_params"
-parse_params existing_params input_tokens@((Tokenize.RBracket):_) =
-    (existing_params, input_tokens)
-parse_params existing_params ((Tokenize.String_ name):tokens) =
-    parse_params (name: existing_params) tokens
-parse_params _ _ =
-    error "Was expecting parameter or ] when found end of tokens"
+parse_params _ [] = error "No parameters to parse in parse_params"
+parse_params existing_params input_tokens@((Tok.Token token_type name):tokens) =
+    case token_type of
+        Tok.RBracket -> (existing_params, input_tokens)
+        Tok.String_ -> parse_params (name: existing_params) tokens
+        _ -> error $ "Was expecting parameter or ] when found " ++ name
 
 
 parse_operands :: [AST.Node] -> [Token] -> ([AST.Node], [Token])
-parse_operands existing_operands input_tokens@((Tokenize.RParen):_) =
-    (existing_operands, input_tokens)
-parse_operands existing_operands input_tokens =
-    let (current, remaining_tokens) = parse_expression input_tokens
-    in
-        parse_operands (current: existing_operands) remaining_tokens
-
+parse_operands _ [] = error "No parameters to parse in parse_operands"
+parse_operands existing_params input_tokens@((Tok.Token token_type _):_) =
+    case token_type of
+        Tok.RParen -> (existing_params, input_tokens)
+        _ ->
+            let (current, remaining_tokens) = parse_expression input_tokens
+            in
+                parse_operands (current: existing_params) remaining_tokens
 
 chomp_close_expression :: [Token] -> [Token]
 chomp_close_expression tokens =
-    assert_chomping Tokenize.RParen tokens
+    assert_chomping Tok.RParen tokens
 
 chomp_open_lambda_params :: [Token] -> [Token]
 chomp_open_lambda_params tokens =
-    assert_chomping Tokenize.LBracket tokens
+    assert_chomping Tok.LBracket tokens
 
 chomp_close_lambda_params :: [Token] -> [Token]
 chomp_close_lambda_params tokens =
-    assert_chomping Tokenize.RBracket tokens
+    assert_chomping Tok.RBracket tokens
 
-assert_chomping :: Token -> [Token] -> [Token]
+assert_chomping :: Tok.TokenType -> [Token] -> [Token]
 assert_chomping expected [] = error $ "End of tokens when asserting for " ++ show expected
-assert_chomping expected (token:tokens) =
-    if token == expected then
+assert_chomping expected_token_type ((Tok.Token token_type string):tokens) =
+    if token_type == expected_token_type then
         tokens
     else
-        error $ "wrong token'" ++ (show expected) ++ "', found '" ++ (show token) ++ "'"
+        error $ "wrong token'" ++ (show expected_token_type) ++ "', found '" ++ string ++ "'"
 
 function_map :: Map.Map String ([Token] -> (AST.Node, [Token]))
 function_map = Map.fromList [
