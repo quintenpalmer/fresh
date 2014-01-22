@@ -11,10 +11,10 @@ import qualified AST
 type Environment = Map.Map String RuntimeType
 
 data RuntimeType
-    = IntType {int :: Int}
-    | BoolType {bool :: Bool}
-    | ClosureType {body :: AST.Node, arguments :: [String], env :: Environment}
-    | BuiltinClosureType {builtin_lambda :: ([RuntimeType] -> RuntimeType)}
+    = IntType Int
+    | BoolType Bool
+    | ClosureType AST.Node [String] Environment
+    | BuiltinClosureType ([RuntimeType] -> RuntimeType)
 
 value :: RuntimeType -> String
 value (IntType i) = show i
