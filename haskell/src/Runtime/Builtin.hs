@@ -1,4 +1,4 @@
-module Builtin (
+module Runtime.Builtin (
     add,
     minus,
     multiply,
@@ -9,27 +9,27 @@ module Builtin (
     equal
 ) where
 
-import qualified Runtime as RT
+import qualified Runtime.Runtime as Runtime
 
-type BinaryOperator = RT.RuntimeType -> RT.RuntimeType -> RT.RuntimeType
-type InfiniteOperator = [RT.RuntimeType] -> RT.RuntimeType
+type BinaryOperator = Runtime.RuntimeType -> Runtime.RuntimeType -> Runtime.RuntimeType
+type InfiniteOperator = [Runtime.RuntimeType] -> Runtime.RuntimeType
 
 comparison :: (Int -> Int -> Bool) -> BinaryOperator
-comparison operator (RT.IntType x) (RT.IntType y) = RT.BoolType $ operator x y
+comparison operator (Runtime.IntType x) (Runtime.IntType y) = Runtime.BoolType $ operator x y
 comparison _ _ _ =
     error "Invalid runtime time, two ints"
 
 arithmetic :: (Int -> Int -> Int) -> BinaryOperator
-arithmetic operator (RT.IntType x) (RT.IntType y) = RT.IntType $ operator x y
+arithmetic operator (Runtime.IntType x) (Runtime.IntType y) = Runtime.IntType $ operator x y
 arithmetic _ _ _ =
     error "Invalid runtime time, two ints"
 
 boolean :: (Bool -> Bool -> Bool) -> BinaryOperator
-boolean operator (RT.BoolType x) (RT.BoolType y) = RT.BoolType $ operator x y
+boolean operator (Runtime.BoolType x) (Runtime.BoolType y) = Runtime.BoolType $ operator x y
 boolean _ _ _ =
     error "Invalid runtime time, two bools"
 
-apply_for_all :: [RT.RuntimeType] -> BinaryOperator -> Bool -> RT.RuntimeType
+apply_for_all :: [Runtime.RuntimeType] -> BinaryOperator -> Bool -> Runtime.RuntimeType
 apply_for_all [] _ _ =
     error "uhhhhh, nice try! can't apply to no arguments"
 apply_for_all [_] _ _ =

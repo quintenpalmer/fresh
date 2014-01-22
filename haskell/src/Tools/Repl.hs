@@ -1,7 +1,7 @@
-import qualified Parse
-import qualified Evaluation
-import qualified Runtime
-import qualified Env
+import qualified Parser.Parse as Parse
+import qualified Runtime.Evaluation as Evaluation
+import qualified Runtime.Runtime as Runtime
+import qualified Runtime.Env as Env
 
 
 read_ :: IO String

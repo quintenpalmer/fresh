@@ -1,25 +1,25 @@
-module Evaluation (
+module Runtime.Evaluation (
     evaluate
 ) where
 
 import qualified Data.Map as Map
 import qualified Data.Maybe as Maybe
 
-import qualified AST
-import qualified Runtime as RT
+import qualified Parser.AST as AST
+import qualified Runtime.Runtime as Runtime
 import qualified Util
 
-evaluate :: AST.Node -> RT.Environment -> RT.RuntimeType
+evaluate :: AST.Node -> Runtime.Environment -> Runtime.RuntimeType
 evaluate node env =
     evaluate_with_env node env
 
-evaluate_with_env :: AST.Node -> RT.Environment -> RT.RuntimeType
-evaluate_with_env (AST.IntNode value) _ = RT.IntType value
-evaluate_with_env (AST.BoolNode value) _ = RT.BoolType value
+evaluate_with_env :: AST.Node -> Runtime.Environment -> Runtime.RuntimeType
+evaluate_with_env (AST.IntNode value) _ = Runtime.IntType value
+evaluate_with_env (AST.BoolNode value) _ = Runtime.BoolType value
 evaluate_with_env (AST.IfNode cond_expr then_expr else_expr) env =
     case evaluate_with_env cond_expr env of
-        (RT.BoolType True) -> evaluate_with_env then_expr env
-        (RT.BoolType False) -> evaluate_with_env else_expr env
+        (Runtime.BoolType True) -> evaluate_with_env then_expr env
+        (Runtime.BoolType False) -> evaluate_with_env else_expr env
         _ -> error "if expression must be boolean"
 evaluate_with_env (AST.BindingNode name expression body) env =
     evaluate_with_env body (Map.insert name (evaluate_with_env expression env) env)
@@ -31,7 +31,7 @@ evaluate_with_env (AST.VariableNode name) env =
         else
             error $ "Variable '" ++ name ++ "' not found"
 evaluate_with_env (AST.LambdaNode body arguments) env =
-    RT.ClosureType body arguments env
+    Runtime.ClosureType body arguments env
 evaluate_with_env (AST.FunctionCallNode name values) env =
     let maybe_function = Map.lookup name env
     in
@@ -41,11 +41,11 @@ evaluate_with_env (AST.FunctionCallNode name values) env =
             error $ "Function '" ++ name ++ "' not in scope"
 
 
-evaluate_function_call :: RT.RuntimeType -> [AST.Node] -> RT.Environment -> RT.RuntimeType
-evaluate_function_call (RT.BuiltinClosureType function) values env =
+evaluate_function_call :: Runtime.RuntimeType -> [AST.Node] -> Runtime.Environment -> Runtime.RuntimeType
+evaluate_function_call (Runtime.BuiltinClosureType function) values env =
     function $ Util.map_many_on_one (map evaluate_with_env values) env
 
-evaluate_function_call (RT.ClosureType function arguments closure_env) values env =
+evaluate_function_call (Runtime.ClosureType function arguments closure_env) values env =
     evaluate_with_env function $ build_new_env
         arguments
         (Util.map_many_on_one (map evaluate_with_env values) env)
@@ -54,7 +54,7 @@ evaluate_function_call (RT.ClosureType function arguments closure_env) values en
 evaluate_function_call _ _ _ =
     error "Invalid runtime type, expected function call closure"
 
-build_new_env :: [String] -> [RT.RuntimeType] -> RT.Environment -> RT.Environment
+build_new_env :: [String] -> [Runtime.RuntimeType] -> Runtime.Environment -> Runtime.Environment
 build_new_env [] [] env = env
 build_new_env [argument] [value] env = Map.insert argument value env
 build_new_env (argument:arguments) (value:values) env =

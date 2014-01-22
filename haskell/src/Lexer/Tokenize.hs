@@ -1,4 +1,4 @@
-module Tokenize (
+module Lexer.Tokenize (
     Token(..),
     TokenType(..),
     to_tokens

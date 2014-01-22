@@ -1,11 +1,11 @@
-module Env(
+module Runtime.Env (
     defaultEnvironment
 ) where
 
 import qualified Data.Map as Map
 
-import qualified Builtin
-import qualified Runtime
+import qualified Runtime.Builtin as Builtin
+import qualified Runtime.Runtime as Runtime
 
 defaultEnvironment :: Runtime.Environment
 defaultEnvironment = Map.fromList [

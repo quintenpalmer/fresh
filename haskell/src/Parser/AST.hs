@@ -1,4 +1,4 @@
-module AST (
+module Parser.AST (
     Node(..)
 ) where
 

@@ -1,4 +1,4 @@
-module Runtime (
+module Runtime.Runtime (
     Environment,
     value,
     RuntimeType(..)
@@ -6,7 +6,7 @@ module Runtime (
 
 import qualified Data.Map as Map
 
-import qualified AST
+import qualified Parser.AST as AST
 
 type Environment = Map.Map String RuntimeType
 

@@ -1,12 +1,12 @@
-module Parse (
+module Parser.Parse (
     parse
 ) where
 
 import qualified Data.Map as Map
 import qualified Data.Maybe as Maybe
 
-import qualified Tokenize as Tok
-import qualified AST
+import qualified Lexer.Tokenize as Tok
+import qualified Parser.AST as AST
 
 type Token = Tok.Token
 
