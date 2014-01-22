@@ -17,10 +17,10 @@ evaluate_with_env :: AST.Node -> RT.Environment -> RT.RuntimeType
 evaluate_with_env (AST.IntNode value) _ = RT.IntType value
 evaluate_with_env (AST.BoolNode value) _ = RT.BoolType value
 evaluate_with_env (AST.IfNode cond_expr then_expr else_expr) env =
-    if RT.bool $ evaluate_with_env cond_expr env then
-        evaluate_with_env then_expr env
-    else
-        evaluate_with_env else_expr env
+    case evaluate_with_env cond_expr env of
+        (RT.BoolType True) -> evaluate_with_env then_expr env
+        (RT.BoolType False) -> evaluate_with_env else_expr env
+        _ -> error "if expression must be boolean"
 evaluate_with_env (AST.BindingNode name expression body) env =
     evaluate_with_env body (Map.insert name (evaluate_with_env expression env) env)
 evaluate_with_env (AST.VariableNode name) env =
