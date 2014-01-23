@@ -18,18 +18,18 @@
 
 (define factorial
     (lambda [x]
-        (if (< 2 x)
+        (if (> 2 x)
             x
-            (* x (factorial (- 1 x)))
+            (* x (factorial (- x 1)))
         )
     )
 )
 
 (define _fib
     (lambda [count current old]
-        (if (< 1 count)
+        (if (> 1 count)
             current
-            (_fib (- 1 count) (+ current old) current)
+            (_fib (- count 1) (+ current old) current)
         )
     )
 )
