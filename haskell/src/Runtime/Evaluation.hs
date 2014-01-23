@@ -7,7 +7,6 @@ import qualified Data.Maybe as Maybe
 
 import qualified Parser.AST as AST
 import qualified Runtime.Runtime as Runtime
-import qualified Util
 
 evaluate :: AST.Node -> Runtime.Environment -> Runtime.RuntimeType
 evaluate node env =
@@ -43,12 +42,12 @@ evaluate_with_env (AST.FunctionCallNode name values) env =
 
 evaluate_function_call :: Runtime.RuntimeType -> [AST.Node] -> Runtime.Environment -> Runtime.RuntimeType
 evaluate_function_call (Runtime.BuiltinClosureType function) values env =
-    function $ Util.map_many_on_one (map evaluate_with_env values) env
+    function $ map (flip evaluate_with_env env) values
 
 evaluate_function_call (Runtime.ClosureType function arguments closure_env) values env =
     evaluate_with_env function $ build_new_env
         arguments
-        (Util.map_many_on_one (map evaluate_with_env values) env)
+        (map (flip evaluate_with_env env) values)
         $ Map.union closure_env env
 
 evaluate_function_call _ _ _ =
