@@ -4,7 +4,7 @@ module Lexer.Tokenize (
     to_tokens
 ) where
 
-import qualified Util
+import qualified Lexer.StringParse as StringParse
 
 data Token = Token TokenType String deriving (Show)
 
@@ -19,18 +19,9 @@ data TokenType
     | RBracket deriving (Show, Eq)
 
 
-eof :: Char
-eof = '\0'
-
-whitespace :: [Char]
-whitespace = [' ', '\n', '\r', '\t']
-
-delimiters :: [Char]
-delimiters = ['(', ')', '[', ']', eof] ++ whitespace
-
 to_tokens :: String -> [Token]
 to_tokens input_string =
-    if (head input_string) == eof then
+    if (head input_string) == StringParse.eof then
         []
     else
         let (token, remaining) = get_token input_string
@@ -39,9 +30,9 @@ to_tokens input_string =
 
 get_token :: String -> (Token, String)
 get_token remaining =
-    let (current, post_remaining) = get_next_non_whitespace remaining
+    let (current, post_remaining) = StringParse.get_next_non_whitespace remaining
     in
-        if current `elem` delimiters then
+        if current `elem` StringParse.delimiters then
             (convert_token [current], post_remaining)
         else
             build_next_token [current] post_remaining
@@ -56,31 +47,17 @@ get_token_type current
     | current == ")" = RParen
     | current == "[" = LBracket
     | current == "]" = RBracket
-    | current == [eof] = Eof
-    | Util.is_int_literal current = IntLiteral
-    | Util.is_bool_literal current   = BoolLiteral
+    | current == [StringParse.eof] = Eof
+    | StringParse.is_int_literal current = IntLiteral
+    | StringParse.is_bool_literal current   = BoolLiteral
     | otherwise = String_
 
 
 build_next_token :: String -> String -> (Token, String)
 build_next_token input_token remaining =
-    let (current, post_remaining) = get_next_character remaining
+    let (current, post_remaining) = StringParse.get_next_character remaining
     in
-        if current `elem` delimiters then
+        if current `elem` StringParse.delimiters then
             (convert_token input_token, remaining)
         else
             build_next_token (input_token ++ [current]) post_remaining
-
-get_next_non_whitespace :: String -> (Char, String)
-get_next_non_whitespace remaining =
-    let (current, post_remaining) = get_next_character remaining
-    in
-        if current `elem` whitespace then
-            get_next_non_whitespace post_remaining
-        else
-            (current, post_remaining)
-
-get_next_character :: String -> (Char, String)
-get_next_character [] = (eof, [eof])
-get_next_character [current] = (current, [eof])
-get_next_character (current: rest) = (current, rest)
