@@ -15,7 +15,7 @@ loop_start env = do
     putStrLn "Welcome to the Fresh Interpreter!"
     putStrLn "(+ 3 4)"
     putStrLn "7"
-    loop env
+    _ <- loop env
     putStrLn "Exiting, goodbye"
 
 read_ :: IO String

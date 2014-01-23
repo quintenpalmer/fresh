@@ -17,6 +17,7 @@ cabal-version:       >=1.8
 
 executable fresh
   main-is:             Tools/Fresh.hs
+  ghc-options:         -Wall -Werror
   -- other-modules:
   build-depends:       base ==4.6.*, containers ==0.5.*
   hs-source-dirs:      src

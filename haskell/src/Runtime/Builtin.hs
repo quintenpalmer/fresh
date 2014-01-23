@@ -28,30 +28,31 @@ boolean _ _ _ = error "and/or invalid runtime time, two bools"
 
 
 acculuatively_apply :: BinaryOperator -> [Runtime.RuntimeType] -> Runtime.RuntimeType
-acculuatively_apply function arguments =
-    case arguments of
+acculuatively_apply function input_arguments =
+    case input_arguments of
         [] -> error "uhhhhh, nice try! can't apply to no arguments"
         [_] -> error "uhhhhh, nice try! can't apply to one argument"
         arguments -> acc_apply_recursive function arguments
 
 acc_apply_recursive :: BinaryOperator -> [Runtime.RuntimeType] -> Runtime.RuntimeType
-acc_apply_recursive function arguments =
-    case arguments of
+acc_apply_recursive function input_arguments =
+    case input_arguments of
         [] -> error "uhhhhh, nice try! can't apply to no arguments"
         [arg] -> arg
         (argument:arguments) -> function (acc_apply_recursive function arguments) argument
 
 comparatively_apply :: BinaryOperator -> [Runtime.RuntimeType] -> Runtime.RuntimeType
-comparatively_apply function arguments =
-    case arguments of
+comparatively_apply function input_arguments =
+    case input_arguments of
         [] -> error "uhhhhh, nice try! can't apply to no arguments"
         [_] -> error "uhhhhh, nice try! can't apply to one argument"
         arguments -> comp_apply_recursive function arguments
 
 comp_apply_recursive :: BinaryOperator -> [Runtime.RuntimeType] -> Runtime.RuntimeType
-comp_apply_recursive function arguments =
-    case arguments of
+comp_apply_recursive function input_arguments =
+    case input_arguments of
         [] -> error "uhhhhh, nice try! can't apply to no arguments"
+        [_] -> error "uhhhhh, nice try! can't apply to one argument"
         [arg1, arg2] -> function arg2 arg1
         (arg1:(arg2:arguments)) ->
             ander
