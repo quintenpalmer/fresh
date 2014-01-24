@@ -34,6 +34,8 @@ evaluate (AST.FunctionCallNode name values) env =
             evaluate_function_call (Maybe.fromJust maybe_function) values env
         else
             error $ "Function '" ++ name ++ "' not in scope"
+evaluate (AST.StructDeclarationNode members) _ =
+    Runtime.StructDeclarationType members
 
 
 evaluate_function_call :: Runtime.RuntimeType -> [AST.Node] -> Runtime.Environment -> Runtime.RuntimeType
@@ -44,6 +46,7 @@ evaluate_function_call (Runtime.ClosureType function arguments closure_env) valu
         arguments
         (map (flip evaluate env) values)
         $ Map.union closure_env env
+
 evaluate_function_call _ _ _ =
     error "Invalid runtime type, expected function call closure"
 

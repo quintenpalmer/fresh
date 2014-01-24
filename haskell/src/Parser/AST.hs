@@ -9,4 +9,5 @@ data Node
     | BindingNode String Node Node
     | IfNode Node Node Node
     | FunctionCallNode String [Node]
-    | LambdaNode Node [String] deriving (Show)
+    | LambdaNode Node [String]
+    | StructDeclarationNode [String] deriving (Show)

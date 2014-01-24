@@ -73,6 +73,20 @@ parse_lambda tokens =
     in
         (AST.LambdaNode body params, tokens5)
 
+parse_struct :: [Token] -> (AST.Node, [Token])
+parse_struct tokens =
+    let (members, tokens2) = parse_fields [] tokens
+        tokens3 = chomp_close_expression tokens2
+    in
+        (AST.StructDeclarationNode members, tokens3)
+
+parse_fields :: [String] -> [Token] -> ([String], [Token])
+parse_fields _ [] = error "No parameters to parse in parse_params"
+parse_fields existing_params input_tokens@((Tok.Token token_type name):tokens) =
+    case token_type of
+        Tok.RParen -> (existing_params, input_tokens)
+        Tok.String_ -> parse_fields (name: existing_params) tokens
+        _ -> error $ "Was expecting parameter or ] when found " ++ name
 
 parse_params :: [String] -> [Token] -> ([String], [Token])
 parse_params _ [] = error "No parameters to parse in parse_params"
@@ -117,4 +131,5 @@ function_map :: Map.Map String ([Token] -> (AST.Node, [Token]))
 function_map = Map.fromList [
     ("if", parse_if),
     ("define", parse_define),
-    ("lambda", parse_lambda)]
+    ("lambda", parse_lambda),
+    ("struct", parse_struct)]
