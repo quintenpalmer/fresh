@@ -16,6 +16,7 @@ data RuntimeType
     | ClosureType AST.Node [String] Environment
     | BuiltinClosureType ([RuntimeType] -> RuntimeType)
     | StructDeclarationType [String]
+    | StructInstantiationType (Map.Map String RuntimeType)
 
 value :: RuntimeType -> String
 value (IntType i) = show i
@@ -26,3 +27,5 @@ value (BuiltinClosureType _) = "Builtin Closure"
 value (StructDeclarationType args) =
     "Struct with" ++
     foldl (\ first second -> first ++ " " ++ second) "" args
+value (StructInstantiationType _) =
+    "Object with"

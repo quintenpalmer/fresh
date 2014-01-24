@@ -36,6 +36,23 @@ evaluate (AST.FunctionCallNode name values) env =
             error $ "Function '" ++ name ++ "' not in scope"
 evaluate (AST.StructDeclarationNode members) _ =
     Runtime.StructDeclarationType members
+evaluate (AST.MemberAccessNode struct_name member_name) env =
+    let maybe_struct = Map.lookup struct_name env
+    in
+        if Maybe.isJust maybe_struct then
+            let actual_struct = (Maybe.fromJust maybe_struct)
+            in
+                case actual_struct of
+                    (Runtime.StructInstantiationType fields) ->
+                        let maybe_value = Map.lookup member_name fields
+                        in
+                            if Maybe.isJust maybe_value then
+                                Maybe.fromJust maybe_value
+                            else
+                                error $ "Struct '" ++ struct_name ++ "' has no field '" ++ member_name
+                    _ -> error "Not an object in scope"
+        else
+            error $ "Struct '" ++ struct_name ++ "' not in scope"
 
 
 evaluate_function_call :: Runtime.RuntimeType -> [AST.Node] -> Runtime.Environment -> Runtime.RuntimeType
@@ -46,6 +63,12 @@ evaluate_function_call (Runtime.ClosureType function arguments closure_env) valu
         arguments
         (map (flip evaluate env) values)
         $ Map.union closure_env env
+evaluate_function_call (Runtime.StructDeclarationType arguments) values env =
+    Runtime.StructInstantiationType $ build_new_env
+        arguments
+        (map (flip evaluate env) values)
+        (Map.fromList [])
+
 
 evaluate_function_call _ _ _ =
     error "Invalid runtime type, expected function call closure"

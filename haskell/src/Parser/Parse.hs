@@ -80,6 +80,13 @@ parse_struct tokens =
     in
         (AST.StructDeclarationNode members, tokens3)
 
+parse_member :: [Token] -> (AST.Node, [Token])
+parse_member input_tokens =
+    case input_tokens of
+        ((Tok.Token (Tok.String_) struct_name):((Tok.Token (Tok.String_) member_name):tokens)) ->
+            (AST.MemberAccessNode struct_name member_name, tokens)
+        _ -> error "member must take a struct name and a member name"
+
 parse_fields :: [String] -> [Token] -> ([String], [Token])
 parse_fields _ [] = error "No parameters to parse in parse_params"
 parse_fields existing_params input_tokens@((Tok.Token token_type name):tokens) =
@@ -132,4 +139,5 @@ function_map = Map.fromList [
     ("if", parse_if),
     ("define", parse_define),
     ("lambda", parse_lambda),
-    ("struct", parse_struct)]
+    ("struct", parse_struct),
+    ("member", parse_member)]

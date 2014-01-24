@@ -10,4 +10,5 @@ data Node
     | IfNode Node Node Node
     | FunctionCallNode String [Node]
     | LambdaNode Node [String]
-    | StructDeclarationNode [String] deriving (Show)
+    | StructDeclarationNode [String]
+    | MemberAccessNode String String deriving (Show)

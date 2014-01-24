@@ -1,0 +1,9 @@
+(define person
+    (struct height weight)
+)
+
+(define quinten
+    (person 100 177)
+)
+
+(member quinten weight)
