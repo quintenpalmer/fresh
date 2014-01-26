@@ -1,1 +1,1 @@
-(struct height weight)
+(define main (struct height weight))

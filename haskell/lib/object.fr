@@ -1,1 +1,5 @@
-(define person (struct height weight))(person 10 10)
+(define person
+    (struct height weight)
+)
+
+(define main (person 10 10))

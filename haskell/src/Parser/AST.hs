@@ -12,7 +12,6 @@ data Node
     = IntNode Int
     | BoolNode Bool
     | VariableNode String
-    | BindingNode String Node Node
     | IfNode Node Node Node
     | LambdaNode Node [String]
     | FunctionCallNode String [Node]
@@ -27,8 +26,6 @@ value (IntNode int) = show int
 value (BoolNode bool) = show bool
 value (VariableNode name) =
     "(variable" ++ name ++ ")"
-value (BindingNode name val body) =
-    "(define " ++ name ++ (value val) ++ ") in " ++ (value body)
 value (IfNode if_expr then_expr else_expr) =
     "(if " ++ (value if_expr) ++ " then " ++ (value then_expr) ++ " else " ++ (value else_expr) ++ ")"
 value (LambdaNode body operands) =

@@ -43,4 +43,4 @@
     )
 )
 
-(fib 15)
+(define main (fib 15))

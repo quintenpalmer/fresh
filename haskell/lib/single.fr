@@ -1,0 +1,2 @@
+(define a 3)
+(define main a)

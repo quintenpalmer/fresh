@@ -1,11 +1,25 @@
 module Runtime.Evaluation (
-    evaluate
+    start_evaluate
 ) where
 
 import qualified Data.Map as Map
 import qualified Data.Maybe as Maybe
 
 import qualified Parser.AST as AST
+
+start_evaluate :: AST.Node -> AST.Environment -> AST.Node
+start_evaluate node env =
+    evaluate node $ evaluate_environment env Map.empty
+
+evaluate_environment :: AST.Environment -> AST.Environment -> AST.Environment
+evaluate_environment pre_eval post_eval =
+    if Map.null pre_eval then
+        post_eval
+    else
+        let ((key, val):rest) = Map.toList pre_eval
+        in
+            evaluate_environment (Map.fromList rest) (Map.insert key (evaluate val post_eval) post_eval)
+
 
 evaluate :: AST.Node -> AST.Environment -> AST.Node
 evaluate (AST.IntNode value) _ = AST.IntNode value
@@ -15,8 +29,6 @@ evaluate (AST.IfNode cond_expr then_expr else_expr) env =
         (AST.BoolNode True) -> evaluate then_expr env
         (AST.BoolNode False) -> evaluate else_expr env
         _ -> error "if expression must be boolean"
-evaluate (AST.BindingNode name expression body) env =
-    evaluate body (Map.insert name (evaluate expression env) env)
 evaluate (AST.VariableNode name) env =
     let maybe_variable = Map.lookup name env
     in
@@ -74,8 +86,8 @@ evaluate_function_call (AST.StructDeclarationNode arguments) values env =
         (map (flip evaluate env) values)
         (Map.fromList [])
 
-evaluate_function_call _ _ _ =
-    error "Invalid runtime type, expected function call closure"
+evaluate_function_call node _ _ =
+    error $ "Invalid runtime type, expected function call closure: got " ++ (AST.value node)
 
 build_new_env :: [String] -> [AST.Node] -> AST.Environment -> AST.Environment
 build_new_env [] [] env = env

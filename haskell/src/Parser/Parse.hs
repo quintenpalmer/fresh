@@ -7,28 +7,64 @@ import qualified Data.Maybe as Maybe
 
 import qualified Lexer.Tokenize as Tok
 import qualified Parser.AST as AST
-import qualified Parser.Env as Env
 
 type Token = Tok.Token
-type TokenEater = [Token] -> AST.Environment -> (AST.Node, [Token])
+type TokenEater = [Token] -> AST.Environment -> (AST.Node, [Token], AST.Environment)
 
-parse :: String -> AST.Node
-parse raw_string =
-    let (node, tokens) = parse_expression (Tok.to_tokens raw_string) Env.defaultEnvironment
+parse :: String -> AST.Environment -> (AST.Node, AST.Environment)
+parse raw_string input_env =
+    let (tokens, env) = parse_all_top_levels (Tok.to_tokens raw_string) input_env
+        out_node = parse_main env
     in
         case tokens of
-            [] -> node
-            [(Tok.Token (Tok.Eof) _)] -> node
+            [] -> (out_node, env)
+            [(Tok.Token (Tok.Eof) _)] -> (out_node, env)
             _ -> error $ "remaining tokens" ++ show tokens
+
+parse_main :: AST.Environment -> AST.Node
+parse_main env =
+    let maybe_main = Map.lookup "main" env
+    in
+        if Maybe.isJust maybe_main then
+            Maybe.fromJust maybe_main
+        else
+            error $ "main function not defined"
+
+parse_all_top_levels :: [Token] -> AST.Environment -> ([Token], AST.Environment)
+parse_all_top_levels input_tokens input_env =
+    let (tokens,env) = parse_top_level_expression input_tokens input_env
+    in
+        case tokens of
+            [] -> (tokens, env)
+            [(Tok.Token (Tok.Eof) _)] -> (tokens, env)
+            _ -> parse_all_top_levels tokens env
+
+parse_top_level_expression :: [Token] -> AST.Environment -> ([Token], AST.Environment)
+parse_top_level_expression [] env = ([], env)
+parse_top_level_expression ((Tok.Token token_type _):tokens) env =
+    case token_type of
+        Tok.LParen -> parse_better_be_define tokens env
+        _ -> error "must be a definition of define at top level"
+
+parse_better_be_define :: [Token] -> AST.Environment -> ([Token], AST.Environment)
+parse_better_be_define [] _ = error "Top level declarations must be a define"
+parse_better_be_define ((Tok.Token token_type string):tokens) env =
+    case token_type of
+        Tok.String_ ->
+            if string == "define" then
+                parse_define tokens env
+            else
+                error "Top level declaration must be a define"
+        _ -> error "Top level declaration must be a define"
 
 parse_expression :: TokenEater
 parse_expression [] _ = error "Hi Eric and Quinten"
 parse_expression ((Tok.Token token_type string):tokens) env =
     case token_type of
         Tok.LParen -> parse_func_call tokens env
-        Tok.IntLiteral -> (AST.IntNode $ read string, tokens)
-        Tok.BoolLiteral -> (AST.BoolNode $ string == "true", tokens)
-        Tok.String_ -> (AST.VariableNode string, tokens)
+        Tok.IntLiteral -> (AST.IntNode $ read string, tokens, env)
+        Tok.BoolLiteral -> (AST.BoolNode $ string == "true", tokens, env)
+        Tok.String_ -> (AST.VariableNode string, tokens, env)
         token -> error $ "Invalid Token " ++ show token
 
 parse_func_call :: TokenEater
@@ -44,54 +80,53 @@ parse_func_call ((Tok.Token token_type current):tokens) env =
                     let (operands, pre_close_tokens) = parse_operands [] tokens env
                         post_close_tokens = chomp_close_expression pre_close_tokens
                     in
-                        (AST.FunctionCallNode current operands, post_close_tokens)
+                        (AST.FunctionCallNode current operands, post_close_tokens, env)
         token -> error $ show token
 
-parse_define :: TokenEater
+parse_define :: [Token] -> AST.Environment -> ([Token], AST.Environment)
 parse_define [] _ = error "Unexpected end of tokens in parse define"
 parse_define ((Tok.Token token_type name):tokens) env =
     case token_type of
         Tok.String_ ->
-            let (expression, tokens1) = parse_expression tokens env
+            let (expression, tokens1, env1) = parse_expression tokens env
                 tokens2 = chomp_close_expression tokens1
-                (body, tokens3) = parse_expression tokens2 env
             in
-                (AST.BindingNode name expression body, tokens3)
+                (tokens2, Map.insert name expression env1)
         token -> error $ show token
 
 parse_if :: TokenEater
 parse_if tokens env =
-    let (cond_expr, tokens1) = parse_expression tokens env
-        (then_expr, tokens2) = parse_expression tokens1 env
-        (else_expr, tokens3) = parse_expression tokens2 env
+    let (cond_expr, tokens1, env1) = parse_expression tokens env
+        (then_expr, tokens2, env2) = parse_expression tokens1 env1
+        (else_expr, tokens3, env3) = parse_expression tokens2 env2
         tokens4 = chomp_close_expression tokens3
     in
-        (AST.IfNode cond_expr then_expr else_expr, tokens4)
+        (AST.IfNode cond_expr then_expr else_expr, tokens4, env3)
 
 parse_lambda :: TokenEater
 parse_lambda tokens env =
     let tokens1 = chomp_open_lambda_params tokens
         (params, tokens2) = parse_params [] tokens1
         tokens3 = chomp_close_lambda_params tokens2
-        (body, tokens4) = parse_expression tokens3 env
+        (body, tokens4, env1) = parse_expression tokens3 env
         tokens5 = chomp_close_expression tokens4
     in
-        (AST.LambdaNode body params, tokens5)
+        (AST.LambdaNode body params, tokens5, env1)
 
 parse_struct :: TokenEater
-parse_struct tokens _ =
+parse_struct tokens env =
     let (members, tokens2) = parse_fields [] tokens
         tokens3 = chomp_close_expression tokens2
     in
-        (AST.StructDeclarationNode members, tokens3)
+        (AST.StructDeclarationNode members, tokens3, env)
 
 parse_member :: TokenEater
-parse_member input_tokens _ =
+parse_member input_tokens env =
     case input_tokens of
         ((Tok.Token (Tok.String_) struct_name):((Tok.Token (Tok.String_) member_name):tokens)) ->
             let remaining_tokens = chomp_close_expression tokens
             in
-                (AST.MemberAccessNode struct_name member_name, remaining_tokens)
+                (AST.MemberAccessNode struct_name member_name, remaining_tokens, env)
         _ -> error "member must take a struct name and a member name"
 
 parse_fields :: [String] -> [Token] -> ([String], [Token])
@@ -117,9 +152,9 @@ parse_operands existing_params input_tokens@((Tok.Token token_type _):_) env =
     case token_type of
         Tok.RParen -> (existing_params, input_tokens)
         _ ->
-            let (current, remaining_tokens) = parse_expression input_tokens env
+            let (current, remaining_tokens, env1) = parse_expression input_tokens env
             in
-                parse_operands (current: existing_params) remaining_tokens env
+                parse_operands (current: existing_params) remaining_tokens env1
 
 chomp_close_expression :: [Token] -> [Token]
 chomp_close_expression tokens =
@@ -144,7 +179,6 @@ assert_chomping expected_token_type ((Tok.Token token_type string):tokens) =
 function_map :: Map.Map String TokenEater
 function_map = Map.fromList [
     ("if", parse_if),
-    ("define", parse_define),
     ("lambda", parse_lambda),
     ("struct", parse_struct),
     ("member", parse_member)]

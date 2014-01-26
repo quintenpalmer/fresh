@@ -6,4 +6,4 @@
     (person 100 177)
 )
 
-(member quinten weight)
+(define main (member quinten weight))
