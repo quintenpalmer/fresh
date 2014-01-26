@@ -1,16 +1,16 @@
 import qualified System.Environment as SysEnv
 
 import qualified Parser.Parse as Parse
+import qualified Parser.AST as AST
 import qualified Runtime.Evaluation as Evaluation
-import qualified Runtime.Runtime as Runtime
-import qualified Runtime.Env as Env
+import qualified Parser.Env as Env
 
-load_start :: String -> Runtime.Environment -> IO ()
+load_start :: String -> AST.Environment -> IO ()
 load_start file_name env = do
     command <- readFile file_name
     print_ $ eval command env
 
-loop_start :: Runtime.Environment -> IO ()
+loop_start :: AST.Environment -> IO ()
 loop_start env = do
     putStrLn "Welcome to the Fresh Interpreter!"
     putStrLn "(+ 3 4)"
@@ -21,14 +21,14 @@ loop_start env = do
 read_ :: IO String
 read_ = getLine
 
-loop :: Runtime.Environment -> IO a
+loop :: AST.Environment -> IO a
 loop env = do
     command <- read_
     print_ $ eval command env
     loop env
 
-eval :: String -> Runtime.Environment -> String
-eval command env = Runtime.value $ Evaluation.evaluate (Parse.parse command) env
+eval :: String -> AST.Environment -> String
+eval command env = AST.value $ Evaluation.evaluate (Parse.parse command) env
 
 print_ :: String -> IO ()
 print_ string = do putStrLn $ string

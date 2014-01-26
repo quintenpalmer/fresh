@@ -1,4 +1,4 @@
-module Runtime.Builtin (
+module Parser.Builtin (
     add,
     minus,
     multiply,
@@ -9,46 +9,46 @@ module Runtime.Builtin (
     equal
 ) where
 
-import qualified Runtime.Runtime as Runtime
+import qualified Parser.AST as AST
 
-type BinaryOperator = Runtime.RuntimeType -> Runtime.RuntimeType -> Runtime.RuntimeType
-type InfiniteOperator = [Runtime.RuntimeType] -> Runtime.RuntimeType
+type BinaryOperator = AST.Node -> AST.Node -> AST.Node
+type InfiniteOperator = [AST.Node] -> AST.Node
 
 comparison :: (Int -> Int -> Bool) -> BinaryOperator
-comparison operator (Runtime.IntType x) (Runtime.IntType y) = Runtime.BoolType $ operator x y
+comparison operator (AST.IntNode x) (AST.IntNode y) = AST.BoolNode $ operator x y
 comparison _ _ _ = error "> < = Invalid runtime time, two ints"
 
 arithmetic :: (Int -> Int -> Int) -> BinaryOperator
-arithmetic operator (Runtime.IntType x) (Runtime.IntType y) = Runtime.IntType $ operator x y
+arithmetic operator (AST.IntNode x) (AST.IntNode y) = AST.IntNode $ operator x y
 arithmetic _ _ _ = error "+ - * Invalid runtime time, two ints"
 
 boolean :: (Bool -> Bool -> Bool) -> BinaryOperator
-boolean operator (Runtime.BoolType x) (Runtime.BoolType y) = Runtime.BoolType $ operator x y
+boolean operator (AST.BoolNode x) (AST.BoolNode y) = AST.BoolNode $ operator x y
 boolean _ _ _ = error "and/or invalid runtime time, two bools"
 
 
-acculuatively_apply :: BinaryOperator -> [Runtime.RuntimeType] -> Runtime.RuntimeType
+acculuatively_apply :: BinaryOperator -> [AST.Node] -> AST.Node
 acculuatively_apply function input_arguments =
     case input_arguments of
         [] -> error "uhhhhh, nice try! can't apply to no arguments"
         [_] -> error "uhhhhh, nice try! can't apply to one argument"
         arguments -> acc_apply_recursive function arguments
 
-acc_apply_recursive :: BinaryOperator -> [Runtime.RuntimeType] -> Runtime.RuntimeType
+acc_apply_recursive :: BinaryOperator -> [AST.Node] -> AST.Node
 acc_apply_recursive function input_arguments =
     case input_arguments of
         [] -> error "uhhhhh, nice try! can't apply to no arguments"
         [arg] -> arg
         (argument:arguments) -> function (acc_apply_recursive function arguments) argument
 
-comparatively_apply :: BinaryOperator -> [Runtime.RuntimeType] -> Runtime.RuntimeType
+comparatively_apply :: BinaryOperator -> [AST.Node] -> AST.Node
 comparatively_apply function input_arguments =
     case input_arguments of
         [] -> error "uhhhhh, nice try! can't apply to no arguments"
         [_] -> error "uhhhhh, nice try! can't apply to one argument"
         arguments -> comp_apply_recursive function arguments
 
-comp_apply_recursive :: BinaryOperator -> [Runtime.RuntimeType] -> Runtime.RuntimeType
+comp_apply_recursive :: BinaryOperator -> [AST.Node] -> AST.Node
 comp_apply_recursive function input_arguments =
     case input_arguments of
         [] -> error "uhhhhh, nice try! can't apply to no arguments"
