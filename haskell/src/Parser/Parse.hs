@@ -7,13 +7,14 @@ import qualified Data.Maybe as Maybe
 
 import qualified Lexer.Tokenize as Tok
 import qualified Parser.AST as AST
+import qualified Parser.Env as Env
 
 type Token = Tok.Token
-type TokenEater = [Token] -> (AST.Node, [Token])
+type TokenEater = [Token] -> AST.Environment -> (AST.Node, [Token])
 
 parse :: String -> AST.Node
 parse raw_string =
-    let (node, tokens) = parse_expression (Tok.to_tokens raw_string)
+    let (node, tokens) = parse_expression (Tok.to_tokens raw_string) Env.defaultEnvironment
     in
         case tokens of
             [] -> node
@@ -21,71 +22,71 @@ parse raw_string =
             _ -> error $ "remaining tokens" ++ show tokens
 
 parse_expression :: TokenEater
-parse_expression [] = error "Hi Eric and Quinten"
-parse_expression ((Tok.Token token_type string):tokens) =
+parse_expression [] _ = error "Hi Eric and Quinten"
+parse_expression ((Tok.Token token_type string):tokens) env =
     case token_type of
-        Tok.LParen -> parse_func_call tokens
+        Tok.LParen -> parse_func_call tokens env
         Tok.IntLiteral -> (AST.IntNode $ read string, tokens)
         Tok.BoolLiteral -> (AST.BoolNode $ string == "true", tokens)
         Tok.String_ -> (AST.VariableNode string, tokens)
         token -> error $ "Invalid Token " ++ show token
 
 parse_func_call :: TokenEater
-parse_func_call [] = error "Unexpected end of tokens in parse function call"
-parse_func_call ((Tok.Token token_type current):tokens) =
+parse_func_call [] _ = error "Unexpected end of tokens in parse function call"
+parse_func_call ((Tok.Token token_type current):tokens) env =
     case token_type of
         Tok.String_ ->
             let maybe_function = Map.lookup current function_map
             in
                 if Maybe.isJust maybe_function then
-                    (Maybe.fromJust maybe_function) tokens
+                    (Maybe.fromJust maybe_function) tokens env
                 else
-                    let (operands, pre_close_tokens) = parse_operands [] tokens
+                    let (operands, pre_close_tokens) = parse_operands [] tokens env
                         post_close_tokens = chomp_close_expression pre_close_tokens
                     in
                         (AST.FunctionCallNode current operands, post_close_tokens)
         token -> error $ show token
 
 parse_if :: TokenEater
-parse_if tokens =
-    let (cond_expr, tokens1) = parse_expression tokens
-        (then_expr, tokens2) = parse_expression tokens1
-        (else_expr, tokens3) = parse_expression tokens2
+parse_if tokens env =
+    let (cond_expr, tokens1) = parse_expression tokens env
+        (then_expr, tokens2) = parse_expression tokens1 env
+        (else_expr, tokens3) = parse_expression tokens2 env
         tokens4 = chomp_close_expression tokens3
     in
         (AST.IfNode cond_expr then_expr else_expr, tokens4)
 
 parse_define :: TokenEater
-parse_define [] = error "Unexpected end of tokens in parse define"
-parse_define ((Tok.Token token_type name):tokens) =
+parse_define [] _ = error "Unexpected end of tokens in parse define"
+parse_define ((Tok.Token token_type name):tokens) env =
     case token_type of
         Tok.String_ ->
-            let (expression, tokens1) = parse_expression tokens
+            let (expression, tokens1) = parse_expression tokens env
                 tokens2 = chomp_close_expression tokens1
-                (body, tokens3) = parse_expression tokens2
+                (body, tokens3) = parse_expression tokens2 env
             in
                 (AST.BindingNode name expression body, tokens3)
         token -> error $ show token
 
 parse_lambda :: TokenEater
-parse_lambda tokens =
+parse_lambda tokens env =
     let tokens1 = chomp_open_lambda_params tokens
         (params, tokens2) = parse_params [] tokens1
         tokens3 = chomp_close_lambda_params tokens2
-        (body, tokens4) = parse_expression tokens3
+        (body, tokens4) = parse_expression tokens3 env
         tokens5 = chomp_close_expression tokens4
     in
         (AST.LambdaNode body params, tokens5)
 
 parse_struct :: TokenEater
-parse_struct tokens =
+parse_struct tokens _ =
     let (members, tokens2) = parse_fields [] tokens
         tokens3 = chomp_close_expression tokens2
     in
         (AST.StructDeclarationNode members, tokens3)
 
 parse_member :: TokenEater
-parse_member input_tokens =
+parse_member input_tokens _ =
     case input_tokens of
         ((Tok.Token (Tok.String_) struct_name):((Tok.Token (Tok.String_) member_name):tokens)) ->
             let remaining_tokens = chomp_close_expression tokens
@@ -110,15 +111,15 @@ parse_params existing_params input_tokens@((Tok.Token token_type name):tokens) =
         _ -> error $ "Was expecting parameter or ] when found " ++ name
 
 
-parse_operands :: [AST.Node] -> [Token] -> ([AST.Node], [Token])
-parse_operands _ [] = error "No operands to parse in parse_operands"
-parse_operands existing_params input_tokens@((Tok.Token token_type _):_) =
+parse_operands :: [AST.Node] -> [Token] -> AST.Environment -> ([AST.Node], [Token])
+parse_operands _ [] _ = error "No operands to parse in parse_operands"
+parse_operands existing_params input_tokens@((Tok.Token token_type _):_) env =
     case token_type of
         Tok.RParen -> (existing_params, input_tokens)
         _ ->
-            let (current, remaining_tokens) = parse_expression input_tokens
+            let (current, remaining_tokens) = parse_expression input_tokens env
             in
-                parse_operands (current: existing_params) remaining_tokens
+                parse_operands (current: existing_params) remaining_tokens env
 
 chomp_close_expression :: [Token] -> [Token]
 chomp_close_expression tokens =
