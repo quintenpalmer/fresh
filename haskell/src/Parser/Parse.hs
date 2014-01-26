@@ -12,9 +12,12 @@ type Token = Tok.Token
 
 parse :: String -> AST.Node
 parse raw_string =
-    let (node, _) = parse_expression (Tok.to_tokens raw_string)
+    let (node, tokens) = parse_expression (Tok.to_tokens raw_string)
     in
-        node
+        if not $ null tokens then
+            error $ "remaining tokens" ++ show tokens
+        else
+            node
 
 parse_expression :: [Token] -> (AST.Node, [Token])
 parse_expression [] = error "Hi Eric and Quinten"
