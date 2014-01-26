@@ -47,15 +47,6 @@ parse_func_call ((Tok.Token token_type current):tokens) env =
                         (AST.FunctionCallNode current operands, post_close_tokens)
         token -> error $ show token
 
-parse_if :: TokenEater
-parse_if tokens env =
-    let (cond_expr, tokens1) = parse_expression tokens env
-        (then_expr, tokens2) = parse_expression tokens1 env
-        (else_expr, tokens3) = parse_expression tokens2 env
-        tokens4 = chomp_close_expression tokens3
-    in
-        (AST.IfNode cond_expr then_expr else_expr, tokens4)
-
 parse_define :: TokenEater
 parse_define [] _ = error "Unexpected end of tokens in parse define"
 parse_define ((Tok.Token token_type name):tokens) env =
@@ -67,6 +58,15 @@ parse_define ((Tok.Token token_type name):tokens) env =
             in
                 (AST.BindingNode name expression body, tokens3)
         token -> error $ show token
+
+parse_if :: TokenEater
+parse_if tokens env =
+    let (cond_expr, tokens1) = parse_expression tokens env
+        (then_expr, tokens2) = parse_expression tokens1 env
+        (else_expr, tokens3) = parse_expression tokens2 env
+        tokens4 = chomp_close_expression tokens3
+    in
+        (AST.IfNode cond_expr then_expr else_expr, tokens4)
 
 parse_lambda :: TokenEater
 parse_lambda tokens env =
