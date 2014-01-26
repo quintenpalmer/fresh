@@ -67,13 +67,12 @@ evaluate_function_call (AST.ClosureNode function arguments closure_env) values e
     evaluate function $ build_new_env
         arguments
         (map (flip evaluate env) values)
-        $ Map.union closure_env env
+        (Map.union closure_env env)
 evaluate_function_call (AST.StructDeclarationNode arguments) values env =
     AST.StructInstantiationNode $ build_new_env
         arguments
         (map (flip evaluate env) values)
         (Map.fromList [])
-
 
 evaluate_function_call _ _ _ =
     error "Invalid runtime type, expected function call closure"
