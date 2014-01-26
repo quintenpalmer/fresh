@@ -94,7 +94,7 @@ parse_member input_tokens =
         _ -> error "member must take a struct name and a member name"
 
 parse_fields :: [String] -> [Token] -> ([String], [Token])
-parse_fields _ [] = error "No parameters to parse in parse_params"
+parse_fields _ [] = error "No fields to parse in parse_fields"
 parse_fields existing_params input_tokens@((Tok.Token token_type name):tokens) =
     case token_type of
         Tok.RParen -> (existing_params, input_tokens)
@@ -111,7 +111,7 @@ parse_params existing_params input_tokens@((Tok.Token token_type name):tokens) =
 
 
 parse_operands :: [AST.Node] -> [Token] -> ([AST.Node], [Token])
-parse_operands _ [] = error "No parameters to parse in parse_operands"
+parse_operands _ [] = error "No operands to parse in parse_operands"
 parse_operands existing_params input_tokens@((Tok.Token token_type _):_) =
     case token_type of
         Tok.RParen -> (existing_params, input_tokens)
