@@ -14,10 +14,10 @@ parse :: String -> AST.Node
 parse raw_string =
     let (node, tokens) = parse_expression (Tok.to_tokens raw_string)
     in
-        if not $ null tokens then
-            error $ "remaining tokens" ++ show tokens
-        else
-            node
+        case tokens of
+            [] -> node
+            [(Tok.Token (Tok.Eof) _)] -> node
+            _ -> error $ "remaining tokens" ++ show tokens
 
 parse_expression :: [Token] -> (AST.Node, [Token])
 parse_expression [] = error "Hi Eric and Quinten"
