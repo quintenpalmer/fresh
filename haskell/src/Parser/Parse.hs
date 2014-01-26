@@ -9,6 +9,7 @@ import qualified Lexer.Tokenize as Tok
 import qualified Parser.AST as AST
 
 type Token = Tok.Token
+type TokenEater = [Token] -> (AST.Node, [Token])
 
 parse :: String -> AST.Node
 parse raw_string =
@@ -19,7 +20,7 @@ parse raw_string =
             [(Tok.Token (Tok.Eof) _)] -> node
             _ -> error $ "remaining tokens" ++ show tokens
 
-parse_expression :: [Token] -> (AST.Node, [Token])
+parse_expression :: TokenEater
 parse_expression [] = error "Hi Eric and Quinten"
 parse_expression ((Tok.Token token_type string):tokens) =
     case token_type of
@@ -29,7 +30,7 @@ parse_expression ((Tok.Token token_type string):tokens) =
         Tok.String_ -> (AST.VariableNode string, tokens)
         token -> error $ "Invalid Token " ++ show token
 
-parse_func_call :: [Token] -> (AST.Node, [Token])
+parse_func_call :: TokenEater
 parse_func_call [] = error "Unexpected end of tokens in parse function call"
 parse_func_call ((Tok.Token token_type current):tokens) =
     case token_type of
@@ -45,7 +46,7 @@ parse_func_call ((Tok.Token token_type current):tokens) =
                         (AST.FunctionCallNode current operands, post_close_tokens)
         token -> error $ show token
 
-parse_if :: [Token] -> (AST.Node, [Token])
+parse_if :: TokenEater
 parse_if tokens =
     let (cond_expr, tokens1) = parse_expression tokens
         (then_expr, tokens2) = parse_expression tokens1
@@ -54,7 +55,7 @@ parse_if tokens =
     in
         (AST.IfNode cond_expr then_expr else_expr, tokens4)
 
-parse_define :: [Token] -> (AST.Node, [Token])
+parse_define :: TokenEater
 parse_define [] = error "Unexpected end of tokens in parse define"
 parse_define ((Tok.Token token_type name):tokens) =
     case token_type of
@@ -66,7 +67,7 @@ parse_define ((Tok.Token token_type name):tokens) =
                 (AST.BindingNode name expression body, tokens3)
         token -> error $ show token
 
-parse_lambda :: [Token] -> (AST.Node, [Token])
+parse_lambda :: TokenEater
 parse_lambda tokens =
     let tokens1 = chomp_open_lambda_params tokens
         (params, tokens2) = parse_params [] tokens1
@@ -76,14 +77,14 @@ parse_lambda tokens =
     in
         (AST.LambdaNode body params, tokens5)
 
-parse_struct :: [Token] -> (AST.Node, [Token])
+parse_struct :: TokenEater
 parse_struct tokens =
     let (members, tokens2) = parse_fields [] tokens
         tokens3 = chomp_close_expression tokens2
     in
         (AST.StructDeclarationNode members, tokens3)
 
-parse_member :: [Token] -> (AST.Node, [Token])
+parse_member :: TokenEater
 parse_member input_tokens =
     case input_tokens of
         ((Tok.Token (Tok.String_) struct_name):((Tok.Token (Tok.String_) member_name):tokens)) ->
@@ -139,7 +140,7 @@ assert_chomping expected_token_type ((Tok.Token token_type string):tokens) =
     else
         error $ "wrong token'" ++ (show expected_token_type) ++ "', found '" ++ string ++ "'"
 
-function_map :: Map.Map String ([Token] -> (AST.Node, [Token]))
+function_map :: Map.Map String TokenEater
 function_map = Map.fromList [
     ("if", parse_if),
     ("define", parse_define),
