@@ -87,7 +87,9 @@ parse_member :: [Token] -> (AST.Node, [Token])
 parse_member input_tokens =
     case input_tokens of
         ((Tok.Token (Tok.String_) struct_name):((Tok.Token (Tok.String_) member_name):tokens)) ->
-            (AST.MemberAccessNode struct_name member_name, tokens)
+            let remaining_tokens = chomp_close_expression tokens
+            in
+                (AST.MemberAccessNode struct_name member_name, remaining_tokens)
         _ -> error "member must take a struct name and a member name"
 
 parse_fields :: [String] -> [Token] -> ([String], [Token])
