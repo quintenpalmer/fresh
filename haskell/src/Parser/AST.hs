@@ -40,7 +40,7 @@ value (StructDeclarationNode fields) =
 value (MemberAccessNode struct_name member_name) =
     "(member " ++ struct_name ++ " " ++ member_name ++ ")"
 value (StructInstantiationNode field_mapping) =
-    "(instance " ++ (show (map (\ (name, val) -> name ++ (value val)) (Map.toList field_mapping))) ++ " )"
+    "(instance " ++ (show (map (\ (name, val) -> name ++ " = " ++ (value val)) (Map.toList field_mapping))) ++ " )"
 value (ClosureNode body arguments _) =
     "(closure " ++ (value body) ++ (show arguments) ++ "env)"
 value (BuiltinNode _) =
