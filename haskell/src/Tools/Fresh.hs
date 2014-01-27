@@ -31,7 +31,7 @@ eval :: String -> AST.Environment -> String
 eval command env =
     let (ast, env1) = (Parse.parse command env)
     in
-        AST.value $ Evaluation.start_evaluate ast env1
+        AST.print_node $ Evaluation.start_evaluate ast env1
 
 print_ :: String -> IO ()
 print_ string = do putStrLn $ string
