@@ -3,6 +3,7 @@ module Lexer.Tokenize (
     TokenType(..),
     StringParse.FileLoc(..),
     StringParse.FileLocInfo(..),
+    StringParse.print_file_info,
     make_tokens
 ) where
 
