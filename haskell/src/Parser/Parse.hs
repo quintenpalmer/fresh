@@ -13,12 +13,12 @@ type TokenEater = [Token] -> AST.Environment -> (AST.Node, [Token], AST.Environm
 
 parse :: String -> AST.Environment -> (AST.Node, AST.Environment)
 parse raw_string input_env =
-    let (tokens, env) = parse_all_top_levels (Tok.to_tokens raw_string) input_env
+    let (tokens, env) = parse_all_top_levels (Tok.make_tokens raw_string) input_env
         out_node = parse_main env
     in
         case tokens of
             [] -> (out_node, env)
-            [(Tok.Token (Tok.Eof) _)] -> (out_node, env)
+            [(Tok.Token (Tok.Eof) _ _)] -> (out_node, env)
             _ -> error $ "remaining tokens" ++ show tokens
 
 parse_main :: AST.Environment -> AST.Node
@@ -36,19 +36,19 @@ parse_all_top_levels input_tokens input_env =
     in
         case tokens of
             [] -> (tokens, env)
-            [(Tok.Token (Tok.Eof) _)] -> (tokens, env)
+            [(Tok.Token (Tok.Eof) _ _)] -> (tokens, env)
             _ -> parse_all_top_levels tokens env
 
 parse_top_level_expression :: [Token] -> AST.Environment -> ([Token], AST.Environment)
 parse_top_level_expression [] env = ([], env)
-parse_top_level_expression ((Tok.Token token_type _):tokens) env =
+parse_top_level_expression ((Tok.Token token_type _ _):tokens) env =
     case token_type of
         Tok.LParen -> parse_better_be_define tokens env
         _ -> error "must be a definition of define at top level"
 
 parse_better_be_define :: [Token] -> AST.Environment -> ([Token], AST.Environment)
 parse_better_be_define [] _ = error "Top level declarations must be a define"
-parse_better_be_define ((Tok.Token token_type string):tokens) env =
+parse_better_be_define ((Tok.Token token_type string _):tokens) env =
     case token_type of
         Tok.String_ ->
             if string == "define" then
@@ -59,7 +59,7 @@ parse_better_be_define ((Tok.Token token_type string):tokens) env =
 
 parse_expression :: TokenEater
 parse_expression [] _ = error "Hi Eric and Quinten"
-parse_expression ((Tok.Token token_type string):tokens) env =
+parse_expression ((Tok.Token token_type string _):tokens) env =
     case token_type of
         Tok.LParen -> parse_func_call tokens env
         Tok.IntLiteral -> (AST.IntNode $ read string, tokens, env)
@@ -69,7 +69,7 @@ parse_expression ((Tok.Token token_type string):tokens) env =
 
 parse_func_call :: TokenEater
 parse_func_call [] _ = error "Unexpected end of tokens in parse function call"
-parse_func_call ((Tok.Token token_type current):tokens) env =
+parse_func_call ((Tok.Token token_type current _):tokens) env =
     case token_type of
         Tok.String_ ->
             let maybe_function = Map.lookup current function_map
@@ -85,7 +85,7 @@ parse_func_call ((Tok.Token token_type current):tokens) env =
 
 parse_define :: [Token] -> AST.Environment -> ([Token], AST.Environment)
 parse_define [] _ = error "Unexpected end of tokens in parse define"
-parse_define ((Tok.Token token_type name):tokens) env =
+parse_define ((Tok.Token token_type name _):tokens) env =
     case token_type of
         Tok.String_ ->
             let (expression, tokens1, env1) = parse_expression tokens env
@@ -123,7 +123,7 @@ parse_struct tokens env =
 parse_member :: TokenEater
 parse_member input_tokens env =
     case input_tokens of
-        ((Tok.Token (Tok.String_) struct_name):((Tok.Token (Tok.String_) member_name):tokens)) ->
+        ((Tok.Token Tok.String_ struct_name _):((Tok.Token Tok.String_ member_name _):tokens)) ->
             let remaining_tokens = chomp_close_expression tokens
             in
                 (AST.MemberAccessNode struct_name member_name, remaining_tokens, env)
@@ -131,7 +131,7 @@ parse_member input_tokens env =
 
 parse_fields :: [String] -> [Token] -> ([String], [Token])
 parse_fields _ [] = error "No fields to parse in parse_fields"
-parse_fields existing_params input_tokens@((Tok.Token token_type name):tokens) =
+parse_fields existing_params input_tokens@((Tok.Token token_type name _):tokens) =
     case token_type of
         Tok.RParen -> (existing_params, input_tokens)
         Tok.String_ -> parse_fields (name: existing_params) tokens
@@ -139,7 +139,7 @@ parse_fields existing_params input_tokens@((Tok.Token token_type name):tokens) =
 
 parse_params :: [String] -> [Token] -> ([String], [Token])
 parse_params _ [] = error "No parameters to parse in parse_params"
-parse_params existing_params input_tokens@((Tok.Token token_type name):tokens) =
+parse_params existing_params input_tokens@((Tok.Token token_type name _):tokens) =
     case token_type of
         Tok.RBracket -> (existing_params, input_tokens)
         Tok.String_ -> parse_params (name: existing_params) tokens
@@ -148,7 +148,7 @@ parse_params existing_params input_tokens@((Tok.Token token_type name):tokens) =
 
 parse_operands :: [AST.Node] -> [Token] -> AST.Environment -> ([AST.Node], [Token])
 parse_operands _ [] _ = error "No operands to parse in parse_operands"
-parse_operands existing_params input_tokens@((Tok.Token token_type _):_) env =
+parse_operands existing_params input_tokens@((Tok.Token token_type _ _):_) env =
     case token_type of
         Tok.RParen -> (existing_params, input_tokens)
         _ ->
@@ -170,7 +170,7 @@ chomp_close_lambda_params tokens =
 
 assert_chomping :: Tok.TokenType -> [Token] -> [Token]
 assert_chomping expected [] = error $ "End of tokens when asserting for " ++ show expected
-assert_chomping expected_token_type ((Tok.Token token_type string):tokens) =
+assert_chomping expected_token_type ((Tok.Token token_type string _):tokens) =
     if token_type == expected_token_type then
         tokens
     else

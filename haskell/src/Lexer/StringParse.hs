@@ -5,10 +5,16 @@ module Lexer.StringParse (
     is_bool_literal,
     eof,
     whitespace,
-    delimiters
+    delimiters,
+    FileLocInfo(..),
+    FileLoc(..)
 ) where
 
 import qualified Data.Char as Char
+
+data FileLoc = FileLoc Int Int deriving (Show)
+
+data FileLocInfo = FileLocInfo FileLoc FileLoc deriving (Show)
 
 bools :: [String]
 bools = ["true", "false"]
@@ -31,22 +37,33 @@ are_digits string =
 eof :: Char
 eof = '\0'
 
+line_breaks :: [Char]
+line_breaks = ['\n']
+
+
+inline_whitespace :: [Char]
+inline_whitespace = [' ', '\r', '\t']
+
 whitespace :: [Char]
-whitespace = [' ', '\n', '\r', '\t']
+whitespace = inline_whitespace ++ line_breaks
 
 delimiters :: [Char]
 delimiters = ['(', ')', '[', ']', eof] ++ whitespace
 
-get_next_non_whitespace :: String -> (Char, String)
-get_next_non_whitespace remaining =
-    let (current, post_remaining) = get_next_character remaining
+get_next_non_whitespace :: String -> FileLocInfo -> (Char, String, FileLocInfo)
+get_next_non_whitespace remaining input_info =
+    let (current, post_remaining, info) = get_next_character remaining input_info
     in
         if current `elem` whitespace then
-            get_next_non_whitespace post_remaining
+            get_next_non_whitespace post_remaining info
         else
-            (current, post_remaining)
+            (current, post_remaining, info)
 
-get_next_character :: String -> (Char, String)
-get_next_character [] = (eof, [eof])
-get_next_character [current] = (current, [eof])
-get_next_character (current: rest) = (current, rest)
+get_next_character :: String -> FileLocInfo -> (Char, String, FileLocInfo)
+get_next_character [] i = (eof, [eof], i)
+get_next_character [current] info = (current, [eof], info)
+get_next_character (current: rest) (FileLocInfo (FileLoc start_char start_line) (FileLoc end_char end_line)) =
+    if current `elem` line_breaks then
+        (current, rest, (FileLocInfo (FileLoc start_char (start_line + 1)) (FileLoc end_char (end_line + 1))))
+    else
+        (current, rest, (FileLocInfo (FileLoc (start_char + 1) start_line) (FileLoc (end_char + 1) end_line)))
