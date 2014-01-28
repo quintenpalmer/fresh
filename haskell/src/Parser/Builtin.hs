@@ -6,7 +6,8 @@ module Parser.Builtin (
     or_all,
     greater,
     less,
-    equal
+    equal,
+    InfiniteOperator
 ) where
 
 import qualified Parser.AST as AST
