@@ -1,11 +1,12 @@
 module Lexer.StringParse (
     get_next_non_whitespace,
     get_next_character,
+
     is_int_literal,
     is_bool_literal,
-    eof,
-    whitespace,
-    delimiters,
+    is_eof,
+    is_delimiter,
+
     FileLocInfo(..),
     FileLoc(..),
     print_file_info
@@ -24,20 +25,23 @@ print_file_info (FileLocInfo (FileLoc start_char start_line) (FileLoc end_char e
 bools :: [String]
 bools = ["true", "false"]
 
+is_delimiter :: Char -> Bool
+is_delimiter char = char `elem` delimiters
+
+is_eof :: String -> Bool
+is_eof [] = False
+is_eof string = (head string) == eof
+
 is_bool_literal :: String -> Bool
-is_bool_literal string =
-    string `elem` bools
+is_bool_literal string = string `elem` bools
 
 is_int_literal :: String -> Bool
-is_int_literal ('-':string) =
-    are_digits string
-is_int_literal string =
-    are_digits string
+is_int_literal ('-':string) = are_digits string
+is_int_literal string = are_digits string
 
 are_digits :: String -> Bool
 are_digits [] = False
-are_digits string =
-    all Char.isDigit string
+are_digits string = all Char.isDigit string
 
 eof :: Char
 eof = '\0'
@@ -45,12 +49,8 @@ eof = '\0'
 line_breaks :: [Char]
 line_breaks = ['\n']
 
-
-inline_whitespace :: [Char]
-inline_whitespace = [' ', '\r', '\t']
-
 whitespace :: [Char]
-whitespace = inline_whitespace ++ line_breaks
+whitespace = [' ', '\r', '\t'] ++ line_breaks
 
 delimiters :: [Char]
 delimiters = ['(', ')', '[', ']', eof] ++ whitespace
@@ -65,7 +65,7 @@ get_next_non_whitespace remaining input_info =
             (current, post_remaining, info)
 
 get_next_character :: String -> FileLocInfo -> (Char, String, FileLocInfo)
-get_next_character [] i = (eof, [eof], i)
+get_next_character [] _ = error "error reading past end of file"
 get_next_character [current] info = (current, [eof], info)
 get_next_character (current: rest) (FileLocInfo (FileLoc start_char start_line) (FileLoc end_char end_line)) =
     if current `elem` line_breaks then
