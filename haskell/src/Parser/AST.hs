@@ -3,13 +3,26 @@ module Parser.AST (
     Node(..),
     print_node,
     debug_print_node,
-    Environment
+    Environment,
+    print_env
 ) where
 
 import qualified Data.Map as Map
 import qualified Lexer.Tokenize as Tokenize
 
 type Environment = Map.Map String NodeContainer
+
+print_env :: Environment -> String
+print_env env =
+    "Environment:\n" ++ (print_whole_env $ Map.toList env)
+
+print_entry :: String -> NodeContainer -> String
+print_entry key val = key ++ " -> " ++ (print_node val)
+
+print_whole_env :: [(String, NodeContainer)] -> String
+print_whole_env [] = ""
+print_whole_env ((key, val):env) =
+    (print_entry key val) ++ "\n" ++ (print_whole_env env)
 
 data Node
     = IntNode Int
