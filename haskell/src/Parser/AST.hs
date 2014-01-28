@@ -40,7 +40,7 @@ value node printer =
         (IntNode int) -> show int
         (BoolNode bool) -> show bool
         (VariableNode name) ->
-            "(variable" ++ name ++ ")"
+            "(variable " ++ name ++ ")"
         (IfNode if_expr then_expr else_expr) ->
             "(if " ++ (printer if_expr) ++ " then " ++ (printer then_expr) ++ " else " ++ (printer else_expr) ++ ")"
         (LambdaNode body operands) ->
