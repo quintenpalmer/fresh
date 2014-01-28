@@ -37,23 +37,23 @@ print_node (NodeContainer node _) =
 value :: Node -> (NodeContainer -> String) -> String
 value node printer =
     case node of
-    (IntNode int) -> show int
-    (BoolNode bool) -> show bool
-    (VariableNode name) ->
-        "(variable" ++ name ++ ")"
-    (IfNode if_expr then_expr else_expr) ->
-        "(if " ++ (printer if_expr) ++ " then " ++ (printer then_expr) ++ " else " ++ (printer else_expr) ++ ")"
-    (LambdaNode body operands) ->
-        "(lambda " ++ show operands ++ (printer body) ++ ")"
-    (FunctionCallNode name arguments) ->
-        "(" ++ name ++ (show (map printer arguments)) ++ ")"
-    (StructDeclarationNode fields) ->
-        "(struct " ++ show fields ++ ")"
-    (MemberAccessNode struct_name member_name) ->
-        "(member " ++ struct_name ++ " " ++ member_name ++ ")"
-    (StructInstantiationNode field_mapping) ->
-        "(instance " ++ (show (map (\ (name, val) -> name ++ " -> " ++ (printer val)) (Map.toList field_mapping))) ++ " )"
-    (ClosureNode body arguments _) ->
-        "(closure " ++ (printer body) ++ (show arguments) ++ "env)"
-    (BuiltinNode _) ->
-        "(builtin [])"
+        (IntNode int) -> show int
+        (BoolNode bool) -> show bool
+        (VariableNode name) ->
+            "(variable" ++ name ++ ")"
+        (IfNode if_expr then_expr else_expr) ->
+            "(if " ++ (printer if_expr) ++ " then " ++ (printer then_expr) ++ " else " ++ (printer else_expr) ++ ")"
+        (LambdaNode body operands) ->
+            "(lambda " ++ show operands ++ (printer body) ++ ")"
+        (FunctionCallNode name arguments) ->
+            "(" ++ name ++ (show (map printer arguments)) ++ ")"
+        (StructDeclarationNode fields) ->
+            "(struct " ++ show fields ++ ")"
+        (MemberAccessNode struct_name member_name) ->
+            "(member " ++ struct_name ++ " " ++ member_name ++ ")"
+        (StructInstantiationNode field_mapping) ->
+            "(instance " ++ (show (map (\ (name, val) -> name ++ " -> " ++ (printer val)) (Map.toList field_mapping))) ++ " )"
+        (ClosureNode body arguments _) ->
+            "(closure " ++ (printer body) ++ (show arguments) ++ "env)"
+        (BuiltinNode _) ->
+            "(builtin [])"
