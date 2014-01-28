@@ -16,15 +16,18 @@ type BinaryOperator = AST.NodeContainer -> AST.NodeContainer -> AST.NodeContaine
 type InfiniteOperator = [AST.NodeContainer] -> AST.NodeContainer
 
 comparison :: (Int -> Int -> Bool) -> BinaryOperator
-comparison operator (AST.NodeContainer (AST.IntNode x) file_info) (AST.NodeContainer (AST.IntNode y) _) = AST.NodeContainer (AST.BoolNode $ operator x y) file_info
+comparison operator (AST.NodeContainer (AST.IntNode x) file_info) (AST.NodeContainer (AST.IntNode y) _) =
+    AST.NodeContainer (AST.BoolNode $ operator x y) file_info
 comparison _ _ _ = error "> < = Invalid runtime time, two ints"
 
 arithmetic :: (Int -> Int -> Int) -> BinaryOperator
-arithmetic operator (AST.NodeContainer (AST.IntNode x) file_info) (AST.NodeContainer (AST.IntNode y) _) = AST.NodeContainer (AST.IntNode $ operator x y) file_info
+arithmetic operator (AST.NodeContainer (AST.IntNode x) file_info) (AST.NodeContainer (AST.IntNode y) _) =
+    AST.NodeContainer (AST.IntNode $ operator x y) file_info
 arithmetic _ _ _ = error "+ - * Invalid runtime time, two ints"
 
 boolean :: (Bool -> Bool -> Bool) -> BinaryOperator
-boolean operator (AST.NodeContainer (AST.BoolNode x) file_info) (AST.NodeContainer (AST.BoolNode y) _) = AST.NodeContainer (AST.BoolNode $ operator x y) file_info
+boolean operator (AST.NodeContainer (AST.BoolNode x) file_info) (AST.NodeContainer (AST.BoolNode y) _) =
+    AST.NodeContainer (AST.BoolNode $ operator x y) file_info
 boolean _ _ _ = error "and/or invalid runtime time, two bools"
 
 
