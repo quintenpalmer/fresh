@@ -24,6 +24,10 @@ print_env_start filename env = do
     command <- readFile filename
     putStrLn $ print_ast command env
 
+help_start :: IO ()
+help_start = do
+    putStrLn "help\n-i\nprint_env <filename>\n<filename>"
+
 read_ :: IO String
 read_ = getLine
 
@@ -55,5 +59,6 @@ main = do
     case args of
         [] -> error "Must supply file or run interactively"
         ["-i"] -> loop_start Env.defaultEnvironment
+        ["help"] -> help_start
         ["print_env", name] -> print_env_start name Env.defaultEnvironment
         _ -> load_start (head args) Env.defaultEnvironment
