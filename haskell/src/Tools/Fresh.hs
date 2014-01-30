@@ -1,4 +1,5 @@
 import qualified System.Environment as SysEnv
+import qualified Data.Map as Map
 
 import qualified Parser.Parse as Parse
 import qualified Parser.AST as AST
@@ -42,7 +43,8 @@ print_ast:: String -> AST.Environment -> String
 print_ast command env =
     let (_, env1) = (Parse.parse command env)
     in
-        AST.print_env env1
+        "User Defined:\n" ++ (AST.print_env $ Map.difference env1 env) ++
+        "\nBuiltin:\n" ++ AST.print_env env
 
 print_ :: String -> IO ()
 print_ string = do putStrLn $ string
