@@ -13,9 +13,9 @@ load_start filename env = do
 
 loop_start :: AST.Environment -> IO ()
 loop_start env = do
-    putStrLn "Welcome to the Fresh Interpreter!"
-    putStrLn "(+ 3 4)"
-    putStrLn "7"
+    print_ "Welcome to the Fresh Interpreter!"
+    print_ "(define main (+ 3 4))"
+    print_ "7"
     _ <- loop env
     putStrLn "Exiting, goodbye"
 
