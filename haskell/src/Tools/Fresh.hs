@@ -19,8 +19,8 @@ loop_start env = do
     _ <- loop env
     putStrLn "Exiting, goodbye"
 
-print_start :: String -> AST.Environment -> IO ()
-print_start filename env = do
+print_env_start :: String -> AST.Environment -> IO ()
+print_env_start filename env = do
     command <- readFile filename
     putStrLn $ print_ast command env
 
@@ -55,5 +55,5 @@ main = do
     case args of
         [] -> error "Must supply file or run interactively"
         ["-i"] -> loop_start Env.defaultEnvironment
-        ["print", name] -> print_start name Env.defaultEnvironment
+        ["print_env", name] -> print_env_start name Env.defaultEnvironment
         _ -> load_start (head args) Env.defaultEnvironment
