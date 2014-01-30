@@ -24,9 +24,14 @@ print_env_start filename env = do
     command <- readFile filename
     putStrLn $ print_ast command env
 
+print_evaled_env_start :: String -> AST.Environment -> IO ()
+print_evaled_env_start filename env = do
+    command <- readFile filename
+    putStrLn $ print_evaled_ast command env
+
 help_start :: IO ()
 help_start = do
-    putStrLn "help\n-i\nprint_env <filename>\n<filename>"
+    putStrLn "help\n-i\nprint_env <filename>\neval_env <filename>\n<filename>"
 
 read_ :: IO String
 read_ = getLine
@@ -43,7 +48,16 @@ eval command env =
     in
         AST.print_node $ Evaluation.start_evaluate ast env1
 
-print_ast:: String -> AST.Environment -> String
+
+print_evaled_ast :: String -> AST.Environment -> String
+print_evaled_ast command env =
+    let (_, env1) = (Parse.parse command env)
+        env2 = Evaluation.create_evaluated_env env1
+    in
+        "User Defined:\n" ++ (AST.print_env $ Map.difference env2 env) ++
+        "\nBuiltin:\n" ++ AST.print_env env
+
+print_ast :: String -> AST.Environment -> String
 print_ast command env =
     let (_, env1) = (Parse.parse command env)
     in
@@ -61,4 +75,5 @@ main = do
         ["-i"] -> loop_start Env.defaultEnvironment
         ["help"] -> help_start
         ["print_env", name] -> print_env_start name Env.defaultEnvironment
+        ["eval_env", name] -> print_evaled_env_start name Env.defaultEnvironment
         _ -> load_start (head args) Env.defaultEnvironment

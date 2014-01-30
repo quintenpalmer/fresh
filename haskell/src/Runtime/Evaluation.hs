@@ -1,5 +1,6 @@
 module Runtime.Evaluation (
-    start_evaluate
+    start_evaluate,
+    create_evaluated_env
 ) where
 
 import qualified Data.Map as Map
@@ -9,7 +10,11 @@ import qualified Parser.AST as AST
 
 start_evaluate :: AST.NodeContainer -> AST.Environment -> AST.NodeContainer
 start_evaluate node env =
-    evaluate node $ evaluate_environment env Map.empty
+    evaluate node $ create_evaluated_env env
+
+create_evaluated_env :: AST.Environment -> AST.Environment
+create_evaluated_env env =
+    evaluate_environment env Map.empty
 
 evaluate_environment :: AST.Environment -> AST.Environment -> AST.Environment
 evaluate_environment pre_eval post_eval =
