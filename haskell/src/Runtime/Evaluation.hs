@@ -29,48 +29,48 @@ evaluate_environment pre_eval post_eval =
 evaluate :: AST.NodeContainer -> AST.Environment -> AST.NodeContainer
 evaluate node@(AST.NodeContainer (AST.IntNode _) _) _ = node
 evaluate node@(AST.NodeContainer (AST.BoolNode _) _) _ = node
-evaluate (AST.NodeContainer (AST.IfNode cond_expr then_expr else_expr) _) env =
+evaluate (AST.NodeContainer (AST.IfNode cond_expr then_expr else_expr) file_info) env =
     case evaluate cond_expr env of
         (AST.NodeContainer (AST.BoolNode True) _) -> evaluate then_expr env
         (AST.NodeContainer (AST.BoolNode False) _) -> evaluate else_expr env
-        _ -> error "if expression must be boolean"
-evaluate (AST.NodeContainer (AST.VariableNode name) _) env =
+        _ -> error $ "if expression must be boolean at " ++ show file_info
+evaluate (AST.NodeContainer (AST.VariableNode name) file_info) env =
     let maybe_variable = Map.lookup name env
     in
         if Maybe.isJust maybe_variable then
             Maybe.fromJust maybe_variable
         else
-            error $ "Variable '" ++ name ++ "' not found"
+            error $ "Variable '" ++ name ++ "' not found at " ++ show file_info
 evaluate (AST.NodeContainer (AST.LambdaNode body arguments) file_loc) env =
     AST.NodeContainer (AST.ClosureNode body arguments env) file_loc
-evaluate (AST.NodeContainer (AST.FunctionCallNode name values) _) env =
+evaluate (AST.NodeContainer (AST.FunctionCallNode name values) file_info) env =
     let maybe_function = Map.lookup name env
     in
         if Maybe.isJust maybe_function then
             evaluate_function_call (Maybe.fromJust maybe_function) values env
         else
-            error $ "Function '" ++ name ++ "' not in scope"
+            error $ "Function '" ++ name ++ "' not in scope at " ++ show file_info
 evaluate node@(AST.NodeContainer (AST.StructDeclarationNode _) _) _ = node
 evaluate node@(AST.NodeContainer (AST.StructInstantiationNode _) _) _ = node
 evaluate node@(AST.NodeContainer (AST.BuiltinNode _) _) _ = node
 evaluate node@(AST.NodeContainer (AST.ClosureNode _ _ _) _) _ = node
-evaluate (AST.NodeContainer (AST.MemberAccessNode struct_name member_name) _) env =
+evaluate (AST.NodeContainer (AST.MemberAccessNode struct_name member_name) file_info) env =
     let maybe_struct = Map.lookup struct_name env
     in
         if Maybe.isJust maybe_struct then
             let actual_struct = (Maybe.fromJust maybe_struct)
             in
                 case actual_struct of
-                    (AST.NodeContainer (AST.StructInstantiationNode fields) _) ->
+                    (AST.NodeContainer (AST.StructInstantiationNode fields) inner_file_info) ->
                         let maybe_value = Map.lookup member_name fields
                         in
                             if Maybe.isJust maybe_value then
                                 Maybe.fromJust maybe_value
                             else
-                                error $ "Struct '" ++ struct_name ++ "' has no field '" ++ member_name
+                                error $ "Struct '" ++ struct_name ++ "' has no field '" ++ member_name ++ " at " ++ show inner_file_info
                     _ -> error "Not an object in scope"
         else
-            error $ "Struct '" ++ struct_name ++ "' not in scope"
+            error $ "Struct '" ++ struct_name ++ "' not in scope at " ++ show file_info
 
 
 evaluate_function_call :: AST.NodeContainer -> [AST.NodeContainer] -> AST.Environment -> AST.NodeContainer

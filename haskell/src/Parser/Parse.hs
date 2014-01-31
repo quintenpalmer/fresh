@@ -173,11 +173,11 @@ chomp_close_lambda_params tokens =
 
 assert_chomping :: Tok.TokenType -> [Token] -> [Token]
 assert_chomping expected [] = error $ "End of tokens when asserting for " ++ show expected
-assert_chomping expected_token_type ((Tok.Token token_type string _):tokens) =
+assert_chomping expected_token_type ((Tok.Token token_type string file_info):tokens) =
     if token_type == expected_token_type then
         tokens
     else
-        error $ "wrong token'" ++ (show expected_token_type) ++ "', found '" ++ string ++ "'"
+        error $ "wrong token'" ++ (show expected_token_type) ++ "', found '" ++ string ++ "'" ++ show file_info
 
 function_map :: Map.Map String TokenEater
 function_map = Map.fromList [
