@@ -1,6 +1,7 @@
 import qualified System.Environment as SysEnv
 import qualified Data.Map as Map
 
+import qualified Lexer.Tokenize as Tokenize
 import qualified Parser.Parse as Parse
 import qualified Parser.AST as AST
 import qualified Runtime.Evaluation as Evaluation
@@ -10,6 +11,11 @@ load_start :: String -> AST.Environment -> IO ()
 load_start filename env = do
     command <- readFile filename
     print_ $ eval command env
+
+print_tokens_start :: String -> IO ()
+print_tokens_start filename = do
+    command <- readFile filename
+    putStrLn $ Tokenize.print_tokens command
 
 loop_start :: AST.Environment -> IO ()
 loop_start env = do
@@ -76,4 +82,5 @@ main = do
         ["help"] -> help_start
         ["print_env", name] -> print_env_start name Env.defaultEnvironment
         ["eval_env", name] -> print_evaled_env_start name Env.defaultEnvironment
+        ["print_tokens", name] -> print_tokens_start name
         _ -> load_start (head args) Env.defaultEnvironment
