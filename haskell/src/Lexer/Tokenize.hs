@@ -4,10 +4,13 @@ module Lexer.Tokenize (
     StringParse.FileLoc(..),
     StringParse.FileLocInfo(..),
     StringParse.print_file_info,
-    make_tokens
+    make_tokens,
+    print_token,
+    print_tokens
 ) where
 
 import qualified Lexer.StringParse as StringParse
+import qualified Tools.Formatting as Formatting
 
 type FileLocInfo = StringParse.FileLocInfo
 
@@ -23,6 +26,17 @@ data TokenType
     | LBracket
     | RBracket deriving (Show, Eq)
 
+print_tokens :: String -> String
+print_tokens command =
+    let folder current rest = current ++ "\n" ++ rest
+    in
+        foldr folder " " (map print_token $ make_tokens command)
+
+print_token :: Token -> String
+print_token (Token token_type string file_info) =
+    "token_type " ++ Formatting.postfix_spaces (show token_type) 10 ++
+    " " ++  Formatting.postfix_spaces string 7 ++
+    StringParse.print_file_info file_info
 
 make_tokens :: String -> [Token]
 make_tokens input_string =
