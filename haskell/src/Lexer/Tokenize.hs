@@ -26,7 +26,7 @@ data TokenType
 
 make_tokens :: String -> [Token]
 make_tokens input_string =
-    to_tokens input_string (StringParse.FileLocInfo (StringParse.FileLoc 0 0) (StringParse.FileLoc 0 0))
+    to_tokens input_string (StringParse.FileLocInfo (StringParse.FileLoc 0 1) (StringParse.FileLoc 0 1))
 
 to_tokens :: String -> FileLocInfo -> [Token]
 to_tokens input_string input_file_info =
@@ -38,8 +38,8 @@ to_tokens input_string input_file_info =
             token: to_tokens remaining file_info
 
 get_token :: String -> FileLocInfo -> (Token, String, FileLocInfo)
-get_token remaining input_file_info =
-    let (current, post_remaining, file_info) = StringParse.get_next_non_whitespace remaining input_file_info
+get_token remaining (StringParse.FileLocInfo (StringParse.FileLoc _ _) (StringParse.FileLoc end_char end_file)) =
+    let (current, post_remaining, file_info) = StringParse.get_next_non_whitespace remaining (StringParse.FileLocInfo (StringParse.FileLoc end_char end_file) (StringParse.FileLoc end_char end_file))
     in
         if StringParse.is_delimiter current then
             (convert_token [current] file_info, post_remaining, file_info)
