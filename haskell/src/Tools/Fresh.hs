@@ -15,7 +15,7 @@ load_start filename env = do
 print_tokens_start :: String -> IO ()
 print_tokens_start filename = do
     command <- readFile filename
-    putStrLn $ Tokenize.print_tokens command
+    putStrLn $ Tokenize.print_tokens $ Tokenize.make_tokens command
 
 loop_start :: AST.Environment -> IO ()
 loop_start env = do
