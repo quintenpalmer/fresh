@@ -33,8 +33,8 @@ to_tokens input_string input_file_info =
             token: to_tokens remaining file_info
 
 get_token :: String -> FileLocInfo -> (Token, String, FileLocInfo)
-get_token remaining (FileLoc.FileLocInfo (FileLoc.FileLoc _ _) (FileLoc.FileLoc end_char end_file)) =
-    let (current, post_remaining, file_info) = StringParse.get_next_non_whitespace remaining (FileLoc.FileLocInfo (FileLoc.FileLoc end_char end_file) (FileLoc.FileLoc end_char end_file))
+get_token remaining (FileLoc.FileLocInfo (FileLoc.FileLoc _ _) end_file_loc_info) =
+    let (current, post_remaining, file_info) = StringParse.get_next_non_whitespace remaining (FileLoc.FileLocInfo end_file_loc_info end_file_loc_info)
     in
         if Chars.is_delimiter current then
             (convert_token [current] file_info, post_remaining, file_info)
