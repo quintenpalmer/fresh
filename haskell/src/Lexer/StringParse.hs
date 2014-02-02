@@ -22,6 +22,6 @@ get_next_character [] _ = error "Reading past end of file"
 get_next_character [current] info = (current, [Chars.eof], info)
 get_next_character (current: rest) (FileLoc.FileLocInfo (FileLoc.FileLoc start_char start_line) (FileLoc.FileLoc end_char end_line)) =
     if Chars.is_line_break current then
-        (current, rest, (FileLoc.FileLocInfo (FileLoc.FileLoc 0 start_line) (FileLoc.FileLoc 0 (end_line + 1))))
+        (current, rest, (FileLoc.FileLocInfo (FileLoc.FileLoc 1 start_line) (FileLoc.FileLoc 1 (end_line + 1))))
     else
         (current, rest, (FileLoc.FileLocInfo (FileLoc.FileLoc start_char start_line) (FileLoc.FileLoc (end_char + 1) end_line)))

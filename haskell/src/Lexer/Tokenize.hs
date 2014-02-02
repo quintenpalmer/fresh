@@ -21,7 +21,7 @@ type TokenType = Tokens.TokenType
 
 make_tokens :: String -> [Token]
 make_tokens input_string =
-    to_tokens input_string (FileLoc.FileLocInfo (FileLoc.FileLoc 0 1) (FileLoc.FileLoc 0 1))
+    to_tokens input_string (FileLoc.FileLocInfo (FileLoc.FileLoc 1 1) (FileLoc.FileLoc 1 1))
 
 to_tokens :: String -> FileLocInfo -> [Token]
 to_tokens input_string input_file_info =
