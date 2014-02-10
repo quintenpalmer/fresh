@@ -1,22 +1,22 @@
-(define sq
+(var sq
     (lambda [x]
         (* x x)
     )
 )
 
-(define add
+(var add
     (lambda [x y]
         (+ x y)
     )
 )
 
-(define cube
+(var cube
     (lambda [x]
         (* x x x)
     )
 )
 
-(define factorial
+(var factorial
     (lambda [number]
         (if (> 2 number)
             number
@@ -28,13 +28,13 @@
     )
 )
 
-(define fib
+(var fib
     (lambda [index]
         (_fib index 1 0)
     )
 )
 
-(define _fib
+(var _fib
     (lambda [count current old]
         (if (< count 1)
             current
@@ -43,4 +43,4 @@
     )
 )
 
-(define main (fib 15))
+(var main (fib 15))

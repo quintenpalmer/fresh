@@ -1,4 +1,4 @@
-(define not
+(var not
     (lambda [to_negate]
         (if to_negate
             false
@@ -7,4 +7,4 @@
     )
 )
 
-(define main (not true))
+(var main (not true))

@@ -2,8 +2,8 @@
     (struct height weight)
 )
 
-(define quinten
+(var quinten
     (person 100 177)
 )
 
-(define main (member quinten weight))
+(var main (member quinten weight))

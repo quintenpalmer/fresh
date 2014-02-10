@@ -54,8 +54,8 @@ parse_better_be_define [] _ = error "Top level declarations must be a define"
 parse_better_be_define ((Tok.Token token_type string file_info):tokens) env =
     case token_type of
         Tok.String_ ->
-            if string == "define" then
-                Expression.parse_define tokens env
+            if string == "var" then
+                Expression.parse_var_def tokens env
             else if string == "type" then
                 TypeDef.parse_type_def tokens env
             else

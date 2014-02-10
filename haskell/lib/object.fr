@@ -2,4 +2,4 @@
     (struct height weight)
 )
 
-(define main (person 10 10))
+(var main (person 10 10))

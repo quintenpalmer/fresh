@@ -1,5 +1,5 @@
 module Parser.Expression (
-    parse_define
+    parse_var_def
 ) where
 
 import qualified Data.Map as Map
@@ -13,9 +13,9 @@ import qualified Parser.Chomper as Chomper
 type Token = Tok.Token
 type TokenEater = [Token] -> AST.Environment -> (AST.NodeContainer, [Token], AST.Environment)
 
-parse_define :: [Token] -> AST.Environment -> ([Token], AST.Environment)
-parse_define [] _ = error "Unexpected end of tokens in parse define"
-parse_define ((Tok.Token token_type name _):tokens) env =
+parse_var_def :: [Token] -> AST.Environment -> ([Token], AST.Environment)
+parse_var_def [] _ = error "Unexpected end of tokens in parse define"
+parse_var_def ((Tok.Token token_type name _):tokens) env =
     case token_type of
         Tok.String_ ->
             let (expression, tokens1, env1) = parse_expression tokens env

@@ -2,37 +2,37 @@
     (struct empty head tail)
 )
 
-(define empty_list
+(var empty_list
     (lambda []
         (list_struct true false false)
     )
 )
 
-(define list
+(var list
     (lambda [head tail]
         (list_struct false head tail)
     )
 )
 
-(define is_empty
+(var is_empty
     (lambda [list_]
         (member list_ empty)
     )
 )
 
-(define tail
+(var tail
     (lambda [list_]
         (member list_ tail)
     )
 )
 
-(define head
+(var head
     (lambda [list_]
         (member list_ head)
     )
 )
 
-(define map
+(var map
     (lambda [function arg_list]
         (if (is_empty arg_list)
             (empty_list)
@@ -44,16 +44,16 @@
     )
 )
 
-(define my_list
+(var my_list
     (list 4 (list 3 (list 2 (list 1 (empty_list)))))
 )
 
-(define sq
+(var sq
     (lambda [x]
         (* x x)
     )
 )
 
-(define main
+(var main
     (map sq my_list)
 )
