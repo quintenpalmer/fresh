@@ -52,7 +52,7 @@ evaluate (AST.NodeContainer (AST.FunctionCallNode name values) file_info) env =
             error $ "Function '" ++ name ++ "' not in scope at " ++ show file_info
 evaluate node@(AST.NodeContainer (AST.StructDeclarationNode _) _) _ = node
 evaluate node@(AST.NodeContainer (AST.StructInstantiationNode _) _) _ = node
-evaluate node@(AST.NodeContainer (AST.BuiltinNode _) _) _ = node
+evaluate node@(AST.NodeContainer (AST.PrimitiveOperatorNode _) _) _ = node
 evaluate node@(AST.NodeContainer (AST.ClosureNode _ _ _) _) _ = node
 evaluate (AST.NodeContainer (AST.MemberAccessNode struct_name member_name) file_info) env =
     let maybe_struct = Map.lookup struct_name env
@@ -74,7 +74,7 @@ evaluate (AST.NodeContainer (AST.MemberAccessNode struct_name member_name) file_
 
 
 evaluate_function_call :: AST.NodeContainer -> [AST.NodeContainer] -> AST.Environment -> AST.NodeContainer
-evaluate_function_call (AST.NodeContainer (AST.BuiltinNode function) _) values env =
+evaluate_function_call (AST.NodeContainer (AST.PrimitiveOperatorNode function) _) values env =
     function $ map (flip evaluate env) values
 evaluate_function_call (AST.NodeContainer (AST.ClosureNode function arguments closure_env) _) values env =
     evaluate function $ build_new_env

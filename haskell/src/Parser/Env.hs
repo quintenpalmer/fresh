@@ -6,12 +6,12 @@ import qualified Data.Map as Map
 
 import qualified Lexer.Tokenize as Tokenize
 import qualified Parser.AST as AST
-import qualified Parser.Builtin as Builtin
+import qualified Parser.Primitive as Primitive
 
-builtin_container_builder :: Builtin.InfiniteOperator -> AST.NodeContainer
-builtin_container_builder node =
+primitive_container_builder :: Primitive.InfiniteOperator -> AST.NodeContainer
+primitive_container_builder node =
     AST.NodeContainer
-        (AST.BuiltinNode node)
+        (AST.PrimitiveOperatorNode node)
         (Tokenize.FileLocInfo
             (Tokenize.FileLoc 0 0)
             (Tokenize.FileLoc 0 0)
@@ -19,11 +19,11 @@ builtin_container_builder node =
 
 defaultEnvironment :: AST.Environment
 defaultEnvironment = Map.fromList [
-    ("+", builtin_container_builder Builtin.add),
-    ("-", builtin_container_builder Builtin.minus),
-    ("*", builtin_container_builder Builtin.multiply),
-    ("and", builtin_container_builder Builtin.and_all),
-    ("or", builtin_container_builder Builtin.or_all),
-    (">", builtin_container_builder Builtin.greater),
-    ("<", builtin_container_builder Builtin.less),
-    ("=", builtin_container_builder Builtin.equal)]
+    ("+", primitive_container_builder Primitive.add),
+    ("-", primitive_container_builder Primitive.minus),
+    ("*", primitive_container_builder Primitive.multiply),
+    ("and", primitive_container_builder Primitive.and_all),
+    ("or", primitive_container_builder Primitive.or_all),
+    (">", primitive_container_builder Primitive.greater),
+    ("<", primitive_container_builder Primitive.less),
+    ("=", primitive_container_builder Primitive.equal)]

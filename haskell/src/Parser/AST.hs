@@ -34,7 +34,7 @@ data Node
     | StructDeclarationNode [String]
     | StructInstantiationNode (Map.Map String NodeContainer)
     | MemberAccessNode String String
-    | BuiltinNode ([NodeContainer] -> NodeContainer)
+    | PrimitiveOperatorNode ([NodeContainer] -> NodeContainer)
     | ClosureNode NodeContainer [String] Environment
 
 data NodeContainer = NodeContainer Node Tokenize.FileLocInfo
@@ -68,5 +68,5 @@ value node printer =
             "(instance " ++ (show (map (\ (name, val) -> name ++ " -> " ++ (printer val)) (Map.toList field_mapping))) ++ " )"
         (ClosureNode body arguments _) ->
             "(closure " ++ (printer body) ++ (show arguments) ++ "env)"
-        (BuiltinNode _) ->
-            "(builtin [])"
+        (PrimitiveOperatorNode _) ->
+            "(primitive_operator [])"

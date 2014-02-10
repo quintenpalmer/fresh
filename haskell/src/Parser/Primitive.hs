@@ -1,4 +1,4 @@
-module Parser.Builtin (
+module Parser.Primitive (
     add,
     minus,
     multiply,
