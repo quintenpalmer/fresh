@@ -1,4 +1,4 @@
-(define list_struct
+(type list_struct
     (struct empty head tail)
 )
 
