@@ -2,44 +2,32 @@
     (struct empty head tail)
 )
 
-(var empty_list
-    (lambda []
-        (list_struct true false false)
-    )
+(function empty_list []
+    (list_struct true false false)
 )
 
-(var list
-    (lambda [head tail]
-        (list_struct false head tail)
-    )
+(function list [head tail]
+    (list_struct false head tail)
 )
 
-(var is_empty
-    (lambda [list_]
-        (member list_ empty)
-    )
+(function is_empty [list_]
+    (member list_ empty)
 )
 
-(var tail
-    (lambda [list_]
-        (member list_ tail)
-    )
+(function tail [list_]
+    (member list_ tail)
 )
 
-(var head
-    (lambda [list_]
-        (member list_ head)
-    )
+(function head [list_]
+    (member list_ head)
 )
 
-(var map
-    (lambda [function arg_list]
-        (if (is_empty arg_list)
-            (empty_list)
-            (list
-                (function (head arg_list))
-                (map function (tail arg_list))
-            )
+(function map [func arg_list]
+    (if (is_empty arg_list)
+        (empty_list)
+        (list
+            (func (head arg_list))
+            (map func (tail arg_list))
         )
     )
 )
@@ -48,10 +36,8 @@
     (list 4 (list 3 (list 2 (list 1 (empty_list)))))
 )
 
-(var sq
-    (lambda [x]
-        (* x x)
-    )
+(function sq [x]
+    (* x x)
 )
 
 (var main

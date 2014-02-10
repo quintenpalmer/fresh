@@ -1,9 +1,7 @@
-(var not
-    (lambda [to_negate]
-        (if to_negate
-            false
-            true
-        )
+(function not [to_negate]
+    (if to_negate
+        false
+        true
     )
 )
 

@@ -10,6 +10,7 @@ import qualified AST.AST as AST
 
 import qualified Parser.Expression as Expression
 import qualified Parser.TypeDef as TypeDef
+import qualified Parser.FunctionDef as FunctionDef
 
 
 type Token = Tok.Token
@@ -58,6 +59,8 @@ parse_better_be_define ((Tok.Token token_type string file_info):tokens) env =
                 Expression.parse_var_def tokens env
             else if string == "type" then
                 TypeDef.parse_type_def tokens env
+            else if string == "function" then
+                FunctionDef.parse_function_def tokens env
             else
-                error $ "Top level declaration must be a define" ++ show file_info
-        _ -> error $ "Top level declaration must be a define" ++ show file_info
+                error $ "Top level declaration must be a define (found " ++ string ++ " ) " ++ show file_info
+        _ -> error $ "Top level declaration must be a define (found " ++ string ++ " ) " ++ show file_info

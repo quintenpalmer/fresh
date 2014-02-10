@@ -1,5 +1,6 @@
 module Parser.Expression (
-    parse_var_def
+    parse_var_def,
+    parse_expression
 ) where
 
 import qualified Data.Map as Map

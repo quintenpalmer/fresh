@@ -1,35 +1,37 @@
-(var sq
-    (lambda [x]
-        (* x x)
-    )
+(function sq [x]
+    (* x x)
 )
 
-(var add
-    (lambda [x y]
-        (+ x y)
-    )
+(function add [x y]
+    (+ x y)
 )
 
-(var cube
-    (lambda [x]
-        (* x x x)
-    )
+(function cube [x]
+    (* x x x)
 )
 
-(var factorial
-    (lambda [number]
-        (if (> 2 number)
+(function factorial [number]
+    (if (> 2 number)
+        number
+        (*
             number
-            (*
-                number
-                (factorial (- number 1))
-            )
+            (factorial (- number 1))
         )
     )
 )
 
-(var fib
-    (lambda [index]
+(function fib [index]
+    (_fib index 1 0)
+)
+
+(function _fib [count current old]
+    (if (< count 1)
+        current
+        (_fib (- count 1) (+ current old) current)
+    )
+)
+
+(var main (fib 15))
         (_fib index 1 0)
     )
 )
