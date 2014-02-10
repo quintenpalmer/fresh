@@ -15,15 +15,19 @@ type Environment = Map.Map String NodeContainer
 
 print_env :: Environment -> String
 print_env env =
-    "Environment:\n" ++ (print_whole_env $ Map.toList env)
+    "Environment:\n" ++ print_all_entries (Map.toList env) "\n"
 
 print_entry :: String -> NodeContainer -> String
 print_entry key val = key ++ " -> " ++ (print_node val)
 
-print_whole_env :: [(String, NodeContainer)] -> String
-print_whole_env [] = ""
-print_whole_env ((key, val):env) =
-    (print_entry key val) ++ "\n" ++ (print_whole_env env)
+print_all_entries :: [(String, NodeContainer)] -> String -> String
+print_all_entries [] _ = ""
+print_all_entries ((key, val): env) delimiter =
+    (print_entry key val) ++ delimiter ++ (print_all_entries env delimiter)
+
+print_struct_fields :: Environment -> String
+print_struct_fields env =
+    print_all_entries (Map.toList env) " "
 
 data Node
     = IntNode Int
@@ -66,7 +70,7 @@ value node printer =
         (MemberAccessNode struct_name member_name) ->
             "(member " ++ struct_name ++ " " ++ member_name ++ ")"
         (StructInstantiationNode field_mapping) ->
-            "(instance " ++ (show (map (\ (name, val) -> name ++ " -> " ++ (printer val)) (Map.toList field_mapping))) ++ " )"
+            "(instance " ++ print_struct_fields field_mapping ++ " )"
         (ClosureNode body arguments _) ->
             "(closure " ++ (printer body) ++ (show arguments) ++ "env)"
         (PrimitiveOperatorNode _) ->
