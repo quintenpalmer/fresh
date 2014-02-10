@@ -6,8 +6,10 @@ import qualified Data.Map as Map
 import qualified Data.Maybe as Maybe
 
 import qualified Lexer.Tokenize as Tok
+import qualified AST.AST as AST
+
 import qualified Parser.Builtin as Builtin
-import qualified Parser.AST as AST
+
 
 type Token = Tok.Token
 

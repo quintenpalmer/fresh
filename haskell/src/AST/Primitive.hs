@@ -1,4 +1,4 @@
-module Parser.Primitive (
+module AST.Primitive (
     add,
     minus,
     multiply,
@@ -10,7 +10,7 @@ module Parser.Primitive (
     InfiniteOperator
 ) where
 
-import qualified Parser.AST as AST
+import qualified AST.AST as AST
 
 type BinaryOperator = AST.NodeContainer -> AST.NodeContainer -> AST.NodeContainer
 type InfiniteOperator = [AST.NodeContainer] -> AST.NodeContainer

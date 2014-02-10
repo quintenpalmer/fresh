@@ -1,12 +1,13 @@
-module Parser.Env (
+module AST.Env (
     defaultEnvironment
 ) where
 
 import qualified Data.Map as Map
 
 import qualified Lexer.Tokenize as Tokenize
-import qualified Parser.AST as AST
-import qualified Parser.Primitive as Primitive
+
+import qualified AST.AST as AST
+import qualified AST.Primitive as Primitive
 
 primitive_container_builder :: Primitive.InfiniteOperator -> AST.NodeContainer
 primitive_container_builder node =

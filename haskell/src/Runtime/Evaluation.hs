@@ -6,7 +6,7 @@ module Runtime.Evaluation (
 import qualified Data.Map as Map
 import qualified Data.Maybe as Maybe
 
-import qualified Parser.AST as AST
+import qualified AST.AST as AST
 
 start_evaluate :: AST.NodeContainer -> AST.Environment -> AST.NodeContainer
 start_evaluate node env =

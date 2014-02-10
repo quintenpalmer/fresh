@@ -6,7 +6,8 @@ import qualified Data.Map as Map
 import qualified Data.Maybe as Maybe
 
 import qualified Lexer.Tokenize as Tok
-import qualified Parser.AST as AST
+import qualified AST.AST as AST
+
 import qualified Parser.Chomper as Chomper
 
 type Token = Tok.Token

@@ -3,9 +3,9 @@ import qualified Data.Map as Map
 
 import qualified Lexer.Tokenize as Tokenize
 import qualified Parser.Parse as Parse
-import qualified Parser.AST as AST
+import qualified AST.AST as AST
+import qualified AST.Env as Env
 import qualified Runtime.Evaluation as Evaluation
-import qualified Parser.Env as Env
 
 load_start :: String -> AST.Environment -> IO ()
 load_start filename env = do

@@ -1,4 +1,4 @@
-module Parser.AST (
+module AST.AST (
     NodeContainer(..),
     Node(..),
     print_node,
@@ -8,6 +8,7 @@ module Parser.AST (
 ) where
 
 import qualified Data.Map as Map
+
 import qualified Lexer.Tokenize as Tokenize
 
 type Environment = Map.Map String NodeContainer
