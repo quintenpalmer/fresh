@@ -8,7 +8,8 @@ import qualified Data.Maybe as Maybe
 import qualified Lexer.Tokenize as Tok
 import qualified AST.AST as AST
 
-import qualified Parser.Builtin as Builtin
+import qualified Parser.Expression as Expression
+import qualified Parser.TypeDef as TypeDef
 
 
 type Token = Tok.Token
@@ -54,7 +55,9 @@ parse_better_be_define ((Tok.Token token_type string file_info):tokens) env =
     case token_type of
         Tok.String_ ->
             if string == "define" then
-                Builtin.parse_define tokens env
+                Expression.parse_define tokens env
+            else if string == "type" then
+                TypeDef.parse_type_def tokens env
             else
                 error $ "Top level declaration must be a define" ++ show file_info
         _ -> error $ "Top level declaration must be a define" ++ show file_info

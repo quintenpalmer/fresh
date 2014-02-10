@@ -1,4 +1,4 @@
-module Parser.Builtin (
+module Parser.Expression (
     parse_define
 ) where
 
@@ -81,14 +81,6 @@ parse_lambda tokens@((Tok.Token _ _ file_info):_) env =
     in
         (AST.NodeContainer (AST.LambdaNode body params) file_info, tokens5, env1)
 
-parse_struct :: TokenEater
-parse_struct [] _ = error "Reached end of tokens parsing struct"
-parse_struct tokens@((Tok.Token _ _ file_info):_) env =
-    let (members, tokens2) = Chomper.parse_fields [] tokens
-        tokens3 = Chomper.chomp_close_expression tokens2
-    in
-        (AST.NodeContainer (AST.StructDeclarationNode members) file_info, tokens3, env)
-
 parse_member :: TokenEater
 parse_member input_tokens env =
     case input_tokens of
@@ -102,5 +94,4 @@ function_map :: Map.Map String TokenEater
 function_map = Map.fromList [
     ("if", parse_if),
     ("lambda", parse_lambda),
-    ("struct", parse_struct),
     ("member", parse_member)]

@@ -1,4 +1,4 @@
-(define person
+(type person
     (struct height weight)
 )
 

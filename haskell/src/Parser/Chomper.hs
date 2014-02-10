@@ -16,7 +16,7 @@ parse_fields existing_params input_tokens@((Tok.Token token_type name _):tokens)
     case token_type of
         Tok.RParen -> (existing_params, input_tokens)
         Tok.String_ -> parse_fields (name: existing_params) tokens
-        _ -> error $ "Was expecting parameter or ] when found " ++ name
+        _ -> error $ "Was expecting parameter or ) when found " ++ name
 
 parse_params :: [String] -> [Token] -> ([String], [Token])
 parse_params _ [] = error "No parameters to parse in parse_params"
