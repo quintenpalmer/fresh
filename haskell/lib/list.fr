@@ -1,0 +1,59 @@
+(define list_struct
+    (struct empty head tail)
+)
+
+(define empty_list
+    (lambda []
+        (list_struct true false false)
+    )
+)
+
+(define list
+    (lambda [head tail]
+        (list_struct false head tail)
+    )
+)
+
+(define is_empty
+    (lambda [list_]
+        (member list_ empty)
+    )
+)
+
+(define tail
+    (lambda [list_]
+        (member list_ tail)
+    )
+)
+
+(define head
+    (lambda [list_]
+        (member list_ head)
+    )
+)
+
+(define map
+    (lambda [function arg_list]
+        (if (is_empty arg_list)
+            (empty_list)
+            (list
+                (function (head arg_list))
+                (map function (tail arg_list))
+            )
+        )
+    )
+)
+
+(define my_list
+    (list 4 (list 3 (list 2 (list 1 (empty_list)))))
+)
+
+(define sq
+    (lambda [x]
+        (* x x)
+    )
+)
+
+(define main
+    (map sq my_list)
+)
