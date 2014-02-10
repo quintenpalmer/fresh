@@ -31,8 +31,8 @@ boolean operator (AST.NodeContainer (AST.BoolNode x) file_info) (AST.NodeContain
 boolean _ _ _ = error "and/or invalid runtime time, two bools"
 
 
-acculuatively_apply :: BinaryOperator -> [AST.NodeContainer] -> AST.NodeContainer
-acculuatively_apply function input_arguments =
+accumulatively_apply :: BinaryOperator -> [AST.NodeContainer] -> AST.NodeContainer
+accumulatively_apply function input_arguments =
     case input_arguments of
         [] -> error "uhhhhh, nice try! can't apply to no arguments"
         [_] -> error "uhhhhh, nice try! can't apply to one argument"
@@ -67,31 +67,31 @@ adder :: BinaryOperator
 adder x y = arithmetic (+) x y
 
 add :: InfiniteOperator
-add arguments = acculuatively_apply adder arguments
+add arguments = accumulatively_apply adder arguments
 
 subtracter :: BinaryOperator
 subtracter x y = arithmetic (-) x y
 
 minus :: InfiniteOperator
-minus arguments = acculuatively_apply subtracter arguments
+minus arguments = accumulatively_apply subtracter arguments
 
 multiplier :: BinaryOperator
 multiplier x y = arithmetic (*) x y
 
 multiply :: InfiniteOperator
-multiply arguments = acculuatively_apply multiplier arguments
+multiply arguments = accumulatively_apply multiplier arguments
 
 ander :: BinaryOperator
 ander x y = boolean (&&) x y
 
 and_all :: InfiniteOperator
-and_all arguments = acculuatively_apply ander arguments
+and_all arguments = accumulatively_apply ander arguments
 
 orer :: BinaryOperator
 orer x y = boolean (||) x y
 
 or_all :: InfiniteOperator
-or_all arguments = acculuatively_apply orer arguments
+or_all arguments = accumulatively_apply orer arguments
 
 greaterer :: BinaryOperator
 greaterer x y = comparison (>) x y
