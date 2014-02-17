@@ -32,6 +32,7 @@ parse_expression ((Tok.Token token_type string file_info):tokens) env =
         Tok.LParen -> parse_func_call tokens env
         Tok.IntLiteral -> (AST.NodeContainer (AST.IntNode $ read string) file_info, tokens, env)
         Tok.BoolLiteral -> (AST.NodeContainer (AST.BoolNode $ string == "true") file_info, tokens, env)
+        Tok.NullLiteral -> (AST.NodeContainer (AST.NullNode) file_info, tokens, env)
         Tok.String_ -> (AST.NodeContainer (AST.VariableNode string) file_info, tokens, env)
         token -> error $ "Invalid Token " ++ show token
 

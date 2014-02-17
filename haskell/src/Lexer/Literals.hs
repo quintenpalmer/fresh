@@ -1,6 +1,7 @@
 module Lexer.Literals (
     is_int_literal,
     is_bool_literal,
+    is_null_literal,
 ) where
 
 import qualified Data.Char as Char
@@ -8,6 +9,10 @@ import qualified Data.Char as Char
 bools :: [String]
 bools =
     ["true", "false"]
+
+is_null_literal :: String -> Bool
+is_null_literal string =
+    string == "null"
 
 is_bool_literal :: String -> Bool
 is_bool_literal string =

@@ -32,6 +32,7 @@ print_struct_fields env =
 data Node
     = IntNode Int
     | BoolNode Bool
+    | NullNode
     | VariableNode String
     | IfNode NodeContainer NodeContainer NodeContainer
     | LambdaNode NodeContainer [String]
@@ -40,6 +41,7 @@ data Node
     | StructInstantiationNode (Map.Map String NodeContainer)
     | MemberAccessNode String String
     | PrimitiveOperatorNode ([NodeContainer] -> NodeContainer)
+    | PrimitiveUnaryOperatorNode (NodeContainer -> NodeContainer)
     | ClosureNode NodeContainer [String] Environment
     | ModuleDefinitionNode
     | EnvContainerNode Environment
@@ -59,6 +61,7 @@ value node printer =
     case node of
         (IntNode int) -> show int
         (BoolNode bool) -> show bool
+        (NullNode) -> "null"
         (VariableNode name) ->
             "(variable " ++ name ++ ")"
         (IfNode if_expr then_expr else_expr) ->
@@ -77,6 +80,8 @@ value node printer =
             "(closure " ++ (printer body) ++ (show arguments) ++ "env)"
         (PrimitiveOperatorNode _) ->
             "(primitive_operator [])"
+        (PrimitiveUnaryOperatorNode _) ->
+            "(primitive_unary_operator _)"
         (ModuleDefinitionNode) ->
             "(module)"
         (EnvContainerNode _) ->

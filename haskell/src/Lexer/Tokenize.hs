@@ -63,4 +63,5 @@ get_token_type current
     | Chars.is_eof current = Tokens.Eof
     | Literals.is_int_literal current = Tokens.IntLiteral
     | Literals.is_bool_literal current   = Tokens.BoolLiteral
+    | Literals.is_null_literal current = Tokens.NullLiteral
     | otherwise = Tokens.String_

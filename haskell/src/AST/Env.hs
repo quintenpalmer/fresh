@@ -18,6 +18,15 @@ primitive_container_builder node =
             (Tokenize.FileLoc 0 0)
         )
 
+primitive_unary_container_builder :: Primitive.UnaryOperator -> AST.NodeContainer
+primitive_unary_container_builder node =
+    AST.NodeContainer
+        (AST.PrimitiveUnaryOperatorNode node)
+        (Tokenize.FileLocInfo
+            (Tokenize.FileLoc 0 0)
+            (Tokenize.FileLoc 0 0)
+        )
+
 defaultEnvironment :: AST.Environment
 defaultEnvironment = Map.fromList [
     ("+", primitive_container_builder Primitive.add),
@@ -27,4 +36,5 @@ defaultEnvironment = Map.fromList [
     ("or", primitive_container_builder Primitive.or_all),
     (">", primitive_container_builder Primitive.greater),
     ("<", primitive_container_builder Primitive.less),
-    ("=", primitive_container_builder Primitive.equal)]
+    ("=", primitive_container_builder Primitive.equal),
+    ("is_null", primitive_unary_container_builder Primitive.is_null)]

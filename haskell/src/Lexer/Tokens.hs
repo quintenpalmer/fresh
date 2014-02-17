@@ -13,6 +13,7 @@ data Token = Token TokenType String FileLoc.FileLocInfo deriving (Show)
 data TokenType
     = IntLiteral
     | BoolLiteral
+    | NullLiteral
     | String_
     | Eof
     | LParen

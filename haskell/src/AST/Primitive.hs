@@ -7,11 +7,14 @@ module AST.Primitive (
     greater,
     less,
     equal,
-    InfiniteOperator
+    is_null,
+    InfiniteOperator,
+    UnaryOperator
 ) where
 
 import qualified AST.AST as AST
 
+type UnaryOperator = AST.NodeContainer -> AST.NodeContainer
 type BinaryOperator = AST.NodeContainer -> AST.NodeContainer -> AST.NodeContainer
 type InfiniteOperator = [AST.NodeContainer] -> AST.NodeContainer
 
@@ -110,3 +113,9 @@ equaler x y = comparison (==) x y
 
 equal :: InfiniteOperator
 equal arguments = comparatively_apply equaler arguments
+
+is_null :: UnaryOperator
+is_null (AST.NodeContainer (AST.NullNode) file_info) =
+    AST.NodeContainer (AST.BoolNode True) file_info
+is_null (AST.NodeContainer _ file_info) =
+    AST.NodeContainer (AST.BoolNode False) file_info
