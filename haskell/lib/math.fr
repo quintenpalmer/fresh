@@ -33,12 +33,10 @@
     )
 )
 
-(var _fib
-    (lambda [count current old]
-        (if (< count 1)
-            current
-            (_fib (- count 1) (+ current old) current)
-        )
+(function _fib [count current old]
+    (if (< count 1)
+        current
+        (_fib (- count 1) (+ current old) current)
     )
 )
 
