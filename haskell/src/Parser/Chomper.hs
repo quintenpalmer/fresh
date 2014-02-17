@@ -4,7 +4,8 @@ module Parser.Chomper (
     parse_name,
     chomp_close_expression,
     chomp_close_lambda_params,
-    chomp_open_lambda_params
+    chomp_open_lambda_params,
+    chomp_open_expression
 ) where
 
 import qualified Lexer.Tokenize as Tok
@@ -33,6 +34,10 @@ parse_name ((Tok.Token token_type name _):tokens) =
     case token_type of
         Tok.String_ -> (name, tokens)
         _ -> error $ "Was expecting name, found " ++ name
+
+chomp_open_expression :: [Token] -> [Token]
+chomp_open_expression tokens =
+    assert_chomping Tok.LParen tokens
 
 chomp_close_expression :: [Token] -> [Token]
 chomp_close_expression tokens =
