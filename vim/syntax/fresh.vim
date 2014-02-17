@@ -16,7 +16,7 @@ if exists("b:current_syntax")
 	finish
 endif
 
-syn keyword freshBuiltin var type function lambda if not and or
+syn keyword freshBuiltin var type function lambda if not and or package member
 syn match freshTokens "[*+><=]"
 syn match freshExpressionDelimiter "[()\[\]]"
 syn match freshDec "\<\d\+\>"
