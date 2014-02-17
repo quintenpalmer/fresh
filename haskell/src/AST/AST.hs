@@ -41,6 +41,8 @@ data Node
     | MemberAccessNode String String
     | PrimitiveOperatorNode ([NodeContainer] -> NodeContainer)
     | ClosureNode NodeContainer [String] Environment
+    | ModuleDefinitionNode
+    | EnvContainerNode Environment
 
 data NodeContainer = NodeContainer Node Tokenize.FileLocInfo
 
@@ -75,3 +77,7 @@ value node printer =
             "(closure " ++ (printer body) ++ (show arguments) ++ "env)"
         (PrimitiveOperatorNode _) ->
             "(primitive_operator [])"
+        (ModuleDefinitionNode) ->
+            "(module)"
+        (EnvContainerNode _) ->
+            "(env_container )"

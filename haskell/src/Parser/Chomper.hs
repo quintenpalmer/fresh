@@ -1,6 +1,7 @@
 module Parser.Chomper (
     parse_fields,
     parse_params,
+    parse_name,
     chomp_close_expression,
     chomp_close_lambda_params,
     chomp_open_lambda_params
@@ -26,6 +27,12 @@ parse_params existing_params input_tokens@((Tok.Token token_type name _):tokens)
         Tok.String_ -> parse_params (name: existing_params) tokens
         _ -> error $ "Was expecting parameter or ] when found " ++ name
 
+parse_name :: [Token] -> (String, [Token])
+parse_name [] = error "No parameters to parse in parse_params"
+parse_name ((Tok.Token token_type name _):tokens) =
+    case token_type of
+        Tok.String_ -> (name, tokens)
+        _ -> error $ "Was expecting name, found " ++ name
 
 chomp_close_expression :: [Token] -> [Token]
 chomp_close_expression tokens =

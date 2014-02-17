@@ -71,6 +71,9 @@ evaluate (AST.NodeContainer (AST.MemberAccessNode struct_name member_name) file_
                     _ -> error "Not an object in scope"
         else
             error $ "Struct '" ++ struct_name ++ "' not in scope at " ++ show file_info
+evaluate (AST.NodeContainer (AST.ModuleDefinitionNode) file_info) env =
+    (AST.NodeContainer (AST.EnvContainerNode env) file_info)
+evaluate node@(AST.NodeContainer (AST.EnvContainerNode _) _) _ = node
 
 
 evaluate_function_call :: AST.NodeContainer -> [AST.NodeContainer] -> AST.Environment -> AST.NodeContainer

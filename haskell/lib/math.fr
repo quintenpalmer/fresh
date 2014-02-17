@@ -1,3 +1,5 @@
+(package math)
+
 (function sq [x]
     (* x x)
 )

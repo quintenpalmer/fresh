@@ -1,3 +1,5 @@
+(package list)
+
 (type list_struct
     (struct empty head tail)
 )

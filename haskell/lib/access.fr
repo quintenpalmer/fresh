@@ -1,3 +1,5 @@
+(package person)
+
 (type person
     (struct height weight)
 )
