@@ -31,11 +31,6 @@
     )
 )
 
-(var main (fib 15))
-        (_fib index 1 0)
-    )
-)
-
 (var _fib
     (lambda [count current old]
         (if (< count 1)
