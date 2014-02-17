@@ -20,7 +20,7 @@ parse_var_def ((Tok.Token token_type name _):tokens) env =
     case token_type of
         Tok.String_ ->
             let (expression, tokens1, env1) = parse_expression tokens env
-                tokens2 = Chomper.chomp_close_expression tokens1
+                tokens2 = Chomper.chomp_close_expression tokens1 "var"
             in
                 (tokens2, Map.insert name expression env1)
         token -> error $ show token
@@ -46,7 +46,7 @@ parse_func_call ((Tok.Token token_type current file_info):tokens) env =
                     (Maybe.fromJust maybe_function) tokens env
                 else
                     let (operands, pre_close_tokens) = parse_operands [] tokens env
-                        post_close_tokens = Chomper.chomp_close_expression pre_close_tokens
+                        post_close_tokens = Chomper.chomp_close_expression pre_close_tokens "func_call"
                     in
                         (AST.NodeContainer (AST.FunctionCallNode current operands) file_info, post_close_tokens, env)
         token -> error $ show token
@@ -67,7 +67,7 @@ parse_if tokens@((Tok.Token _ _ file_info):_) env =
     let (cond_expr, tokens1, env1) = parse_expression tokens env
         (then_expr, tokens2, env2) = parse_expression tokens1 env1
         (else_expr, tokens3, env3) = parse_expression tokens2 env2
-        tokens4 = Chomper.chomp_close_expression tokens3
+        tokens4 = Chomper.chomp_close_expression tokens3 "if"
     in
         (AST.NodeContainer (AST.IfNode cond_expr then_expr else_expr) file_info, tokens4, env3)
 
@@ -78,7 +78,7 @@ parse_lambda tokens@((Tok.Token _ _ file_info):_) env =
         (params, tokens2) = Chomper.parse_params [] tokens1
         tokens3 = Chomper.chomp_close_lambda_params tokens2
         (body, tokens4, env1) = parse_expression tokens3 env
-        tokens5 = Chomper.chomp_close_expression tokens4
+        tokens5 = Chomper.chomp_close_expression tokens4 "lambda"
     in
         (AST.NodeContainer (AST.LambdaNode body params) file_info, tokens5, env1)
 
@@ -86,7 +86,7 @@ parse_member :: TokenEater
 parse_member input_tokens env =
     case input_tokens of
         ((Tok.Token Tok.String_ struct_name file_info):((Tok.Token Tok.String_ member_name _):tokens)) ->
-            let remaining_tokens = Chomper.chomp_close_expression tokens
+            let remaining_tokens = Chomper.chomp_close_expression tokens "member"
             in
                 (AST.NodeContainer (AST.MemberAccessNode struct_name member_name) file_info, remaining_tokens, env)
         _ -> error "member must take a struct name and a member name"

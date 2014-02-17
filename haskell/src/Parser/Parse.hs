@@ -40,7 +40,7 @@ parse_better_be_package ((Tok.Token token_type string file_info):tokens) env =
         Tok.String_ ->
             if string == "package" then
                 let (name, tokens2) = Chomper.parse_name tokens
-                    tokens3 = Chomper.chomp_close_expression tokens2
+                    tokens3 = Chomper.chomp_close_expression tokens2 "package"
                 in
                     parse_all_top_levels tokens3 $ Map.insert name (AST.NodeContainer (AST.ModuleDefinitionNode) file_info) env
             else

@@ -37,24 +37,24 @@ parse_name ((Tok.Token token_type name _):tokens) =
 
 chomp_open_expression :: [Token] -> [Token]
 chomp_open_expression tokens =
-    assert_chomping Tok.LParen tokens
+    assert_chomping Tok.LParen tokens "expression"
 
-chomp_close_expression :: [Token] -> [Token]
-chomp_close_expression tokens =
-    assert_chomping Tok.RParen tokens
+chomp_close_expression :: [Token] -> String ->[Token]
+chomp_close_expression tokens name =
+    assert_chomping Tok.RParen tokens name
 
 chomp_open_lambda_params :: [Token] -> [Token]
 chomp_open_lambda_params tokens =
-    assert_chomping Tok.LBracket tokens
+    assert_chomping Tok.LBracket tokens "lambda"
 
 chomp_close_lambda_params :: [Token] -> [Token]
 chomp_close_lambda_params tokens =
-    assert_chomping Tok.RBracket tokens
+    assert_chomping Tok.RBracket tokens "lambda"
 
-assert_chomping :: Tok.TokenType -> [Token] -> [Token]
-assert_chomping expected [] = error $ "End of tokens when asserting for " ++ show expected
-assert_chomping expected_token_type ((Tok.Token token_type string file_info):tokens) =
+assert_chomping :: Tok.TokenType -> [Token] -> String -> [Token]
+assert_chomping expected [] name = error $ "End of tokens when asserting for " ++ show expected ++ " in " ++ name
+assert_chomping expected_token_type ((Tok.Token token_type string file_info):tokens) name =
     if token_type == expected_token_type then
         tokens
     else
-        error $ "wrong token'" ++ (show expected_token_type) ++ "', found '" ++ string ++ "'" ++ show file_info
+        error $ "wrong token '" ++ (show expected_token_type) ++ "', found '" ++ string ++ "' in expression of " ++ name ++ " : " ++ show file_info

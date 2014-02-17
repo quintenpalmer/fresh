@@ -22,7 +22,7 @@ parse_function_def ((Tok.Token token_function name file_info): tokens) env =
     case token_function of
         Tok.String_ ->
             let (function_def, tokens1, env1) = parse_function_expression tokens env
-                tokens2 = Chomper.chomp_close_expression tokens1
+                tokens2 = Chomper.chomp_close_expression tokens1 "function"
             in
                 (tokens2, Map.insert name function_def env1)
         _ -> error $ "Expecting function name and defined function " ++ show file_info
