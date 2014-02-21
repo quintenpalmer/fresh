@@ -27,11 +27,7 @@ to_tokens input_string input_file_info =
     else
         let (token, remaining, file_info) = Delimiter.get_token_string input_string input_file_info
         in
-            (convert_token token file_info): to_tokens remaining file_info
-
-convert_token :: String -> TokenLoc -> Token
-convert_token current file_info =
-    Tokens.Token (get_token_type current) current file_info
+            (Tokens.Token (get_token_type token) token file_info): to_tokens remaining file_info
 
 get_token_type :: String -> TokenType
 get_token_type current
