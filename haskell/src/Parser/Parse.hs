@@ -32,14 +32,11 @@ parse_package_definition input_tokens env =
     let ((Tok.Token token_type string file_info):tokens) = Chomper.chomp_open_expression input_tokens
     in
         case token_type of
-            Tok.String_ ->
-                if string == "package" then
-                    let (name, tokens2) = Chomper.parse_name tokens
-                        tokens3 = Chomper.chomp_close_expression tokens2 "package"
-                    in
-                        parse_all_top_levels tokens3 $ Map.insert name (AST.Node (AST.ModuleDefinitionNode) file_info) env
-                else
-                    error $ "Top level declaration must be a package (found " ++ string ++ " ) " ++ show file_info
+            Tok.PackageLiteral ->
+                let (name, tokens2) = Chomper.parse_name tokens
+                    tokens3 = Chomper.chomp_close_expression tokens2 "package"
+                in
+                    parse_all_top_levels tokens3 $ Map.insert name (AST.Node (AST.ModuleDefinitionNode) file_info) env
             _ -> error $ "Top level declaration must be a package (found " ++ string ++ " ) " ++ show file_info
 
 parse_all_top_levels :: [Token] -> AST.Environment -> ([Token], AST.Environment)

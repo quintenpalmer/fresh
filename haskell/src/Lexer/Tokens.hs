@@ -21,6 +21,7 @@ data TokenType
     | FunctionLiteral
     | TypeLiteral
     | StructLiteral
+    | PackageLiteral
     | String_
     | Eof
     | LParen

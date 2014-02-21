@@ -51,5 +51,6 @@ get_token_type current
     | Literals.is_type_literal current = Tokens.TypeLiteral
     | Literals.is_struct_literal current = Tokens.StructLiteral
     | Literals.is_member_literal current = Tokens.MemberLiteral
+    | Literals.is_package_literal current = Tokens.PackageLiteral
     | Delimiter.is_eof current = Tokens.Eof
     | otherwise = Tokens.String_
