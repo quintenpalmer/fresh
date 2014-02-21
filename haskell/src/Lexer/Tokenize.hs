@@ -22,7 +22,7 @@ make_tokens input_string =
 
 to_tokens :: String -> TokenLoc -> [Token]
 to_tokens input_string input_file_info =
-    if Delimiter.is_eof input_string then
+    if all Delimiter.is_whitespace input_string then
         []
     else
         let (token, remaining, file_info) = Delimiter.get_token_string input_string input_file_info
@@ -46,5 +46,4 @@ get_token_type current
     | Literals.is_struct_literal current = Tokens.StructLiteral
     | Literals.is_member_literal current = Tokens.MemberLiteral
     | Literals.is_package_literal current = Tokens.PackageLiteral
-    | Delimiter.is_eof current = Tokens.Eof
     | otherwise = Tokens.String_

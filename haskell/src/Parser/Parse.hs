@@ -22,7 +22,7 @@ parse raw_string input_env =
         (tokens1, env1) = parse_all_top_levels tokens env
     in
         case tokens1 of
-            [(Tok.Token (Tok.Eof) _ _)] -> env1
+            [] -> env1
             _ -> error $ "remaining tokens" ++ Tok.print_tokens tokens1
 
 parse_package_definition :: [Token] -> AST.Environment -> ([Token], AST.Environment)
@@ -44,7 +44,6 @@ parse_all_top_levels input_tokens input_env =
     in
         case tokens of
             [] -> (tokens, env)
-            [(Tok.Token (Tok.Eof) _ _)] -> (tokens, env)
             _ -> parse_all_top_levels tokens env
 
 parse_top_level_expression :: [Token] -> AST.Environment -> ([Token], AST.Environment)
