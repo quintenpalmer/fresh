@@ -17,6 +17,9 @@ data TokenType
     | IfLiteral
     | LambdaLiteral
     | MemberLiteral
+    | VarLiteral
+    | FunctionLiteral
+    | TypeLiteral
     | String_
     | Eof
     | LParen

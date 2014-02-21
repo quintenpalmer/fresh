@@ -46,6 +46,9 @@ get_token_type current
     | Literals.is_null_literal current = Tokens.NullLiteral
     | Literals.is_lambda_literal current = Tokens.LambdaLiteral
     | Literals.is_if_literal current = Tokens.IfLiteral
+    | Literals.is_var_literal current = Tokens.VarLiteral
+    | Literals.is_function_literal current = Tokens.FunctionLiteral
+    | Literals.is_type_literal current = Tokens.TypeLiteral
     | Literals.is_member_literal current = Tokens.MemberLiteral
     | Delimiter.is_eof current = Tokens.Eof
     | otherwise = Tokens.String_

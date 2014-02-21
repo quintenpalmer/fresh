@@ -76,13 +76,7 @@ parse_better_be_define :: [Token] -> AST.Environment -> ([Token], AST.Environmen
 parse_better_be_define [] _ = error "Top level declarations must be a define"
 parse_better_be_define ((Tok.Token token_type string file_info):tokens) env =
     case token_type of
-        Tok.String_ ->
-            if string == "var" then
-                Expression.parse_var_def tokens env
-            else if string == "type" then
-                TypeDef.parse_type_def tokens env
-            else if string == "function" then
-                FunctionDef.parse_function_def tokens env
-            else
-                error $ "Top level declaration must be a define (found " ++ string ++ " ) " ++ show file_info
+        Tok.VarLiteral -> Expression.parse_var_def tokens env
+        Tok.TypeLiteral -> TypeDef.parse_type_def tokens env
+        Tok.FunctionLiteral -> FunctionDef.parse_function_def tokens env
         _ -> error $ "Top level declaration must be a define (found " ++ string ++ " ) " ++ show file_info
