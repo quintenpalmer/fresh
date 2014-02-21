@@ -52,7 +52,7 @@ eval :: String -> AST.Environment -> String
 eval command env =
     let (ast, env1) = (Parse.parse command env)
     in
-        AST.print_node $ Evaluation.start_evaluate ast env1
+        show $ Evaluation.start_evaluate ast env1
 
 
 print_evaled_ast :: String -> AST.Environment -> String

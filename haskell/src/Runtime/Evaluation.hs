@@ -97,7 +97,7 @@ evaluate_function_call (AST.Node (AST.StructDeclarationNode arguments) file_info
         file_info
 
 evaluate_function_call node _ _ =
-    error $ "Invalid runtime type, expected function call closure: got " ++ AST.print_node node
+    error $ "Invalid runtime type, expected function call closure: got " ++ show node
 
 build_new_env :: [String] -> [AST.Node] -> AST.Environment -> AST.Environment
 build_new_env [] [] env = env

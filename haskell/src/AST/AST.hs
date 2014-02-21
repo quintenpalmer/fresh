@@ -1,14 +1,13 @@
 module AST.AST (
     Node(..),
     Value(..),
-    print_node,
-    debug_print_node,
     Environment,
     print_env
 ) where
 
 import qualified Data.Map as Map
 
+import qualified Debug.Debug as Debug
 import qualified Lexer.Tokenize as Tokenize
 
 type Environment = Map.Map String Node
@@ -18,7 +17,7 @@ print_env env =
     "Environment:\n" ++ print_all_entries (Map.toList env) "\n"
 
 print_entry :: String -> Node -> String
-print_entry key val = key ++ " -> " ++ (print_node val)
+print_entry key val = key ++ " -> " ++ (show val)
 
 print_all_entries :: [(String, Node)] -> String -> String
 print_all_entries [] _ = ""
@@ -44,13 +43,13 @@ data Value
 
 data Node = Node Value Tokenize.TokenLoc
 
-debug_print_node :: Node -> String
-debug_print_node (Node node file_loc_info) =
-    (value node debug_print_node) ++ " at " ++ (show file_loc_info)
+instance Debug.DebugShow Node where
+    debug_show (Node node file_loc_info) =
+        (value node Debug.debug_show) ++ " at " ++ (show file_loc_info)
 
-print_node :: Node -> String
-print_node (Node node _) =
-    value node print_node
+instance Show Node where
+    show (Node node _) =
+        value node show
 
 value :: Value -> (Node -> String) -> String
 value val printer =
