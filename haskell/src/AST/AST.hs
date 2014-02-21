@@ -25,10 +25,6 @@ print_all_entries [] _ = ""
 print_all_entries ((key, val): env) delimiter =
     (print_entry key val) ++ delimiter ++ (print_all_entries env delimiter)
 
-print_struct_fields :: Environment -> String
-print_struct_fields env =
-    print_all_entries (Map.toList env) " "
-
 data Value
     = IntNode Int
     | BoolNode Bool
@@ -75,7 +71,7 @@ value val printer =
         (MemberAccessNode struct_name member_name) ->
             "(member " ++ struct_name ++ " " ++ member_name ++ ")"
         (StructInstantiationNode field_mapping) ->
-            "(instance " ++ print_struct_fields field_mapping ++ " )"
+            "(instance " ++ print_all_entries (Map.toList field_mapping) " " ++ " )"
         (ClosureNode body arguments _) ->
             "(closure " ++ (printer body) ++ (show arguments) ++ "env)"
         (PrimitiveOperatorNode _) ->
