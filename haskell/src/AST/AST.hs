@@ -51,6 +51,13 @@ instance Show Node where
     show (Node node _) =
         value node show
 
+show_list :: [String] -> String
+show_list [] = ""
+show_list (current:[]) =
+    current
+show_list (current:rest) =
+    current ++ " " ++ show_list rest
+
 value :: Value -> (Node -> String) -> String
 value val printer =
     case val of
@@ -58,13 +65,13 @@ value val printer =
         (BoolNode bool) -> show bool
         (NullNode) -> "null"
         (VariableNode name) ->
-            "(variable " ++ name ++ ")"
+            name
         (IfNode if_expr then_expr else_expr) ->
             "(if " ++ (printer if_expr) ++ " then " ++ (printer then_expr) ++ " else " ++ (printer else_expr) ++ ")"
         (LambdaNode body operands) ->
-            "(lambda " ++ show operands ++ (printer body) ++ ")"
+            "(lambda [" ++ show_list operands ++ "] " ++ (printer body) ++ ")"
         (FunctionCallNode name arguments) ->
-            "(" ++ name ++ (show (map printer arguments)) ++ ")"
+            "(" ++ name ++ " " ++ (show_list (map printer arguments)) ++ ")"
         (StructDeclarationNode fields) ->
             "(struct " ++ show fields ++ ")"
         (MemberAccessNode struct_name member_name) ->
