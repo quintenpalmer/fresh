@@ -3,7 +3,6 @@ module Parser.Parse (
 ) where
 
 import qualified Data.Map as Map
-import qualified Data.Maybe as Maybe
 
 import qualified Lexer.Tokenize as Tok
 import qualified AST.AST as AST
@@ -16,14 +15,13 @@ import qualified Parser.Chomper as Chomper
 
 type Token = Tok.Token
 
-parse :: String -> AST.Environment -> (AST.Node, AST.Environment)
+parse :: String -> AST.Environment -> AST.Environment
 parse raw_string input_env =
     let (tokens, env) = parse_package_definition (Tok.make_tokens raw_string) input_env
-        out_node = parse_main env
     in
         case tokens of
-            [] -> (out_node, env)
-            [(Tok.Token (Tok.Eof) _ _)] -> (out_node, env)
+            [] -> env
+            [(Tok.Token (Tok.Eof) _ _)] -> env
             _ -> error $ "remaining tokens" ++ Tok.print_tokens tokens
 
 parse_package_definition :: [Token] -> AST.Environment -> ([Token], AST.Environment)
@@ -47,15 +45,6 @@ parse_all_top_levels input_tokens input_env =
             [] -> (tokens, env)
             [(Tok.Token (Tok.Eof) _ _)] -> (tokens, env)
             _ -> parse_all_top_levels tokens env
-
-parse_main :: AST.Environment -> AST.Node
-parse_main env =
-    let maybe_main = Map.lookup "main" env
-    in
-        if Maybe.isJust maybe_main then
-            Maybe.fromJust maybe_main
-        else
-            error $ "main function not defined"
 
 parse_top_level_expression :: [Token] -> AST.Environment -> ([Token], AST.Environment)
 parse_top_level_expression [] env = ([], env)

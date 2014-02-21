@@ -50,14 +50,14 @@ loop env = do
 
 eval :: String -> AST.Environment -> String
 eval command env =
-    let (ast, env1) = (Parse.parse command env)
+    let env1 = (Parse.parse command env)
     in
-        show $ Evaluation.start_evaluate ast env1
+        show $ Evaluation.start_evaluate env1
 
 
 print_evaled_ast :: String -> AST.Environment -> String
 print_evaled_ast command env =
-    let (_, env1) = (Parse.parse command env)
+    let env1 = (Parse.parse command env)
         env2 = Evaluation.create_evaluated_env env1
     in
         "User Defined:\n" ++ (AST.print_env $ Map.difference env2 env) ++
@@ -65,7 +65,7 @@ print_evaled_ast command env =
 
 print_ast :: String -> AST.Environment -> String
 print_ast command env =
-    let (_, env1) = (Parse.parse command env)
+    let env1 = (Parse.parse command env)
     in
         "User Defined:\n" ++ (AST.print_env $ Map.difference env1 env) ++
         "\nBuiltin:\n" ++ AST.print_env env

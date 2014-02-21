@@ -8,9 +8,20 @@ import qualified Data.Maybe as Maybe
 
 import qualified AST.AST as AST
 
-start_evaluate :: AST.Node -> AST.Environment -> AST.Node
-start_evaluate node env =
-    evaluate node $ create_evaluated_env env
+start_evaluate :: AST.Environment -> AST.Node
+start_evaluate env =
+    let node = parse_main env
+    in
+        evaluate node $ create_evaluated_env env
+
+parse_main :: AST.Environment -> AST.Node
+parse_main env =
+    let maybe_main = Map.lookup "main" env
+    in
+        if Maybe.isJust maybe_main then
+            Maybe.fromJust maybe_main
+        else
+            error $ "main function not defined"
 
 create_evaluated_env :: AST.Environment -> AST.Environment
 create_evaluated_env env =
