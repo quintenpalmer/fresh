@@ -37,7 +37,7 @@ print_evaled_env_start filename env = do
 
 help_start :: IO ()
 help_start = do
-    putStrLn "help\n-i\nprint_env <filename>\neval_env <filename>\n<filename>"
+    putStrLn "help\n-i\nprint_env <filename>\neval_env <filename>\nprint_tokens <filename>\n<filename>"
 
 read_ :: IO String
 read_ = getLine
