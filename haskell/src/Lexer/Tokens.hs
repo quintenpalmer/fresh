@@ -1,7 +1,6 @@
 module Lexer.Tokens (
     Token(..),
     TokenType(..),
-    print_token,
     print_tokens
 ) where
 
@@ -33,10 +32,10 @@ print_tokens :: [Token] -> String
 print_tokens tokens =
     case tokens of
         [] -> ""
-        (current: rest) -> (print_token current) ++ "\n" ++ print_tokens rest
+        (current: rest) -> (show current) ++ "\n" ++ print_tokens rest
 
-print_token :: Token -> String
-print_token (Token token_type string file_info) =
-    Formatting.postfix_spaces string 15 ++
-    " (" ++ Formatting.postfix_spaces (show token_type ++ ")") 20 ++
-    " at " ++ show file_info
+instance Show Token where
+    show (Token token_type string file_info) =
+        Formatting.postfix_spaces string 15 ++
+        " (" ++ Formatting.postfix_spaces (show token_type ++ ")") 20 ++
+        " at " ++ show file_info

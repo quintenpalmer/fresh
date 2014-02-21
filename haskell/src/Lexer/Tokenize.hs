@@ -4,7 +4,6 @@ module Lexer.Tokenize (
     SourceInfo.TokenLoc(..),
     Tokens.Token(..),
     Tokens.TokenType(..),
-    Tokens.print_token,
     Tokens.print_tokens
 ) where
 
