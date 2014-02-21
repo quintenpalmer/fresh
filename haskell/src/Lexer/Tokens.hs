@@ -20,6 +20,7 @@ data TokenType
     | VarLiteral
     | FunctionLiteral
     | TypeLiteral
+    | StructLiteral
     | String_
     | Eof
     | LParen

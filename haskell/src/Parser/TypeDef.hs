@@ -3,7 +3,6 @@ module Parser.TypeDef (
 ) where
 
 import qualified Data.Map as Map
-import qualified Data.Maybe as Maybe
 
 import qualified Lexer.Tokenize as Tok
 import qualified AST.AST as AST
@@ -38,14 +37,8 @@ parse_type :: TokenEater
 parse_type [] _ = error $ unexpected_eof "type declaration"
 parse_type ((Tok.Token token_type current file_info):tokens) env =
     case token_type of
-        Tok.String_ ->
-            let maybe_type = Map.lookup current type_map
-            in
-                if Maybe.isJust maybe_type then
-                    (Maybe.fromJust maybe_type) tokens env
-                else
-                    error $ "invalid type definition " ++ current ++ " " ++ show file_info
-        _ -> error $ "expecting type definition, got " ++ show token_type ++ " " ++ show file_info
+        Tok.StructLiteral -> parse_struct tokens env
+        _ -> error $ "expecting type definition, got " ++ current ++ " " ++ show file_info
 
 parse_struct :: TokenEater
 parse_struct [] _ = error "Reached end of tokens parsing struct"
@@ -54,7 +47,3 @@ parse_struct tokens@((Tok.Token _ _ file_info):_) env =
         tokens3 = Chomper.chomp_close_expression tokens2 "struct"
     in
         (AST.Node (AST.StructDeclarationNode members) file_info, tokens3, env)
-
-type_map :: Map.Map String TokenEater
-type_map = Map.fromList [
-    ("struct", parse_struct)]

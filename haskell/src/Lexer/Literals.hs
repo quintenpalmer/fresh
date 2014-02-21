@@ -8,6 +8,7 @@ module Lexer.Literals (
     is_var_literal,
     is_type_literal,
     is_function_literal,
+    is_struct_literal,
     is_open_expression,
     is_close_expression,
     is_open_arguments,
@@ -59,6 +60,10 @@ is_function_literal string =
 is_type_literal :: String -> Bool
 is_type_literal string =
     string == "type"
+
+is_struct_literal :: String -> Bool
+is_struct_literal string =
+    string == "struct"
 
 is_bool_literal :: String -> Bool
 is_bool_literal string =
