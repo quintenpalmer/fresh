@@ -5,6 +5,11 @@ if exists("b:current_syntax")
 	finish
 endif
 
+" Null
+syn keyword freshNull null
+
+hi def link freshNull String
+
 " Numbers
 syn match freshDec "\<\d\+\>"
 
@@ -16,7 +21,7 @@ syn keyword freshBool true false
 hi def link freshBool Number
 
 " Builtins and Statements
-syn keyword freshBuiltin var function lambda if not and or member
+syn keyword freshBuiltin var function lambda if not and or member is_null
 syn match freshTokens "[*+><=]"
 
 hi def link freshBuiltin Statement
