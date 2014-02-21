@@ -1,19 +1,11 @@
 (package list)
 
-(type list_struct
-    (struct empty head tail)
-)
-
-(function empty_list []
-    (list_struct true false false)
-)
-
-(function list [head tail]
-    (list_struct false head tail)
+(type list
+    (struct head tail)
 )
 
 (function is_empty [list_]
-    (member list_ empty)
+    (is_null list_)
 )
 
 (function tail [list_]
@@ -26,7 +18,7 @@
 
 (function map [func arg_list]
     (if (is_empty arg_list)
-        (empty_list)
+        arg_list
         (list
             (func (head arg_list))
             (map func (tail arg_list))
@@ -35,7 +27,7 @@
 )
 
 (var my_list
-    (list 4 (list 3 (list 2 (list 1 (empty_list)))))
+    (list 4 (list 3 (list 2 (list 1 null))))
 )
 
 (function sq [x]
