@@ -14,9 +14,9 @@ import qualified Lexer.SourceInfo as SourceInfo
 import qualified Lexer.Literals as Literals
 import qualified Lexer.Tokens as Tokens
 
-type TokenLoc = SourceInfo.TokenLoc
 type Token = Tokens.Token
 type TokenType = Tokens.TokenType
+type TokenLoc = SourceInfo.TokenLoc
 
 make_tokens :: String -> [Token]
 make_tokens input_string =
@@ -41,8 +41,8 @@ get_token_type current
     | Literals.is_close_expression current = Tokens.RParen
     | Literals.is_open_arguments current = Tokens.LBracket
     | Literals.is_close_arguments current = Tokens.RBracket
-    | Delimiter.is_eof current = Tokens.Eof
     | Literals.is_int_literal current = Tokens.IntLiteral
     | Literals.is_bool_literal current   = Tokens.BoolLiteral
     | Literals.is_null_literal current = Tokens.NullLiteral
+    | Delimiter.is_eof current = Tokens.Eof
     | otherwise = Tokens.String_

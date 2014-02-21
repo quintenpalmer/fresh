@@ -10,10 +10,6 @@ module Lexer.Literals (
 
 import qualified Data.Char as Char
 
-bools :: [String]
-bools =
-    ["true", "false"]
-
 is_open_expression :: String -> Bool
 is_open_expression string =
     string == "("
@@ -43,6 +39,10 @@ is_int_literal string =
     case string of
         ('-':rest) -> are_digits rest
         _ -> are_digits string
+
+bools :: [String]
+bools =
+    ["true", "false"]
 
 are_digits :: String -> Bool
 are_digits string =
