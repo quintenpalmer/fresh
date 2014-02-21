@@ -18,11 +18,11 @@ type Token = Tok.Token
 parse :: String -> AST.Environment -> AST.Environment
 parse raw_string input_env =
     let (tokens, env) = parse_package_definition (Tok.make_tokens raw_string) input_env
+        (tokens1, env1) = parse_all_top_levels tokens env
     in
-        case tokens of
-            [] -> env
-            [(Tok.Token (Tok.Eof) _ _)] -> env
-            _ -> error $ "remaining tokens" ++ Tok.print_tokens tokens
+        case tokens1 of
+            [(Tok.Token (Tok.Eof) _ _)] -> env1
+            _ -> error $ "remaining tokens" ++ Tok.print_tokens tokens1
 
 parse_package_definition :: [Token] -> AST.Environment -> ([Token], AST.Environment)
 parse_package_definition [] _ = error "end of tokens while parsing package"
@@ -34,7 +34,7 @@ parse_package_definition input_tokens env =
                 let (name, tokens2) = Chomper.parse_name tokens
                     tokens3 = Chomper.chomp_close_expression tokens2 "package"
                 in
-                    parse_all_top_levels tokens3 $ Map.insert name (AST.Node (AST.ModuleDefinitionNode) file_info) env
+                    (tokens3, Map.insert name (AST.Node (AST.ModuleDefinitionNode) file_info) env)
             _ -> error $ "Top level declaration must be a package (found " ++ string ++ " ) " ++ show file_info
 
 parse_all_top_levels :: [Token] -> AST.Environment -> ([Token], AST.Environment)
