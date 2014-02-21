@@ -8,7 +8,6 @@ module Parser.Chomper (
     chomp_open_expression
 ) where
 
-import qualified Tools.FreshShow as FreshShow
 import qualified Lexer.Tokenize as Tok
 
 type Token = Tok.Token
@@ -61,4 +60,4 @@ assert_chomping expected_token_type ((Tok.Token token_type string file_info):tok
         error $ "wrong token '" ++ (show expected_token_type) ++
         "', found '" ++ string ++
         "' in expression of " ++ name ++
-        " : " ++ FreshShow.short_show file_info
+        " : " ++ show file_info

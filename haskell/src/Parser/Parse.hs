@@ -24,7 +24,7 @@ parse raw_string input_env =
         case tokens of
             [] -> (out_node, env)
             [(Tok.Token (Tok.Eof) _ _)] -> (out_node, env)
-            _ -> error $ "remaining tokens" ++ show tokens
+            _ -> error $ "remaining tokens" ++ Tok.print_tokens tokens
 
 parse_package_definition :: [Token] -> AST.Environment -> ([Token], AST.Environment)
 parse_package_definition [] _ = error "end of tokens while parsing package"

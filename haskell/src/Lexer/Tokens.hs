@@ -5,11 +5,10 @@ module Lexer.Tokens (
     print_tokens
 ) where
 
-import qualified Tools.FreshShow as FreshShow
 import qualified Tools.Formatting as Formatting
 import qualified Lexer.SourceInfo as SourceInfo
 
-data Token = Token TokenType String SourceInfo.TokenLoc deriving (Show)
+data Token = Token TokenType String SourceInfo.TokenLoc
 
 data TokenType
     = IntLiteral
@@ -40,4 +39,4 @@ print_token :: Token -> String
 print_token (Token token_type string file_info) =
     Formatting.postfix_spaces string 15 ++
     " (" ++ Formatting.postfix_spaces (show token_type ++ ")") 20 ++
-    " at " ++ FreshShow.full_show file_info
+    " at " ++ show file_info

@@ -9,7 +9,6 @@ module AST.AST (
 
 import qualified Data.Map as Map
 
-import qualified Tools.FreshShow as FreshShow
 import qualified Lexer.Tokenize as Tokenize
 
 type Environment = Map.Map String Node
@@ -51,7 +50,7 @@ data Node = Node Value Tokenize.TokenLoc
 
 debug_print_node :: Node -> String
 debug_print_node (Node node file_loc_info) =
-    (value node debug_print_node) ++ " at " ++ (FreshShow.full_show file_loc_info)
+    (value node debug_print_node) ++ " at " ++ (show file_loc_info)
 
 print_node :: Node -> String
 print_node (Node node _) =
