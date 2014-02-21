@@ -31,12 +31,12 @@ data TokenType
 
 print_tokens :: [Token] -> String
 print_tokens tokens =
-    let folder current rest = current ++ "\n" ++ rest
-    in
-        foldr folder " " (map print_token tokens)
+    case tokens of
+        [] -> ""
+        (current: rest) -> (print_token current) ++ "\n" ++ print_tokens rest
 
 print_token :: Token -> String
 print_token (Token token_type string file_info) =
-    "token_type " ++ Formatting.postfix_spaces (show token_type) 10 ++
-    " " ++  Formatting.postfix_spaces string 7 ++
-    SourceInfo.print_file_info file_info
+    Formatting.postfix_spaces string 15 ++
+    " (" ++ Formatting.postfix_spaces (show token_type ++ ")") 20 ++
+    " at " ++ SourceInfo.print_file_info file_info
