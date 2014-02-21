@@ -1,4 +1,4 @@
-module Lexer.StringParse (
+module Lexer.Delimiter (
     get_next_non_whitespace,
     get_next_character,
     is_delimiter,
