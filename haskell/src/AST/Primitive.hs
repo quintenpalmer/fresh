@@ -115,7 +115,7 @@ equal :: InfiniteOperator
 equal arguments = comparatively_apply equaler arguments
 
 is_null :: UnaryOperator
-is_null (AST.Node (AST.NullNode) file_info) =
-    AST.Node (AST.BoolNode True) file_info
-is_null (AST.Node _ file_info) =
-    AST.Node (AST.BoolNode False) file_info
+is_null (AST.Node value file_info) =
+    case value of
+        (AST.NullNode) -> AST.Node (AST.BoolNode True) file_info
+        _ -> AST.Node (AST.BoolNode False) file_info
