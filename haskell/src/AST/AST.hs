@@ -46,7 +46,7 @@ data Value
     | ModuleDefinitionNode
     | EnvContainerNode Environment
 
-data Node = Node Value Tokenize.FileLocInfo
+data Node = Node Value Tokenize.TokenLoc
 
 debug_print_node :: Node -> String
 debug_print_node (Node node file_loc_info) =

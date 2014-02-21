@@ -13,7 +13,7 @@ primitive_container_builder :: Primitive.InfiniteOperator -> AST.Node
 primitive_container_builder node =
     AST.Node
         (AST.PrimitiveOperatorNode node)
-        (Tokenize.FileLocInfo
+        (Tokenize.TokenLoc
             (Tokenize.FileLoc 0 0)
             (Tokenize.FileLoc 0 0)
         )
@@ -22,7 +22,7 @@ primitive_unary_container_builder :: Primitive.UnaryOperator -> AST.Node
 primitive_unary_container_builder node =
     AST.Node
         (AST.PrimitiveUnaryOperatorNode node)
-        (Tokenize.FileLocInfo
+        (Tokenize.TokenLoc
             (Tokenize.FileLoc 0 0)
             (Tokenize.FileLoc 0 0)
         )

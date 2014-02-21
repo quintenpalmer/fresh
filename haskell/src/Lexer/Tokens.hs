@@ -6,9 +6,9 @@ module Lexer.Tokens (
 ) where
 
 import qualified Tools.Formatting as Formatting
-import qualified Lexer.FileLoc as FileLoc
+import qualified Lexer.SourceInfo as SourceInfo
 
-data Token = Token TokenType String FileLoc.FileLocInfo deriving (Show)
+data Token = Token TokenType String SourceInfo.TokenLoc deriving (Show)
 
 data TokenType
     = IntLiteral
@@ -31,4 +31,4 @@ print_token :: Token -> String
 print_token (Token token_type string file_info) =
     "token_type " ++ Formatting.postfix_spaces (show token_type) 10 ++
     " " ++  Formatting.postfix_spaces string 7 ++
-    FileLoc.print_file_info file_info
+    SourceInfo.print_file_info file_info
