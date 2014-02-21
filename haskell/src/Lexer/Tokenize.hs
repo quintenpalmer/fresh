@@ -56,10 +56,10 @@ build_next_token input_token remaining input_file_info =
 
 get_token_type :: String -> TokenType
 get_token_type current
-    | current == "(" = Tokens.LParen
-    | current == ")" = Tokens.RParen
-    | current == "[" = Tokens.LBracket
-    | current == "]" = Tokens.RBracket
+    | Literals.is_open_expression current = Tokens.LParen
+    | Literals.is_close_expression current = Tokens.RParen
+    | Literals.is_open_arguments current = Tokens.LBracket
+    | Literals.is_close_arguments current = Tokens.RBracket
     | Chars.is_eof current = Tokens.Eof
     | Literals.is_int_literal current = Tokens.IntLiteral
     | Literals.is_bool_literal current   = Tokens.BoolLiteral
