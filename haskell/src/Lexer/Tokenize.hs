@@ -2,7 +2,6 @@ module Lexer.Tokenize (
     make_tokens,
     SourceInfo.FileLoc(..),
     SourceInfo.TokenLoc(..),
-    SourceInfo.print_file_info,
     Tokens.Token(..),
     Tokens.TokenType(..),
     Tokens.print_token,
