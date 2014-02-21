@@ -28,17 +28,12 @@ parse_type_def ((Tok.Token token_type name file_info): tokens) env =
 
 parse_type_expression :: TokenEater
 parse_type_expression [] _ = error $ unexpected_eof "type expression"
-parse_type_expression ((Tok.Token token_type _ file_info):tokens) env =
-    case token_type of
-        Tok.LParen -> parse_type tokens env
-        _ -> error $ "Invalid Token " ++ show token_type ++ " " ++ show file_info
-
-parse_type :: TokenEater
-parse_type [] _ = error $ unexpected_eof "type declaration"
-parse_type ((Tok.Token token_type current file_info):tokens) env =
-    case token_type of
-        Tok.StructLiteral -> parse_struct tokens env
-        _ -> error $ "expecting type definition, got " ++ current ++ " " ++ show file_info
+parse_type_expression input_tokens env =
+    let ((Tok.Token token_type string file_info):tokens) = Chomper.chomp_open_expression input_tokens
+    in
+        case token_type of
+            Tok.StructLiteral -> parse_struct tokens env
+            _ -> error $ "expecting type definition, got " ++ string ++ " " ++ show file_info
 
 parse_struct :: TokenEater
 parse_struct [] _ = error "Reached end of tokens parsing struct"
