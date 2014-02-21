@@ -1,7 +1,5 @@
 module Lexer.Delimiter (
-    get_next_non_whitespace,
-    get_next_character,
-    is_delimiter,
+    get_token_string,
     is_eof,
 ) where
 
@@ -38,6 +36,24 @@ is_eof string =
     case string of
         [] -> False
         (head_:_) -> head_ == eof
+
+get_token_string :: String -> TokenLoc -> (String, String, TokenLoc)
+get_token_string remaining (SourceInfo.TokenLoc _ end_file_loc_info) =
+    let (current, post_remaining, file_info) = get_next_non_whitespace remaining (SourceInfo.TokenLoc end_file_loc_info end_file_loc_info)
+    in
+        if is_delimiter current then
+            ([current], post_remaining, file_info)
+        else
+            build_next_token [current] post_remaining file_info
+
+build_next_token :: String -> String -> TokenLoc -> (String, String, TokenLoc)
+build_next_token input_token remaining input_file_info =
+    let (current, post_remaining, file_info) = get_next_character remaining input_file_info
+    in
+        if is_delimiter current then
+            (input_token, remaining, file_info)
+        else
+            build_next_token (input_token ++ [current]) post_remaining file_info
 
 get_next_non_whitespace :: String -> TokenLoc -> (Char, String, TokenLoc)
 get_next_non_whitespace remaining input_info =
