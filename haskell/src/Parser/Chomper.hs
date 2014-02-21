@@ -10,10 +10,12 @@ module Parser.Chomper (
 
 import qualified Lexer.Tokenize as Tok
 
+import qualified Parser.Errors as Errors
+
 type Token = Tok.Token
 
 parse_fields :: [String] -> [Token] -> ([String], [Token])
-parse_fields _ [] = error "No fields to parse in parse_fields"
+parse_fields _ [] = error $ Errors.unexpected_eof "parsing of fields"
 parse_fields existing_params input_tokens@((Tok.Token token_type name token_loc):tokens) =
     case token_type of
         Tok.RParen -> (existing_params, input_tokens)
@@ -21,7 +23,7 @@ parse_fields existing_params input_tokens@((Tok.Token token_type name token_loc)
         _ -> error $ "Was expecting parameter or \")\" when found \"" ++ name ++ "\" " ++ show token_loc
 
 parse_params :: [String] -> [Token] -> ([String], [Token])
-parse_params _ [] = error "No parameters to parse in parse_params"
+parse_params _ [] = error $ Errors.unexpected_eof "parsing of parameters"
 parse_params existing_params input_tokens@((Tok.Token token_type name token_loc):tokens) =
     case token_type of
         Tok.RBracket -> (existing_params, input_tokens)
@@ -29,7 +31,7 @@ parse_params existing_params input_tokens@((Tok.Token token_type name token_loc)
         _ -> error $ "Was expecting parameter or \"]\" when found \"" ++ name ++ "\" " ++ show token_loc
 
 parse_name :: [Token] -> (String, [Token])
-parse_name [] = error "No parameters to parse in parse_params"
+parse_name [] = error $ Errors.unexpected_eof "parsing of name"
 parse_name ((Tok.Token token_type name _):tokens) =
     case token_type of
         Tok.String_ -> (name, tokens)

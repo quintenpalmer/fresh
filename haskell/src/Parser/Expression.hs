@@ -8,13 +8,14 @@ import qualified Data.Map as Map
 import qualified Lexer.Tokenize as Tok
 import qualified AST.AST as AST
 
+import qualified Parser.Errors as Errors
 import qualified Parser.Chomper as Chomper
 
 type Token = Tok.Token
 type TokenEater = [Token] -> AST.Environment -> (AST.Node, [Token], AST.Environment)
 
 parse_var_def :: [Token] -> AST.Environment -> ([Token], AST.Environment)
-parse_var_def [] _ = error "Unexpected end of tokens in parse define"
+parse_var_def [] _ = error $ Errors.unexpected_eof "var"
 parse_var_def ((Tok.Token token_type name _):tokens) env =
     case token_type of
         Tok.String_ ->
@@ -25,7 +26,7 @@ parse_var_def ((Tok.Token token_type name _):tokens) env =
         token -> error $ show token
 
 parse_expression :: TokenEater
-parse_expression [] _ = error "Hi Eric and Quinten"
+parse_expression [] _ = error $ Errors.unexpected_eof "general expression"
 parse_expression ((Tok.Token token_type string file_info):tokens) env =
     case token_type of
         Tok.LParen -> parse_func_call tokens env
@@ -36,7 +37,7 @@ parse_expression ((Tok.Token token_type string file_info):tokens) env =
         token -> error $ "Invalid Token " ++ show token
 
 parse_func_call :: TokenEater
-parse_func_call [] _ = error "Unexpected end of tokens in parse function call"
+parse_func_call [] _ = error $ Errors.unexpected_eof "function call"
 parse_func_call ((Tok.Token token_type current file_info):tokens) env =
     case token_type of
         Tok.String_ ->
@@ -50,7 +51,7 @@ parse_func_call ((Tok.Token token_type current file_info):tokens) env =
         token -> error $ "Invalid token as func call " ++ show token
 
 parse_operands :: [AST.Node] -> [Token] -> AST.Environment -> ([AST.Node], [Token])
-parse_operands _ [] _ = error "No operands to parse in parse_operands"
+parse_operands _ [] _ = error $ Errors.unexpected_eof "parsing of operands"
 parse_operands existing_params input_tokens@((Tok.Token token_type _ _):_) env =
     case token_type of
         Tok.RParen -> (existing_params, input_tokens)
@@ -60,7 +61,7 @@ parse_operands existing_params input_tokens@((Tok.Token token_type _ _):_) env =
                 parse_operands (current: existing_params) remaining_tokens env1
 
 parse_if :: TokenEater
-parse_if [] _ = error "Reached end of tokens parsing if"
+parse_if [] _ = error $ Errors.unexpected_eof "if"
 parse_if tokens@((Tok.Token _ _ file_info):_) env =
     let (cond_expr, tokens1, env1) = parse_expression tokens env
         (then_expr, tokens2, env2) = parse_expression tokens1 env1
@@ -70,7 +71,7 @@ parse_if tokens@((Tok.Token _ _ file_info):_) env =
         (AST.Node (AST.IfNode cond_expr then_expr else_expr) file_info, tokens4, env3)
 
 parse_lambda :: TokenEater
-parse_lambda [] _ = error "Reached end of tokens parsing lambda"
+parse_lambda [] _ = error $ Errors.unexpected_eof "lambda"
 parse_lambda tokens@((Tok.Token _ _ file_info):_) env =
     let tokens1 = Chomper.chomp_open_lambda_params tokens
         (params, tokens2) = Chomper.parse_params [] tokens1
@@ -81,6 +82,7 @@ parse_lambda tokens@((Tok.Token _ _ file_info):_) env =
         (AST.Node (AST.LambdaNode body params) file_info, tokens5, env1)
 
 parse_member :: TokenEater
+parse_member [] _ = error $ Errors.unexpected_eof "member"
 parse_member input_tokens env =
     case input_tokens of
         ((Tok.Token Tok.String_ struct_name file_info):((Tok.Token Tok.String_ member_name _):tokens)) ->

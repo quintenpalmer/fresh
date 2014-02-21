@@ -7,6 +7,7 @@ import qualified Data.Map as Map
 import qualified Lexer.Tokenize as Tok
 import qualified AST.AST as AST
 
+import qualified Parser.Errors as Errors
 import qualified Parser.Expression as Expression
 import qualified Parser.TypeDef as TypeDef
 import qualified Parser.FunctionDef as FunctionDef
@@ -25,7 +26,7 @@ parse raw_string input_env =
             _ -> error $ "remaining tokens" ++ Tok.print_tokens tokens1
 
 parse_package_definition :: [Token] -> AST.Environment -> ([Token], AST.Environment)
-parse_package_definition [] _ = error "end of tokens while parsing package"
+parse_package_definition [] _ = error $ Errors.unexpected_eof "package"
 parse_package_definition input_tokens env =
     let ((Tok.Token token_type string file_info):tokens) = Chomper.chomp_open_expression input_tokens
     in
