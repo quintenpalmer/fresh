@@ -21,19 +21,19 @@ parse_function_def [] _ = error $ unexpected_eof "function definition"
 parse_function_def ((Tok.Token token_function name file_info): tokens) env =
     case token_function of
         Tok.String_ ->
-            let (function_def, tokens1, env1) = parse_function_expression tokens env
-                tokens2 = Chomper.chomp_close_expression tokens1 "function"
+            let (function_def, tokens1, env1) = parse_function tokens env
             in
-                (tokens2, Map.insert name function_def env1)
+                (tokens1, Map.insert name function_def env1)
         _ -> error $ "Expecting function name and defined function " ++ show file_info
 
-parse_function_expression :: TokenEater
-parse_function_expression [] _ = error $ unexpected_eof "function expression"
-parse_function_expression tokens@((Tok.Token _ _ file_info):_) env =
+parse_function :: TokenEater
+parse_function [] _ = error $ unexpected_eof "function expression"
+parse_function tokens@((Tok.Token _ _ file_info):_) env =
     let tokens1 = Chomper.chomp_open_lambda_params tokens
         (params, tokens2) = Chomper.parse_params [] tokens1
         tokens3 = Chomper.chomp_close_lambda_params tokens2
         (body, tokens4, env1) = Expression.parse_expression tokens3 env
+        tokens5 = Chomper.chomp_close_expression tokens4 "function"
     in
-        (AST.Node (AST.LambdaNode body params) file_info, tokens4, env1)
+        (AST.Node (AST.LambdaNode body params) file_info, tokens5, env1)
 
