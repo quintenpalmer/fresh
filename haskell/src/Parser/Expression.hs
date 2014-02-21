@@ -4,7 +4,6 @@ module Parser.Expression (
 ) where
 
 import qualified Data.Map as Map
-import qualified Data.Maybe as Maybe
 
 import qualified Lexer.Tokenize as Tok
 import qualified AST.AST as AST
@@ -41,16 +40,14 @@ parse_func_call [] _ = error "Unexpected end of tokens in parse function call"
 parse_func_call ((Tok.Token token_type current file_info):tokens) env =
     case token_type of
         Tok.String_ ->
-            let maybe_function = Map.lookup current function_map
+            let (operands, pre_close_tokens) = parse_operands [] tokens env
+                post_close_tokens = Chomper.chomp_close_expression pre_close_tokens "func_call"
             in
-                if Maybe.isJust maybe_function then
-                    (Maybe.fromJust maybe_function) tokens env
-                else
-                    let (operands, pre_close_tokens) = parse_operands [] tokens env
-                        post_close_tokens = Chomper.chomp_close_expression pre_close_tokens "func_call"
-                    in
-                        (AST.Node (AST.FunctionCallNode current operands) file_info, post_close_tokens, env)
-        token -> error $ show token
+                (AST.Node (AST.FunctionCallNode current operands) file_info, post_close_tokens, env)
+        Tok.LambdaLiteral -> parse_lambda tokens env
+        Tok.IfLiteral -> parse_if tokens env
+        Tok.MemberLiteral -> parse_member tokens env
+        token -> error $ "Invalid token as func call " ++ show token
 
 parse_operands :: [AST.Node] -> [Token] -> AST.Environment -> ([AST.Node], [Token])
 parse_operands _ [] _ = error "No operands to parse in parse_operands"
@@ -91,9 +88,3 @@ parse_member input_tokens env =
             in
                 (AST.Node (AST.MemberAccessNode struct_name member_name) file_info, remaining_tokens, env)
         _ -> error "member must take a struct name and a member name"
-
-function_map :: Map.Map String TokenEater
-function_map = Map.fromList [
-    ("if", parse_if),
-    ("lambda", parse_lambda),
-    ("member", parse_member)]

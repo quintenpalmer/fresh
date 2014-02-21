@@ -14,6 +14,9 @@ data TokenType
     = IntLiteral
     | BoolLiteral
     | NullLiteral
+    | IfLiteral
+    | LambdaLiteral
+    | MemberLiteral
     | String_
     | Eof
     | LParen

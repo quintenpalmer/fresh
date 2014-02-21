@@ -2,6 +2,9 @@ module Lexer.Literals (
     is_int_literal,
     is_bool_literal,
     is_null_literal,
+    is_if_literal,
+    is_lambda_literal,
+    is_member_literal,
     is_open_expression,
     is_close_expression,
     is_open_arguments,
@@ -29,6 +32,18 @@ is_close_arguments string =
 is_null_literal :: String -> Bool
 is_null_literal string =
     string == "null"
+
+is_lambda_literal :: String -> Bool
+is_lambda_literal string =
+    string == "lambda"
+
+is_if_literal :: String -> Bool
+is_if_literal string =
+    string == "if"
+
+is_member_literal :: String -> Bool
+is_member_literal string =
+    string == "member"
 
 is_bool_literal :: String -> Bool
 is_bool_literal string =
