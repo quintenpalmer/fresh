@@ -14,19 +14,19 @@ type Token = Tok.Token
 
 parse_fields :: [String] -> [Token] -> ([String], [Token])
 parse_fields _ [] = error "No fields to parse in parse_fields"
-parse_fields existing_params input_tokens@((Tok.Token token_type name _):tokens) =
+parse_fields existing_params input_tokens@((Tok.Token token_type name token_loc):tokens) =
     case token_type of
         Tok.RParen -> (existing_params, input_tokens)
         Tok.String_ -> parse_fields (name: existing_params) tokens
-        _ -> error $ "Was expecting parameter or ) when found " ++ name
+        _ -> error $ "Was expecting parameter or \")\" when found \"" ++ name ++ "\" " ++ show token_loc
 
 parse_params :: [String] -> [Token] -> ([String], [Token])
 parse_params _ [] = error "No parameters to parse in parse_params"
-parse_params existing_params input_tokens@((Tok.Token token_type name _):tokens) =
+parse_params existing_params input_tokens@((Tok.Token token_type name token_loc):tokens) =
     case token_type of
         Tok.RBracket -> (existing_params, input_tokens)
         Tok.String_ -> parse_params (name: existing_params) tokens
-        _ -> error $ "Was expecting parameter or ] when found " ++ name
+        _ -> error $ "Was expecting parameter or \"]\" when found \"" ++ name ++ "\" " ++ show token_loc
 
 parse_name :: [Token] -> (String, [Token])
 parse_name [] = error "No parameters to parse in parse_params"
