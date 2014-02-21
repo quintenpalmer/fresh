@@ -4,7 +4,7 @@ import qualified Data.Map as Map
 import qualified Lexer.Tokenize as Tokenize
 import qualified Parser.Parse as Parse
 import qualified AST.AST as AST
-import qualified AST.Env as Env
+import qualified AST.BuiltinEnv as BuiltinEnv
 import qualified Runtime.Evaluation as Evaluation
 
 load_start :: String -> AST.Environment -> IO ()
@@ -78,9 +78,9 @@ main = do
     args <- SysEnv.getArgs
     case args of
         [] -> error "Must supply file or run interactively"
-        ["-i"] -> loop_start Env.defaultEnvironment
+        ["-i"] -> loop_start BuiltinEnv.defaultEnvironment
         ["help"] -> help_start
-        ["print_env", name] -> print_env_start name Env.defaultEnvironment
-        ["eval_env", name] -> print_evaled_env_start name Env.defaultEnvironment
+        ["print_env", name] -> print_env_start name BuiltinEnv.defaultEnvironment
+        ["eval_env", name] -> print_evaled_env_start name BuiltinEnv.defaultEnvironment
         ["print_tokens", name] -> print_tokens_start name
-        _ -> load_start (head args) Env.defaultEnvironment
+        _ -> load_start (head args) BuiltinEnv.defaultEnvironment
