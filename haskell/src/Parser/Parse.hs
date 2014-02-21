@@ -16,7 +16,7 @@ import qualified Parser.Chomper as Chomper
 
 type Token = Tok.Token
 
-parse :: String -> AST.Environment -> (AST.NodeContainer, AST.Environment)
+parse :: String -> AST.Environment -> (AST.Node, AST.Environment)
 parse raw_string input_env =
     let (tokens, env) = parse_package_definition (Tok.make_tokens raw_string) input_env
         out_node = parse_main env
@@ -42,7 +42,7 @@ parse_better_be_package ((Tok.Token token_type string file_info):tokens) env =
                 let (name, tokens2) = Chomper.parse_name tokens
                     tokens3 = Chomper.chomp_close_expression tokens2 "package"
                 in
-                    parse_all_top_levels tokens3 $ Map.insert name (AST.NodeContainer (AST.ModuleDefinitionNode) file_info) env
+                    parse_all_top_levels tokens3 $ Map.insert name (AST.Node (AST.ModuleDefinitionNode) file_info) env
             else
                 error $ "Top level declaration must be a package (found " ++ string ++ " ) " ++ show file_info
         _ -> error $ "Top level declaration must be a package (found " ++ string ++ " ) " ++ show file_info
@@ -56,7 +56,7 @@ parse_all_top_levels input_tokens input_env =
             [(Tok.Token (Tok.Eof) _ _)] -> (tokens, env)
             _ -> parse_all_top_levels tokens env
 
-parse_main :: AST.Environment -> AST.NodeContainer
+parse_main :: AST.Environment -> AST.Node
 parse_main env =
     let maybe_main = Map.lookup "main" env
     in

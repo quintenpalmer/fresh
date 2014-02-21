@@ -14,48 +14,48 @@ module AST.Primitive (
 
 import qualified AST.AST as AST
 
-type UnaryOperator = AST.NodeContainer -> AST.NodeContainer
-type BinaryOperator = AST.NodeContainer -> AST.NodeContainer -> AST.NodeContainer
-type InfiniteOperator = [AST.NodeContainer] -> AST.NodeContainer
+type UnaryOperator = AST.Node -> AST.Node
+type BinaryOperator = AST.Node -> AST.Node -> AST.Node
+type InfiniteOperator = [AST.Node] -> AST.Node
 
 comparison :: (Int -> Int -> Bool) -> BinaryOperator
-comparison operator (AST.NodeContainer (AST.IntNode x) file_info) (AST.NodeContainer (AST.IntNode y) _) =
-    AST.NodeContainer (AST.BoolNode $ operator x y) file_info
+comparison operator (AST.Node (AST.IntNode x) file_info) (AST.Node (AST.IntNode y) _) =
+    AST.Node (AST.BoolNode $ operator x y) file_info
 comparison _ _ _ = error "> < = Invalid runtime time, two ints"
 
 arithmetic :: (Int -> Int -> Int) -> BinaryOperator
-arithmetic operator (AST.NodeContainer (AST.IntNode x) file_info) (AST.NodeContainer (AST.IntNode y) _) =
-    AST.NodeContainer (AST.IntNode $ operator x y) file_info
+arithmetic operator (AST.Node (AST.IntNode x) file_info) (AST.Node (AST.IntNode y) _) =
+    AST.Node (AST.IntNode $ operator x y) file_info
 arithmetic _ _ _ = error "+ - * Invalid runtime time, two ints"
 
 boolean :: (Bool -> Bool -> Bool) -> BinaryOperator
-boolean operator (AST.NodeContainer (AST.BoolNode x) file_info) (AST.NodeContainer (AST.BoolNode y) _) =
-    AST.NodeContainer (AST.BoolNode $ operator x y) file_info
+boolean operator (AST.Node (AST.BoolNode x) file_info) (AST.Node (AST.BoolNode y) _) =
+    AST.Node (AST.BoolNode $ operator x y) file_info
 boolean _ _ _ = error "and/or invalid runtime time, two bools"
 
 
-accumulatively_apply :: BinaryOperator -> [AST.NodeContainer] -> AST.NodeContainer
+accumulatively_apply :: BinaryOperator -> [AST.Node] -> AST.Node
 accumulatively_apply function input_arguments =
     case input_arguments of
         [] -> error "uhhhhh, nice try! can't apply to no arguments"
         [_] -> error "uhhhhh, nice try! can't apply to one argument"
         arguments -> acc_apply_recursive function arguments
 
-acc_apply_recursive :: BinaryOperator -> [AST.NodeContainer] -> AST.NodeContainer
+acc_apply_recursive :: BinaryOperator -> [AST.Node] -> AST.Node
 acc_apply_recursive function input_arguments =
     case input_arguments of
         [] -> error "uhhhhh, nice try! can't apply to no arguments"
         [arg] -> arg
         (argument:arguments) -> function (acc_apply_recursive function arguments) argument
 
-comparatively_apply :: BinaryOperator -> [AST.NodeContainer] -> AST.NodeContainer
+comparatively_apply :: BinaryOperator -> [AST.Node] -> AST.Node
 comparatively_apply function input_arguments =
     case input_arguments of
         [] -> error "uhhhhh, nice try! can't apply to no arguments"
         [_] -> error "uhhhhh, nice try! can't apply to one argument"
         arguments -> comp_apply_recursive function arguments
 
-comp_apply_recursive :: BinaryOperator -> [AST.NodeContainer] -> AST.NodeContainer
+comp_apply_recursive :: BinaryOperator -> [AST.Node] -> AST.Node
 comp_apply_recursive function input_arguments =
     case input_arguments of
         [] -> error "uhhhhh, nice try! can't apply to no arguments"
@@ -115,7 +115,7 @@ equal :: InfiniteOperator
 equal arguments = comparatively_apply equaler arguments
 
 is_null :: UnaryOperator
-is_null (AST.NodeContainer (AST.NullNode) file_info) =
-    AST.NodeContainer (AST.BoolNode True) file_info
-is_null (AST.NodeContainer _ file_info) =
-    AST.NodeContainer (AST.BoolNode False) file_info
+is_null (AST.Node (AST.NullNode) file_info) =
+    AST.Node (AST.BoolNode True) file_info
+is_null (AST.Node _ file_info) =
+    AST.Node (AST.BoolNode False) file_info

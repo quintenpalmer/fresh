@@ -11,7 +11,7 @@ import qualified AST.AST as AST
 import qualified Parser.Chomper as Chomper
 
 type Token = Tok.Token
-type TokenEater = [Token] -> AST.Environment -> (AST.NodeContainer, [Token], AST.Environment)
+type TokenEater = [Token] -> AST.Environment -> (AST.Node, [Token], AST.Environment)
 
 unexpected_eof :: String -> String
 unexpected_eof name = "Unexpected end of file while parsing " ++ name
@@ -53,7 +53,7 @@ parse_struct tokens@((Tok.Token _ _ file_info):_) env =
     let (members, tokens2) = Chomper.parse_fields [] tokens
         tokens3 = Chomper.chomp_close_expression tokens2 "struct"
     in
-        (AST.NodeContainer (AST.StructDeclarationNode members) file_info, tokens3, env)
+        (AST.Node (AST.StructDeclarationNode members) file_info, tokens3, env)
 
 type_map :: Map.Map String TokenEater
 type_map = Map.fromList [

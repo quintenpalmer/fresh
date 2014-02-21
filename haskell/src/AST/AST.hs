@@ -1,6 +1,6 @@
 module AST.AST (
-    NodeContainer(..),
     Node(..),
+    Value(..),
     print_node,
     debug_print_node,
     Environment,
@@ -11,16 +11,16 @@ import qualified Data.Map as Map
 
 import qualified Lexer.Tokenize as Tokenize
 
-type Environment = Map.Map String NodeContainer
+type Environment = Map.Map String Node
 
 print_env :: Environment -> String
 print_env env =
     "Environment:\n" ++ print_all_entries (Map.toList env) "\n"
 
-print_entry :: String -> NodeContainer -> String
+print_entry :: String -> Node -> String
 print_entry key val = key ++ " -> " ++ (print_node val)
 
-print_all_entries :: [(String, NodeContainer)] -> String -> String
+print_all_entries :: [(String, Node)] -> String -> String
 print_all_entries [] _ = ""
 print_all_entries ((key, val): env) delimiter =
     (print_entry key val) ++ delimiter ++ (print_all_entries env delimiter)
@@ -29,36 +29,36 @@ print_struct_fields :: Environment -> String
 print_struct_fields env =
     print_all_entries (Map.toList env) " "
 
-data Node
+data Value
     = IntNode Int
     | BoolNode Bool
     | NullNode
     | VariableNode String
-    | IfNode NodeContainer NodeContainer NodeContainer
-    | LambdaNode NodeContainer [String]
-    | FunctionCallNode String [NodeContainer]
+    | IfNode Node Node Node
+    | LambdaNode Node [String]
+    | FunctionCallNode String [Node]
     | StructDeclarationNode [String]
-    | StructInstantiationNode (Map.Map String NodeContainer)
+    | StructInstantiationNode (Map.Map String Node)
     | MemberAccessNode String String
-    | PrimitiveOperatorNode ([NodeContainer] -> NodeContainer)
-    | PrimitiveUnaryOperatorNode (NodeContainer -> NodeContainer)
-    | ClosureNode NodeContainer [String] Environment
+    | PrimitiveOperatorNode ([Node] -> Node)
+    | PrimitiveUnaryOperatorNode (Node -> Node)
+    | ClosureNode Node [String] Environment
     | ModuleDefinitionNode
     | EnvContainerNode Environment
 
-data NodeContainer = NodeContainer Node Tokenize.FileLocInfo
+data Node = Node Value Tokenize.FileLocInfo
 
-debug_print_node :: NodeContainer -> String
-debug_print_node (NodeContainer node file_loc_info) =
+debug_print_node :: Node -> String
+debug_print_node (Node node file_loc_info) =
     (value node debug_print_node) ++ " at " ++ (Tokenize.print_file_info file_loc_info)
 
-print_node :: NodeContainer -> String
-print_node (NodeContainer node _) =
+print_node :: Node -> String
+print_node (Node node _) =
     value node print_node
 
-value :: Node -> (NodeContainer -> String) -> String
-value node printer =
-    case node of
+value :: Value -> (Node -> String) -> String
+value val printer =
+    case val of
         (IntNode int) -> show int
         (BoolNode bool) -> show bool
         (NullNode) -> "null"

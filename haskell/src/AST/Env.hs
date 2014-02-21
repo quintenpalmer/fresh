@@ -9,18 +9,18 @@ import qualified Lexer.Tokenize as Tokenize
 import qualified AST.AST as AST
 import qualified AST.Primitive as Primitive
 
-primitive_container_builder :: Primitive.InfiniteOperator -> AST.NodeContainer
+primitive_container_builder :: Primitive.InfiniteOperator -> AST.Node
 primitive_container_builder node =
-    AST.NodeContainer
+    AST.Node
         (AST.PrimitiveOperatorNode node)
         (Tokenize.FileLocInfo
             (Tokenize.FileLoc 0 0)
             (Tokenize.FileLoc 0 0)
         )
 
-primitive_unary_container_builder :: Primitive.UnaryOperator -> AST.NodeContainer
+primitive_unary_container_builder :: Primitive.UnaryOperator -> AST.Node
 primitive_unary_container_builder node =
-    AST.NodeContainer
+    AST.Node
         (AST.PrimitiveUnaryOperatorNode node)
         (Tokenize.FileLocInfo
             (Tokenize.FileLoc 0 0)

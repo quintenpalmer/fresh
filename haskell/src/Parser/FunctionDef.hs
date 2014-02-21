@@ -11,7 +11,7 @@ import qualified Parser.Chomper as Chomper
 import qualified Parser.Expression as Expression
 
 type Token = Tok.Token
-type TokenEater = [Token] -> AST.Environment -> (AST.NodeContainer, [Token], AST.Environment)
+type TokenEater = [Token] -> AST.Environment -> (AST.Node, [Token], AST.Environment)
 
 unexpected_eof :: String -> String
 unexpected_eof name = "Unexpected end of file while parsing " ++ name
@@ -35,5 +35,5 @@ parse_function_expression tokens@((Tok.Token _ _ file_info):_) env =
         tokens3 = Chomper.chomp_close_lambda_params tokens2
         (body, tokens4, env1) = Expression.parse_expression tokens3 env
     in
-        (AST.NodeContainer (AST.LambdaNode body params) file_info, tokens4, env1)
+        (AST.Node (AST.LambdaNode body params) file_info, tokens4, env1)
 
