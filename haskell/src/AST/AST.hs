@@ -16,13 +16,13 @@ print_env :: Environment -> String
 print_env env =
     "Environment:\n" ++ print_all_entries (Map.toList env) "\n"
 
-print_entry :: String -> Node -> String
-print_entry key val = key ++ " -> " ++ (show val)
-
 print_all_entries :: [(String, Node)] -> String -> String
 print_all_entries [] _ = ""
 print_all_entries ((key, val): env) delimiter =
     (print_entry key val) ++ delimiter ++ (print_all_entries env delimiter)
+
+print_entry :: String -> Node -> String
+print_entry key val = key ++ " -> " ++ (show val)
 
 data Value
     = IntNode Int
