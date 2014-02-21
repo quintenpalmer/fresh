@@ -28,24 +28,19 @@ parse raw_string input_env =
 
 parse_package_definition :: [Token] -> AST.Environment -> ([Token], AST.Environment)
 parse_package_definition [] _ = error "end of tokens while parsing package"
-parse_package_definition ((Tok.Token token_type string file_info):tokens) env =
-    case token_type of
-        Tok.LParen -> parse_better_be_package tokens env
-        _ -> error $ "Must start with package declaration , got " ++ string ++ " " ++ show file_info
-
-parse_better_be_package :: [Token] -> AST.Environment -> ([Token], AST.Environment)
-parse_better_be_package [] _ = error "end of tokens while parsing package"
-parse_better_be_package ((Tok.Token token_type string file_info):tokens) env =
-    case token_type of
-        Tok.String_ ->
-            if string == "package" then
-                let (name, tokens2) = Chomper.parse_name tokens
-                    tokens3 = Chomper.chomp_close_expression tokens2 "package"
-                in
-                    parse_all_top_levels tokens3 $ Map.insert name (AST.Node (AST.ModuleDefinitionNode) file_info) env
-            else
-                error $ "Top level declaration must be a package (found " ++ string ++ " ) " ++ show file_info
-        _ -> error $ "Top level declaration must be a package (found " ++ string ++ " ) " ++ show file_info
+parse_package_definition input_tokens env =
+    let ((Tok.Token token_type string file_info):tokens) = Chomper.chomp_open_expression input_tokens
+    in
+        case token_type of
+            Tok.String_ ->
+                if string == "package" then
+                    let (name, tokens2) = Chomper.parse_name tokens
+                        tokens3 = Chomper.chomp_close_expression tokens2 "package"
+                    in
+                        parse_all_top_levels tokens3 $ Map.insert name (AST.Node (AST.ModuleDefinitionNode) file_info) env
+                else
+                    error $ "Top level declaration must be a package (found " ++ string ++ " ) " ++ show file_info
+            _ -> error $ "Top level declaration must be a package (found " ++ string ++ " ) " ++ show file_info
 
 parse_all_top_levels :: [Token] -> AST.Environment -> ([Token], AST.Environment)
 parse_all_top_levels input_tokens input_env =
@@ -67,16 +62,11 @@ parse_main env =
 
 parse_top_level_expression :: [Token] -> AST.Environment -> ([Token], AST.Environment)
 parse_top_level_expression [] env = ([], env)
-parse_top_level_expression ((Tok.Token token_type _ file_info):tokens) env =
-    case token_type of
-        Tok.LParen -> parse_better_be_define tokens env
-        _ -> error $ "must be a definition of define at top level" ++ show file_info
-
-parse_better_be_define :: [Token] -> AST.Environment -> ([Token], AST.Environment)
-parse_better_be_define [] _ = error "Top level declarations must be a define"
-parse_better_be_define ((Tok.Token token_type string file_info):tokens) env =
-    case token_type of
-        Tok.VarLiteral -> Expression.parse_var_def tokens env
-        Tok.TypeLiteral -> TypeDef.parse_type_def tokens env
-        Tok.FunctionLiteral -> FunctionDef.parse_function_def tokens env
-        _ -> error $ "Top level declaration must be a define (found " ++ string ++ " ) " ++ show file_info
+parse_top_level_expression input_tokens env =
+    let ((Tok.Token token_type string file_info):tokens) = Chomper.chomp_open_expression input_tokens
+    in
+        case token_type of
+            Tok.VarLiteral -> Expression.parse_var_def tokens env
+            Tok.TypeLiteral -> TypeDef.parse_type_def tokens env
+            Tok.FunctionLiteral -> FunctionDef.parse_function_def tokens env
+            _ -> error $ "Top level declaration must be a define (found " ++ string ++ " ) " ++ show file_info
