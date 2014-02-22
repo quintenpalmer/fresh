@@ -16,7 +16,9 @@ import qualified Parser.Chomper as Chomper
 import qualified Parser.Expression as Expression
 import qualified Parser.Type as Type
 
-parse_package_def :: [Tok.Token] -> AST.Environment -> ([Tok.Token], AST.Environment)
+type EnvironmentAdder = [Tok.Token] -> AST.Environment -> ([Tok.Token], AST.Environment)
+
+parse_package_def :: EnvironmentAdder
 parse_package_def [] _ = error $ Errors.unexpected_eof "package"
 parse_package_def input_tokens env =
     let ((Tok.Token token_type string file_info):tokens) = Chomper.chomp_open_expression input_tokens
@@ -29,7 +31,7 @@ parse_package_def input_tokens env =
                     (tokens3, Map.insert name (AST.Node (AST.ModuleDefinitionNode) file_info) env)
             _ -> error $ "Top level declaration must be a package (found " ++ string ++ " ) " ++ show file_info
 
-parse_var_def :: [Tok.Token] -> AST.Environment -> ([Tok.Token], AST.Environment)
+parse_var_def :: EnvironmentAdder
 parse_var_def [] _ = error $ Errors.unexpected_eof "var"
 parse_var_def ((Tok.Token token_type name _):tokens) env =
     case token_type of
@@ -40,7 +42,7 @@ parse_var_def ((Tok.Token token_type name _):tokens) env =
                 (tokens2, Map.insert name expression env1)
         token -> error $ show token
 
-parse_function_def :: [Tok.Token] -> AST.Environment -> ([Tok.Token], AST.Environment)
+parse_function_def :: EnvironmentAdder
 parse_function_def [] _ = error $ Errors.unexpected_eof "function definition"
 parse_function_def ((Tok.Token token_function name file_info): tokens) env =
     case token_function of
@@ -50,7 +52,7 @@ parse_function_def ((Tok.Token token_function name file_info): tokens) env =
                 (tokens1, Map.insert name function_def env1)
         _ -> error $ "Expecting function name and defined function " ++ show file_info
 
-parse_type_def :: [Tok.Token] -> AST.Environment -> ([Tok.Token], AST.Environment)
+parse_type_def :: EnvironmentAdder
 parse_type_def [] _ = error $ Errors.unexpected_eof "type definition"
 parse_type_def ((Tok.Token token_type name file_info): tokens) env =
     case token_type of
