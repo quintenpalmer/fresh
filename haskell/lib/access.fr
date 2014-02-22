@@ -1,11 +1,11 @@
 (package person)
 
-(type person
+(type Person
     (struct height weight)
 )
 
 (var quinten
-    (person 100 177)
+    (Person 100 177)
 )
 
 (var main (member quinten weight))

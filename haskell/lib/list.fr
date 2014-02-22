@@ -1,6 +1,6 @@
 (package list)
 
-(type list
+(type List
     (struct head tail)
 )
 
@@ -19,7 +19,7 @@
 (function map [func arg_list]
     (if (is_empty arg_list)
         arg_list
-        (list
+        (List
             (func (head arg_list))
             (map func (tail arg_list))
         )
@@ -27,7 +27,7 @@
 )
 
 (var my_list
-    (list 4 (list 3 (list 2 (list 1 null))))
+    (List 4 (List 3 (List 2 (List 1 null))))
 )
 
 (function sq [x]
