@@ -1,9 +1,7 @@
 module Parser.Expression (
-    parse_var_def,
-    parse_expression
+    parse_expression,
+    parse_lambda
 ) where
-
-import qualified Data.Map as Map
 
 import qualified Lexer.Tokenize as Tok
 import qualified AST.AST as AST
@@ -11,19 +9,7 @@ import qualified AST.AST as AST
 import qualified Parser.Errors as Errors
 import qualified Parser.Chomper as Chomper
 
-type Token = Tok.Token
-type TokenEater = [Token] -> AST.Environment -> (AST.Node, [Token], AST.Environment)
-
-parse_var_def :: [Token] -> AST.Environment -> ([Token], AST.Environment)
-parse_var_def [] _ = error $ Errors.unexpected_eof "var"
-parse_var_def ((Tok.Token token_type name _):tokens) env =
-    case token_type of
-        Tok.String_ ->
-            let (expression, tokens1, env1) = parse_expression tokens env
-                tokens2 = Chomper.chomp_close_expression tokens1 "var"
-            in
-                (tokens2, Map.insert name expression env1)
-        token -> error $ show token
+type TokenEater = [Tok.Token] -> AST.Environment -> (AST.Node, [Tok.Token], AST.Environment)
 
 parse_expression :: TokenEater
 parse_expression [] _ = error $ Errors.unexpected_eof "general expression"
@@ -50,7 +36,7 @@ parse_func_call ((Tok.Token token_type current file_info):tokens) env =
         Tok.MemberLiteral -> parse_member tokens env
         token -> error $ "Invalid token as func call " ++ show token
 
-parse_operands :: [AST.Node] -> [Token] -> AST.Environment -> ([AST.Node], [Token])
+parse_operands :: [AST.Node] -> [Tok.Token] -> AST.Environment -> ([AST.Node], [Tok.Token])
 parse_operands _ [] _ = error $ Errors.unexpected_eof "parsing of operands"
 parse_operands existing_params input_tokens@((Tok.Token token_type _ _):_) env =
     case token_type of
