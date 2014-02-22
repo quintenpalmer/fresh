@@ -38,9 +38,6 @@ evaluate_environment pre_eval post_eval =
 
 
 evaluate :: AST.Node -> AST.Environment -> AST.Node
-evaluate node@(AST.Node (AST.IntNode _) _) _ = node
-evaluate node@(AST.Node (AST.BoolNode _) _) _ = node
-evaluate node@(AST.Node (AST.NullNode) _) _ = node
 evaluate (AST.Node (AST.IfNode cond_expr then_expr else_expr) file_info) env =
     case evaluate cond_expr env of
         (AST.Node (AST.BoolNode True) _) -> evaluate then_expr env
@@ -62,11 +59,6 @@ evaluate (AST.Node (AST.FunctionCallNode name values) file_info) env =
             evaluate_function_call (Maybe.fromJust maybe_function) values env
         else
             error $ "Function '" ++ name ++ "' not in scope at " ++ show file_info
-evaluate node@(AST.Node (AST.StructDeclarationNode _) _) _ = node
-evaluate node@(AST.Node (AST.StructInstantiationNode _) _) _ = node
-evaluate node@(AST.Node (AST.PrimitiveOperatorNode _) _) _ = node
-evaluate node@(AST.Node (AST.PrimitiveUnaryOperatorNode _) _) _ = node
-evaluate node@(AST.Node (AST.ClosureNode _ _ _) _) _ = node
 evaluate (AST.Node (AST.MemberAccessNode struct_name member_name) file_info) env =
     let maybe_struct = Map.lookup struct_name env
     in
@@ -87,6 +79,14 @@ evaluate (AST.Node (AST.MemberAccessNode struct_name member_name) file_info) env
 evaluate (AST.Node (AST.ModuleDefinitionNode) file_info) env =
     (AST.Node (AST.EnvContainerNode env) file_info)
 evaluate node@(AST.Node (AST.EnvContainerNode _) _) _ = node
+evaluate node@(AST.Node (AST.IntNode _) _) _ = node
+evaluate node@(AST.Node (AST.BoolNode _) _) _ = node
+evaluate node@(AST.Node (AST.NullNode) _) _ = node
+evaluate node@(AST.Node (AST.StructDeclarationNode _) _) _ = node
+evaluate node@(AST.Node (AST.StructInstantiationNode _) _) _ = node
+evaluate node@(AST.Node (AST.PrimitiveOperatorNode _) _) _ = node
+evaluate node@(AST.Node (AST.PrimitiveUnaryOperatorNode _) _) _ = node
+evaluate node@(AST.Node (AST.ClosureNode _ _ _) _) _ = node
 
 
 evaluate_function_call :: AST.Node -> [AST.Node] -> AST.Environment -> AST.Node
