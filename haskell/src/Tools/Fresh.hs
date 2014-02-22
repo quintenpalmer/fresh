@@ -50,25 +50,20 @@ loop env = do
 
 eval :: String -> AST.Environment -> String
 eval command env =
-    let env1 = (Parse.parse command env)
-    in
-        show $ Evaluation.start_evaluate env1
+    show $ Evaluation.start_evaluate (Parse.parse (Tokenize.make_tokens command) env)
 
 
 print_evaled_ast :: String -> AST.Environment -> String
 print_evaled_ast command env =
-    let env1 = (Parse.parse command env)
-        env2 = Evaluation.create_evaluated_env env1
-    in
-        "User Defined:\n" ++ (AST.print_env $ Map.difference env2 env) ++
-        "\nBuiltin:\n" ++ AST.print_env env
+    "User Defined:\n" ++ (AST.print_env (Map.difference
+        (Evaluation.create_evaluated_env (Parse.parse (Tokenize.make_tokens command) env))
+        env)) ++
+    "\nBuiltin:\n" ++ AST.print_env env
 
 print_ast :: String -> AST.Environment -> String
 print_ast command env =
-    let env1 = (Parse.parse command env)
-    in
-        "User Defined:\n" ++ (AST.print_env $ Map.difference env1 env) ++
-        "\nBuiltin:\n" ++ AST.print_env env
+    "User Defined:\n" ++ (AST.print_env $ Map.difference (Parse.parse (Tokenize.make_tokens command) env) env) ++
+    "\nBuiltin:\n" ++ AST.print_env env
 
 print_ :: String -> IO ()
 print_ string = do putStrLn $ string

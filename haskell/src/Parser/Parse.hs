@@ -8,9 +8,9 @@ import qualified AST.AST as AST
 import qualified Parser.Definitions as Definitions
 import qualified Parser.Chomper as Chomper
 
-parse :: String -> AST.Environment -> AST.Environment
-parse raw_string input_env =
-    let (tokens, env) = Definitions.parse_package_def (Tok.make_tokens raw_string) input_env
+parse :: [Tok.Token] -> AST.Environment -> AST.Environment
+parse input_tokens input_env =
+    let (tokens, env) = Definitions.parse_package_def input_tokens input_env
         (tokens1, env1) = parse_all_top_levels tokens env
     in
         case tokens1 of
