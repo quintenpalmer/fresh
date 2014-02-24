@@ -4,24 +4,24 @@
     (struct head tail)
 )
 
-(function is_empty [list_]
-    (is_null list_)
+(function is_empty [list]
+    (is_null list)
 )
 
-(function tail [list_]
-    (member list_ tail)
+(function tail [list]
+    (member list tail)
 )
 
-(function head [list_]
-    (member list_ head)
+(function head [list]
+    (member list head)
 )
 
-(function map [func arg_list]
-    (if (is_empty arg_list)
-        arg_list
+(function map [func list]
+    (if (is_empty list)
+        list
         (List
-            (func (head arg_list))
-            (map func (tail arg_list))
+            (func (head list))
+            (map func (tail list))
         )
     )
 )
