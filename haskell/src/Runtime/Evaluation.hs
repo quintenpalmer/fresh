@@ -12,7 +12,7 @@ start_evaluate :: AST.Environment -> AST.Node
 start_evaluate env =
     let node = parse_main env
     in
-        evaluate node $ create_evaluated_env env
+        evaluate_function_call (evaluate node $ create_evaluated_env env) [] env
 
 parse_main :: AST.Environment -> AST.Node
 parse_main env =

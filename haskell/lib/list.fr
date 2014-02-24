@@ -34,6 +34,6 @@
     (* x x)
 )
 
-(var main
+(function main []
     (map sq my_list)
 )

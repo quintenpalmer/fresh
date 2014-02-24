@@ -1,4 +1,6 @@
 (package single)
 
 (var a 3)
-(var main a)
+(function main []
+    a
+)

@@ -40,4 +40,6 @@
     )
 )
 
-(var main (fib 15))
+(function main []
+    (fib 15)
+)

@@ -4,4 +4,6 @@
     (struct height weight)
 )
 
-(var main (Person 10 10))
+(function main []
+    (Person 10 10)
+)

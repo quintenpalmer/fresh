@@ -7,4 +7,6 @@
     )
 )
 
-(var main (not true))
+(function main []
+    (not true)
+)
