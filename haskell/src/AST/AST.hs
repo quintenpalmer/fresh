@@ -67,7 +67,9 @@ value val printer =
         (VariableNode name) ->
             name
         (IfNode if_expr then_expr else_expr) ->
-            "(if " ++ (printer if_expr) ++ " then " ++ (printer then_expr) ++ " else " ++ (printer else_expr) ++ ")"
+            "(if " ++ (printer if_expr) ++
+            " then " ++ (printer then_expr) ++
+            " else " ++ (printer else_expr) ++ ")"
         (LambdaNode body operands) ->
             "(lambda [" ++ show_list operands ++ "] " ++ (printer body) ++ ")"
         (FunctionCallNode name arguments) ->
