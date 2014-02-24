@@ -31,6 +31,11 @@ parse_func_call ((Tok.Token token_type current file_info):tokens) env =
                 post_close_tokens = Chomper.chomp_close_expression pre_close_tokens "func_call"
             in
                 (AST.Node (AST.FunctionCallNode current operands) file_info, post_close_tokens, env)
+        Tok.Type ->
+            let (operands, pre_close_tokens) = parse_operands [] tokens env
+                post_close_tokens = Chomper.chomp_close_expression pre_close_tokens "func_call"
+            in
+                (AST.Node (AST.FunctionCallNode current operands) file_info, post_close_tokens, env)
         Tok.LambdaLiteral -> parse_lambda tokens env
         Tok.IfLiteral -> parse_if tokens env
         Tok.MemberLiteral -> parse_member tokens env

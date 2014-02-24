@@ -23,6 +23,7 @@ data TokenType
     | StructLiteral
     | PackageLiteral
     | String_
+    | Type
     | LParen
     | RParen
     | LBracket

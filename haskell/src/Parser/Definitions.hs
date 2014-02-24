@@ -56,7 +56,7 @@ parse_type_def :: EnvironmentAdder
 parse_type_def [] _ = error $ Errors.unexpected_eof "type definition"
 parse_type_def ((Tok.Token token_type name file_info): tokens) env =
     case token_type of
-        Tok.String_ ->
+        Tok.Type ->
             let (type_def, tokens1, env1) = Type.parse_type tokens env
                 tokens2 = Chomper.chomp_close_expression tokens1 "type"
             in

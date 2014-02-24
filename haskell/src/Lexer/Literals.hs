@@ -1,4 +1,5 @@
 module Lexer.Literals (
+    is_type,
     is_int_literal,
     is_bool_literal,
     is_null_literal,
@@ -17,6 +18,11 @@ module Lexer.Literals (
 ) where
 
 import qualified Data.Char as Char
+
+is_type :: String -> Bool
+is_type [] = False
+is_type (first:_) =
+    Char.isUpper first
 
 is_open_expression :: String -> Bool
 is_open_expression string =
