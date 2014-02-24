@@ -20,7 +20,7 @@ parse_expression ((Tok.Token token_type string file_info):tokens) env =
         Tok.BoolLiteral -> (AST.Node (AST.BoolNode $ string == "true") file_info, tokens, env)
         Tok.NullLiteral -> (AST.Node (AST.NullNode) file_info, tokens, env)
         Tok.String_ -> (AST.Node (AST.VariableNode string) file_info, tokens, env)
-        token -> error $ "Invalid Token " ++ show token
+        token -> error $ "Invalid Token to start expression " ++ show token ++ " " ++ show file_info
 
 parse_func_call :: TokenEater
 parse_func_call [] _ = error $ Errors.unexpected_eof "function call"
@@ -34,7 +34,7 @@ parse_func_call ((Tok.Token token_type current file_info):tokens) env =
         Tok.LambdaLiteral -> parse_lambda tokens env
         Tok.IfLiteral -> parse_if tokens env
         Tok.MemberLiteral -> parse_member tokens env
-        token -> error $ "Invalid token as func call " ++ show token
+        token -> error $ "Invalid token as func call " ++ show token ++ " " ++ show file_info
 
 parse_operands :: [AST.Node] -> [Tok.Token] -> AST.Environment -> ([AST.Node], [Tok.Token])
 parse_operands _ [] _ = error $ Errors.unexpected_eof "parsing of operands"
