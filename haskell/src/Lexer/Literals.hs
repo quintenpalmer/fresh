@@ -1,5 +1,6 @@
 module Lexer.Literals (
     is_type,
+    is_type_delimiter,
     is_int_literal,
     is_bool_literal,
     is_null_literal,
@@ -23,6 +24,10 @@ is_type :: String -> Bool
 is_type [] = False
 is_type (first:_) =
     Char.isUpper first
+
+is_type_delimiter :: String -> Bool
+is_type_delimiter string =
+    string == ":"
 
 is_open_expression :: String -> Bool
 is_open_expression string =

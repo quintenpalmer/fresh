@@ -14,7 +14,7 @@ whitespace :: [Char]
 whitespace = [' ', '\r', '\t'] ++ line_breaks
 
 delimiters :: [Char]
-delimiters = ['(', ')', '[', ']'] ++ whitespace
+delimiters = ['(', ')', '[', ']', ':'] ++ whitespace
 
 is_line_break :: Char -> Bool
 is_line_break char =

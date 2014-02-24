@@ -31,6 +31,7 @@ to_tokens input_string input_file_info =
 
 get_token_type :: String -> TokenType
 get_token_type current
+    | Literals.is_type_delimiter current = Tokens.Colon
     | Literals.is_type current = Tokens.Type
     | Literals.is_open_expression current = Tokens.LParen
     | Literals.is_close_expression current = Tokens.RParen

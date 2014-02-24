@@ -24,6 +24,7 @@ data TokenType
     | PackageLiteral
     | String_
     | Type
+    | Colon
     | LParen
     | RParen
     | LBracket
