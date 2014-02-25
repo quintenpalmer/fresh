@@ -7,7 +7,7 @@ module Parser.Definitions (
 
 import qualified Data.Map as Map
 
-import qualified Lexer.Tokenize as Tok
+import qualified Tokens.Tokens as Tokens
 import qualified AST.AST as AST
 
 import qualified Parser.Errors as Errors
@@ -16,15 +16,15 @@ import qualified Parser.Chomper as Chomper
 import qualified Parser.Expression as Expression
 import qualified Parser.Type as Type
 
-type EnvironmentAdder = [Tok.Token] -> AST.Environment -> ([Tok.Token], AST.Environment)
+type EnvironmentAdder = [Tokens.Token] -> AST.Environment -> ([Tokens.Token], AST.Environment)
 
 parse_package_def :: EnvironmentAdder
 parse_package_def [] _ = error $ Errors.unexpected_eof "package"
 parse_package_def input_tokens env =
-    let ((Tok.Token token_type string file_info):tokens) = Chomper.chomp_open_expression input_tokens
+    let ((Tokens.Token token_type string file_info):tokens) = Chomper.chomp_open_expression input_tokens
     in
         case token_type of
-            Tok.PackageLiteral ->
+            Tokens.PackageLiteral ->
                 let (name, tokens2) = Chomper.parse_name tokens
                     tokens3 = Chomper.chomp_close_expression tokens2 "package"
                 in
@@ -33,9 +33,9 @@ parse_package_def input_tokens env =
 
 parse_var_def :: EnvironmentAdder
 parse_var_def [] _ = error $ Errors.unexpected_eof "var"
-parse_var_def ((Tok.Token token_type name _):tokens) env =
+parse_var_def ((Tokens.Token token_type name _):tokens) env =
     case token_type of
-        Tok.String_ ->
+        Tokens.String_ ->
             let (expression, tokens1, env1) = Expression.parse_expression tokens env
                 tokens2 = Chomper.chomp_close_expression tokens1 "var"
             in
@@ -44,9 +44,9 @@ parse_var_def ((Tok.Token token_type name _):tokens) env =
 
 parse_function_def :: EnvironmentAdder
 parse_function_def [] _ = error $ Errors.unexpected_eof "function definition"
-parse_function_def ((Tok.Token token_function name file_info): tokens) env =
+parse_function_def ((Tokens.Token token_function name file_info): tokens) env =
     case token_function of
-        Tok.String_ ->
+        Tokens.String_ ->
             let (function_def, tokens1, env1) = Expression.parse_lambda tokens env
             in
                 (tokens1, Map.insert name function_def env1)
@@ -54,9 +54,9 @@ parse_function_def ((Tok.Token token_function name file_info): tokens) env =
 
 parse_type_def :: EnvironmentAdder
 parse_type_def [] _ = error $ Errors.unexpected_eof "type definition"
-parse_type_def ((Tok.Token token_type name file_info): tokens) env =
+parse_type_def ((Tokens.Token token_type name file_info): tokens) env =
     case token_type of
-        Tok.Type ->
+        Tokens.Type ->
             let (type_def, tokens1, env1) = Type.parse_type tokens env
                 tokens2 = Chomper.chomp_close_expression tokens1 "type"
             in

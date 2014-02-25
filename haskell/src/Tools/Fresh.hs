@@ -1,7 +1,8 @@
 import qualified System.Environment as SysEnv
 import qualified Data.Map as Map
 
-import qualified Lexer.Tokenize as Tokenize
+import qualified Tokens.Tokens as Tokens
+import qualified Lexer.Lexer as Lexer
 import qualified Parser.Parse as Parse
 import qualified AST.AST as AST
 import qualified AST.BuiltinEnv as BuiltinEnv
@@ -15,7 +16,7 @@ load_start filename env = do
 print_tokens_start :: String -> IO ()
 print_tokens_start filename = do
     command <- readFile filename
-    putStrLn $ Tokenize.print_tokens $ Tokenize.make_tokens command
+    putStrLn $ Tokens.print_tokens $ Lexer.make_tokens command
 
 loop_start :: AST.Environment -> IO ()
 loop_start env = do
@@ -50,19 +51,19 @@ loop env = do
 
 eval :: String -> AST.Environment -> String
 eval command env =
-    show $ Evaluation.start_evaluate (Parse.parse (Tokenize.make_tokens command) env)
+    show $ Evaluation.start_evaluate (Parse.parse (Lexer.make_tokens command) env)
 
 
 print_evaled_ast :: String -> AST.Environment -> String
 print_evaled_ast command env =
     "User Defined:\n" ++ (AST.print_env (Map.difference
-        (Evaluation.create_evaluated_env (Parse.parse (Tokenize.make_tokens command) env))
+        (Evaluation.create_evaluated_env (Parse.parse (Lexer.make_tokens command) env))
         env)) ++
     "\nBuiltin:\n" ++ AST.print_env env
 
 print_ast :: String -> AST.Environment -> String
 print_ast command env =
-    "User Defined:\n" ++ (AST.print_env $ Map.difference (Parse.parse (Tokenize.make_tokens command) env) env) ++
+    "User Defined:\n" ++ (AST.print_env $ Map.difference (Parse.parse (Lexer.make_tokens command) env) env) ++
     "\nBuiltin:\n" ++ AST.print_env env
 
 print_ :: String -> IO ()

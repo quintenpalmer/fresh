@@ -3,9 +3,9 @@ module Lexer.Delimiter (
     is_whitespace,
 ) where
 
-import qualified Lexer.SourceInfo as SourceInfo
+import qualified Tokens.Tokens as Tokens
 
-type TokenLoc = SourceInfo.TokenLoc
+type TokenLoc = Tokens.TokenLoc
 
 line_breaks :: [Char]
 line_breaks = ['\n']
@@ -29,8 +29,8 @@ is_delimiter char =
     char `elem` delimiters
 
 get_token_string :: String -> TokenLoc -> (String, String, TokenLoc)
-get_token_string remaining (SourceInfo.TokenLoc _ end_file_loc_info) =
-    let (current, post_remaining, file_info) = get_next_non_whitespace remaining (SourceInfo.TokenLoc end_file_loc_info end_file_loc_info)
+get_token_string remaining (Tokens.TokenLoc _ end_file_loc_info) =
+    let (current, post_remaining, file_info) = get_next_non_whitespace remaining (Tokens.TokenLoc end_file_loc_info end_file_loc_info)
     in
         if is_delimiter current then
             ([current], post_remaining, file_info)
@@ -58,8 +58,8 @@ get_next_non_whitespace remaining input_info =
 get_next_character :: String -> TokenLoc -> (Char, String, TokenLoc)
 get_next_character [] _ = error "Reading past end of file"
 get_next_character [current] info = (current, [], info)
-get_next_character (current: rest) (SourceInfo.TokenLoc (SourceInfo.FileLoc start_line start_char) (SourceInfo.FileLoc end_line end_char)) =
+get_next_character (current: rest) (Tokens.TokenLoc (Tokens.FileLoc start_line start_char) (Tokens.FileLoc end_line end_char)) =
     if is_line_break current then
-        (current, rest, (SourceInfo.TokenLoc (SourceInfo.FileLoc start_line 1) (SourceInfo.FileLoc (end_line + 1) 1)))
+        (current, rest, (Tokens.TokenLoc (Tokens.FileLoc start_line 1) (Tokens.FileLoc (end_line + 1) 1)))
     else
-        (current, rest, (SourceInfo.TokenLoc (SourceInfo.FileLoc start_line start_char) (SourceInfo.FileLoc end_line (end_char + 1))))
+        (current, rest, (Tokens.TokenLoc (Tokens.FileLoc start_line start_char) (Tokens.FileLoc end_line (end_char + 1))))

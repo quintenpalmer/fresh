@@ -8,7 +8,7 @@ module AST.AST (
 import qualified Data.Map as Map
 
 import qualified Debug.Debug as Debug
-import qualified Lexer.Tokenize as Tokenize
+import qualified Tokens.Tokens as Tokens
 
 type Environment = Map.Map String Node
 
@@ -41,7 +41,7 @@ data Value
     | ModuleDefinitionNode
     | EnvContainerNode Environment
 
-data Node = Node Value Tokenize.TokenLoc
+data Node = Node Value Tokens.TokenLoc
 
 instance Debug.DebugShow Node where
     debug_show (Node node file_loc_info) =

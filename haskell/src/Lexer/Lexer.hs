@@ -1,24 +1,19 @@
-module Lexer.Tokenize (
+module Lexer.Lexer (
     make_tokens,
-    SourceInfo.FileLoc(..),
-    SourceInfo.TokenLoc(..),
-    Tokens.Token(..),
-    Tokens.TokenType(..),
-    Tokens.print_tokens
 ) where
 
+import qualified Tokens.Tokens as Tokens
+
 import qualified Lexer.Delimiter as Delimiter
-import qualified Lexer.SourceInfo as SourceInfo
 import qualified Lexer.Literals as Literals
-import qualified Lexer.Tokens as Tokens
 
 type Token = Tokens.Token
 type TokenType = Tokens.TokenType
-type TokenLoc = SourceInfo.TokenLoc
+type TokenLoc = Tokens.TokenLoc
 
 make_tokens :: String -> [Token]
 make_tokens input_string =
-    to_tokens input_string (SourceInfo.TokenLoc (SourceInfo.FileLoc 1 0) (SourceInfo.FileLoc 1 0))
+    to_tokens input_string (Tokens.TokenLoc (Tokens.FileLoc 1 0) (Tokens.FileLoc 1 0))
 
 to_tokens :: String -> TokenLoc -> [Token]
 to_tokens input_string input_file_info =
