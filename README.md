@@ -59,20 +59,20 @@ Supports Conditional Branching
 
 Supports variable assignment
 ----------------------------
-- (define a 4) (function main [] (+ a 1)) 5 - define a mapping in the environment for later reference
+- (define a 4) (function main [] \(+ a 1)) 5 - define a mapping in the environment for later reference
 
 
 Supports lambdas
 ----------------
-- (function main [] (lambda \[num\] (+ num 1))) - returns a lambda that will add one to it's single argument when called
-- (define square (lambda \[i\] (\* i i)))(function main [] (square 5)) 25 - assign a lambda to a variable to reference later
+- (function main [] \(lambda \[num\] (+ num 1))) - returns a lambda that will add one to it's single argument when called
+- (define square (lambda \[i\] (\* i i)))(function main [] \(square 5)) 25 - assign a lambda to a variable to reference later
 
 
 Supports structs and member access
 ----------------------------------
 - (struct x y) - returns a struct node that has members "x" and "y"
 - (define person (struct height weight))(define quinten (person 178 77))(function main [] quinten) - returns a struct instantiation of a "person" with members "height" and "weight"
-- (define person (struct height weight))(define quinten (person 178 77))(function main [] (member quinten height)) - returns the "person" "quinten"s "height" which is 178
+- (define person (struct height weight))(define quinten (person 178 77))(function main [] \(member quinten height)) - returns the "person" "quinten"s "height" which is 178
 
 
 Todo
